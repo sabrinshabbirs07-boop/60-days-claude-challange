@@ -1,12 +1,11 @@
 Day 2 of 60 Days of Claude Challenge
 
- What I have learned today:
+What I learned today:
 
-. Learned about Prompt Engineering and its importance in AI communication.
-. Understood how structured prompts help in getting better and accurate results.
-. Learned that adding context and role improves AI outputs.
-. Practiced writing effective prompts for better responses.
-. Understood the difference between normal prompts and well-structured prompts.
+* Learned about Prompt Engineering.
+* Better prompts give better AI responses.
+* Adding context improves output quality.
+* Structured prompts save time and give accurate results.
 
-Conclusion:
-Today I improved my understanding of how to interact effectively with AI using Prompt Engineering.
+* Conclusion:
+Prompt Engineering helps in communicating better with AI.
