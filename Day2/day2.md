@@ -7,8 +7,10 @@ What I learned today:
 * Adding context improves output quality.
 * Structured prompts save time and give accurate results.
 #FOR EXAMPLE:
+
 *Weak Prompt:
 Build a Student Management System.
+
 *Strong Prompt:
 Act as a senior full-stack developer. Build a Student Management System using React, Node.js, Express, and MongoDB. The system should include student registration, login authentication, course enrollment, attendance tracking, and an admin dashboard. Use a responsive UI, JWT authentication, and follow clean code practices. Provide the project structure and database schema.
 
