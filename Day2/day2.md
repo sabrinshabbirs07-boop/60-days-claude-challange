@@ -9,3 +9,4 @@ What I learned today:
 
 * Conclusion:
 Prompt Engineering helps in communicating better with AI.
+https://raw.githubusercontent.com/sabrinshabbirs07-boop/60-days-claude-challange/refs/heads/main/IMG-20260602-WA0016.jpg
