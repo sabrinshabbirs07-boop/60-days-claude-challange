@@ -52,6 +52,5 @@ The AI will provide a beginner-friendly explanation of APIs with practical examp
 ![AI chat](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day3/IMG_20260603_180129.jpg)
 2 .with assigning role as startup founder
 ![AI chat](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day3/IMG_20260603_180149.jpg)
-3.eith assigning a role as a developer
-![AI chat]
-(https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day3/IMG_20260603_180200.jpg)
+3.with assigning a role as a developer
+![AI chat](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day3/IMG_20260603_180200.jpg)
