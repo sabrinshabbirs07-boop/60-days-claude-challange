@@ -49,4 +49,9 @@ The AI will provide a beginner-friendly explanation of APIs with practical examp
 
 °Screenshot of Claude chats where I asked the same question without assigning a role and then asked as a Founder persona and then asked as a developer persona are attached below.
  1. without assigning a role
-![AI chat]()
+![AI chat](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day3/IMG_20260603_180129.jpg)
+2 .with assigning role as startup founder
+![AI chat](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day3/IMG_20260603_180149.jpg)
+3.eith assigning a role as a developer
+![AI chat]
+(https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day3/IMG_20260603_180200.jpg)
