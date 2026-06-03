@@ -30,7 +30,7 @@ Generated specialized responses by defining expertise, experience, and context.
 
 Explored how role-based prompts can be used in software development, content creation, and career guidance.
 
-📝*Example of Role-Based Prompting
+*Example of Role-Based Prompting
 
 Role: Senior Software Engineer
 
@@ -46,3 +46,7 @@ Why this works:
 
 Expected Result:
 The AI will provide a beginner-friendly explanation of APIs with practical examples, rather than a generic or overly technical definition.
+
+°Screenshot of Claude chats where I asked the same question without assigning a role and then asked as a Founder persona and then asked as a developer persona are attached below.
+ 1. without assigning a role
+![AI chat]()
