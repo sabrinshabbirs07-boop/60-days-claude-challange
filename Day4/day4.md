@@ -159,3 +159,5 @@ Community
  I am not just learning AI. I am building the skills, projects, portfolio, and mindset required to become a successful AI Engineer capable of creating impactful intelligent solutions.
 
  *Road to AI Engineer 2026*
+ ![Ai chat](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day4/IMG-20260604-WA0027.jpg)
+ ![road map](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day4/IMG-20260604-WA0010(1).jpg)
