@@ -20,7 +20,7 @@ Make it practical and beginner-friendly.
 Output Summary:
 The generated roadmap was generic and lacked personalization because no information was provided about the learner's goals, skills, experience level, or available study time.
 Screenshot
-![Prompt A Output](./promptA-output.png)
+![Prompt A Output](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day5/screen%20shot%20A.jpeg)
 
 *Prompt B (With Context)
 Create a 30-day learning roadmap.
@@ -41,7 +41,7 @@ Make it practical and beginner-friendly.
 Output Summary:
 The generated roadmap was highly personalized and aligned with my learning goals. It included relevant resources, practical projects, and a realistic schedule based on my available time and current skill level.
  Screenshot
-![Prompt B Output](./promptB-output.png)
+![Prompt B Output](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day5/ss%20of%20roadmap%20B.jpeg)
 
 #Comparison of Prompt A and Prompt B Outputs
 
