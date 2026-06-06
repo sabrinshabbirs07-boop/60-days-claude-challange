@@ -131,14 +131,8 @@ Through this exercise, I learned that:
 5. AI tools can quickly identify weaknesses that are easy to overlook manually.
 6. Strong project descriptions should focus on achievements and contributions rather than responsibilities.
 7. ATS optimization increases visibility but should still maintain authenticity.
-
- Tools Used:
-- Claude AI
-- ATS Resume Analyzer
-- GitHub
-- Resume Optimization Techniques
- Final Reflection:
-Day 6 showed me how AI can be used beyond coding and content creation. By leveraging ATS optimization techniques, I transformed my resume from a score of **42/100** to **87/100**, making it significantly more competitive for Software Engineering, Data Science, and AI-related roles.
-This experience reinforced the importance of combining technical skills with effective personal branding and resume strategy.
-#60DaysOfClaudeAI #ATSResume #ResumeOptimization #ArtificialIntelligence #CareerGrowth #SoftwareEngineering #DataScience #MachineLearning #MERNStack #GitHub
+***OROGINAL RESUME***
+   !A[original](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day6/sabrin's%20resume%201.pdf)
+   ***OPTIMIZED RESUME***
+   !A[original](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day6/optimised%20resume.jpeg)
 
