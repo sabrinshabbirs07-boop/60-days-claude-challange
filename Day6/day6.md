@@ -132,7 +132,7 @@ Through this exercise, I learned that:
 6. Strong project descriptions should focus on achievements and contributions rather than responsibilities.
 7. ATS optimization increases visibility but should still maintain authenticity.
 ***OROGINAL RESUME***
-   !A[original](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day6/sabrin's%20resume%201.pdf)
+   ![original](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day6/sabrin's%20resume%201.pdf)
    ***OPTIMIZED RESUME***
-   !A[original](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day6/optimised%20resume.jpeg)
+   ![original](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day6/optimised%20resume.jpeg)
 
