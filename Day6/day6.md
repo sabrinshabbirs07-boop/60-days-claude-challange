@@ -134,5 +134,5 @@ Through this exercise, I learned that:
 ***OROGINAL RESUME***
    ![original](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day6/sabrin's%20resume%201.pdf)
    ***OPTIMIZED RESUME***
-   ![original](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day6/optimised%20resume.jpeg)
+   ![OPTIMIZED](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day6/optimised%20resume.jpeg)
 
