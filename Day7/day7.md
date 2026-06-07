@@ -1,7 +1,7 @@
-Day 07 - Claude Usage Strategy Challenge 
+### Day 07 - Claude Usage Strategy Challenge 
 60 Days of Claude AI Challenge - Day 07
 
-Objective
+#Objective
 
 The goal of today's task was to understand how to use Claude AI more effectively by creating a personalized Claude Usage Strategy. This involved learning about different Claude models, effort levels, and identifying the best workflow for coding, research, and daily learning activities.
 Tasks Completed
