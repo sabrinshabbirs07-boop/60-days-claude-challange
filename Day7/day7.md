@@ -127,12 +127,13 @@ Use for:
 * Generated strategy
 * Workflow recommendations
 * Model selection guidance
+* 
 ![AI CHATS](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day7/SCREEN%20SHOT%2007.jpeg)
- Key Learnings
-What I Learned Today
 
+Key Learnings:
+
+What I Learned Today:
 Different Claude models serve different purposes.
-
 Sonnet 4.6 is the best choice for most daily learning and coding tasks.
  Choosing the correct effort level improves output quality and efficiency.
  Providing clear context leads to more accurate and personalized responses.
