@@ -162,6 +162,7 @@ Day 07 helped me understand how to strategically use Claude AI instead of relyin
 
 
 # PERSONALISED WORKFLOW.
+![AI CHAT](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day7/Personalised%20Workflow%20Table.jpeg)
 
 
 
