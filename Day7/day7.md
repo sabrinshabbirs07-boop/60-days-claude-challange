@@ -127,28 +127,18 @@ Use for:
 * Generated strategy
 * Workflow recommendations
 * Model selection guidance
+![AI CHATS](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day7/SCREEN%20SHOT%2007.jpeg)
+ Key Learnings
+What I Learned Today
 
-*(Insert screenshots here)*
+Different Claude models serve different purposes.
 
----
-
-## 💡 Key Learnings
-
-### What I Learned Today
-
-✅ Different Claude models serve different purposes.
-
-✅ Sonnet 4.6 is the best choice for most daily learning and coding tasks.
-
-✅ Choosing the correct effort level improves output quality and efficiency.
-
-✅ Providing clear context leads to more accurate and personalized responses.
-
-✅ Breaking large tasks into smaller prompts produces better results.
-
-✅ AI works best when used as a learning partner rather than just an answer generator.
-
-## 🏆 My Go-To Setup
+Sonnet 4.6 is the best choice for most daily learning and coding tasks.
+ Choosing the correct effort level improves output quality and efficiency.
+ Providing clear context leads to more accurate and personalized responses.
+Breaking large tasks into smaller prompts produces better results.
+AI works best when used as a learning partner rather than just an answer generator.
+My Go-To Setup
 
 **Model:** Claude Sonnet 4.6
 
@@ -162,8 +152,7 @@ Use for:
 * Building projects
 * Problem solving
 
-Reflection
-
+Reflection:
 Day 07 helped me understand how to strategically use Claude AI instead of relying on a one-size-fits-all approach. By matching the right model and effort level to the task, I can improve productivity, learn faster, and get higher-quality outputs for coding, research, and AI-related projects.
 
 
