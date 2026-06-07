@@ -156,4 +156,10 @@ My Go-To Setup
 Reflection:
 Day 07 helped me understand how to strategically use Claude AI instead of relying on a one-size-fits-all approach. By matching the right model and effort level to the task, I can improve productivity, learn faster, and get higher-quality outputs for coding, research, and AI-related projects.
 
+# MY CLAUDE USAGE STRATEGY.
+
+![AI CHAT](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day7/My%20Claude%20usage%20stratedy.jpeg)
+
+# PERSONALISED WORKFLOW.
+
 
