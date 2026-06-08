@@ -2,7 +2,7 @@
 
 ## Personal Environmental Health Analyzer
 
-### 🚀 Challenge Overview
+### Challenge Overview
 
 As part of my **#60DaysClaudeChallenge**, I built a fully interactive **Personal Environmental Health Analyzer** using Claude AI.
 
@@ -12,7 +12,7 @@ The dashboard analyzes air quality and water quality data, generates environment
 
 ---
 
-## 🎯 Challenge Goal
+##  Challenge Goal
 
 Build an AI-powered environmental intelligence dashboard that:
 
@@ -25,9 +25,9 @@ Build an AI-powered environmental intelligence dashboard that:
 
 ---
 
-## 🛠 What I Built
+## What I Built
 
-### 📊 Analytics Engine
+### Analytics Engine
 
 * Average AQI Calculation
 * Highest AQI City Detection
@@ -38,7 +38,7 @@ Build an AI-powered environmental intelligence dashboard that:
 * Anomaly Detection
 * Executive Summary Generation
 
-### 📈 Interactive Dashboard
+### Interactive Dashboard
 
 * AQI Comparison Charts
 * PM2.5 Analysis
@@ -47,7 +47,7 @@ Build an AI-powered environmental intelligence dashboard that:
 * AQI Distribution Charts
 * Environmental Health Score Dashboard
 
-### 🎛 Smart Filters
+###  Smart Filters
 
 * City Selector
 * AQI Range Filter
@@ -56,7 +56,7 @@ Build an AI-powered environmental intelligence dashboard that:
 * Date Filter
 * City Comparison Mode
 
-### 🏥 Health Impact Analysis
+### Health Impact Analysis
 
 #### Air Quality Effects
 
@@ -75,7 +75,7 @@ Build an AI-powered environmental intelligence dashboard that:
 * Acne Risk
 * Sensitive Skin Assessment
 
-### 📝 Personal Report Card
+### Personal Report Card
 
 * Air Quality Score
 * Water Quality Score
@@ -85,7 +85,7 @@ Build an AI-powered environmental intelligence dashboard that:
 * Hair Risk Rating
 * Skin Risk Rating
 
-### 💡 Personalized Recommendations
+### Personalized Recommendations
 
 * Daily Lifestyle Improvements
 * Indoor Air Quality Tips
@@ -96,7 +96,7 @@ Build an AI-powered environmental intelligence dashboard that:
 
 ---
 
-## 🎨 Design Features
+## Design Features
 
 * Modern Premium Dashboard
 * Dark Theme UI
@@ -109,7 +109,7 @@ Build an AI-powered environmental intelligence dashboard that:
 
 ---
 
-## 🧠 Skills Practiced
+## Skills Practiced
 
 * Prompt Engineering
 * Environmental Data Analysis
@@ -122,7 +122,7 @@ Build an AI-powered environmental intelligence dashboard that:
 
 ---
 
-  ## 🎓 Key Learnings from Day 08
+  ##  Key Learnings from Day 08
 
 * AI can rapidly generate complex analytical dashboards.
 * Environmental data becomes more actionable when visualized.
@@ -130,33 +130,24 @@ Build an AI-powered environmental intelligence dashboard that:
 * Combining analytics with UX design creates more impactful applications.
 * Claude can be used as a powerful development partner for rapid prototyping.
   
-## 📸 Project Screenshots
+##  Project Screenshots
 
 ### Dashboard Overview
 
-Add screenshot here:
 
 ![AI CHAT](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day8/Overview.jpeg)
 
-### AQI Analytics
+### CHARTS 
 
-Add screenshot here:
 
-screenshots/aqi-analysis.png
 
 ### Environmental Report Card
 
-Add screenshot here:
 
-screenshots/report-card.png
 
 ### Insights Panel
 
-Add screenshot here:
 
-screenshots/insights-panel.png
-
----
 
 
 
