@@ -120,7 +120,6 @@ Build an AI-powered environmental intelligence dashboard that:
 * Data Visualization
 * AI-Assisted Development
 
----
 
   ##  Key Learnings from Day 08
 
@@ -138,16 +137,19 @@ Build an AI-powered environmental intelligence dashboard that:
 ![AI CHAT](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day8/Overview.jpeg)
 
 ### CHARTS 
-
+![Charts](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day8/Charts.jpeg)
 
 
 ### Environmental Report Card
 
+![Environmental Report Card](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day8/Reports.jpeg)
 
+###  Environmental Health
+![Environmental Health](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day8/Health.jpeg)
 
 ### Insights Panel
 
-
+![Insights Panel](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day8/Insights.jpeg)
 
 
 
