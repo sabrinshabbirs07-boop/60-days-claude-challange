@@ -1,7 +1,5 @@
 #  Day 9 of 60 Days Claude AI Challenge
 
-##  Notes
-
 ### Challenge Objective
 
 For Day 9 of the 60 Days Claude AI Challenge, the goal was to understand how AI-generated applications can evolve through iterative prompting. I built **NutriScope**, a nutrition analysis application, in two stages:
@@ -94,6 +92,5 @@ Reviewing multiple versions of the same application is an effective way to under
 | Overall Quality   | Prototype               | Production-Ready Direction |
 
 
-### Final Takeaway
-
-Day 9 reinforced a powerful lesson: AI is not only useful for generating applications but also for continuously improving them. Effective prompt engineering can transform a basic MVP into a significantly more polished, feature-rich, and user-friendly product.
+###FILES:-
+[NutriScope](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/NutriScope.html)
