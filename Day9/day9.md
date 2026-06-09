@@ -92,5 +92,43 @@ Reviewing multiple versions of the same application is an effective way to under
 | Overall Quality   | Prototype               | Production-Ready Direction |
 
 
-###FILES:-
+## FILES:-
+## NutriScope MVP HTML file
+
 [NutriScope](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/NutriScope.html)
+
+## NutriScope Enhanced HTML file
+
+[NutriScope_Enhanced](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/enhanced.nutriscope.html)
+
+## SCREENSHOTS OF THE APP
+
+# NutriScope MVP snips
+
+[1.dashboard](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/dashboard.jpeg)
+
+[2.Profile](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/pofile.jpeg)
+
+[3.Food log](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/food%20logs.jpeg)
+
+[4.insights](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/insights%20(2).jpeg)
+
+# ENHANCED Nutriscope Snips
+
+[1.dashboard](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/enhanced-dashboard.jpeg)
+
+[2.Profile](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/enhanced-profile.png)
+
+[3.Food log](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/enhanced-food%20log.jpeg)
+
+[4.insights](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/enhanced-insights.jpeg)
+
+[5.Meal planer](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/enhanced%20-%20meal%20planner.jpeg)
+
+[6.risk_Analysis](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/enhanced-risk%20analysis.jpeg)
+
+[7.Source](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day9/enhanced-source.jpeg)
+
+
+
+
