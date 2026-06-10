@@ -1,4 +1,4 @@
-## Day 10 of #60DaysOfClaude Challenge
+## Day 10 of 60DaysOfClaude Challenge
 
 Building a Complete Personal Portfolio Website with Claude AI
 
@@ -26,8 +26,6 @@ Using a structured prompt, I instructed Claude to generate a complete portfolio 
 
 The entire website was generated as a single HTML file, making it easy to customize, deploy, and share.
 
----
-
 # Prompt Engineering in Action
 
 This challenge reinforced an important lesson:
@@ -44,8 +42,6 @@ By providing:
 - Technical requirements
 
 Claude was able to generate a highly customized and professional portfolio website.
-
----
 
 # Key Learnings
 
@@ -65,8 +61,6 @@ A portfolio is more than a website—it is a digital representation of your skil
 
 This task combined UI design, responsive development, content strategy, and personal branding into a single project.
 
----
-
 ## Outcome
 
 By the end of Day 10, I successfully learned how to use Claude AI to:
@@ -77,12 +71,10 @@ By the end of Day 10, I successfully learned how to use Claude AI to:
 - Build responsive web interfaces faster
 - Convert detailed prompts into functional web applications
 
----
 
 ## Certifications Highlighted
 
 - Deloitte Data Analytics Job Simulation
-
 
 
 ## Key Takeaway
@@ -90,8 +82,6 @@ By the end of Day 10, I successfully learned how to use Claude AI to:
 AI is no longer just a tool for answering questions—it can function as a development partner that helps transform ideas into real products.
 
 With the right prompt, Claude can generate production-ready website foundations in minutes.
-
----
 
 ##  Progress Update
 
@@ -108,24 +98,24 @@ With the right prompt, Claude can generate production-ready website foundations 
 - AI Career Roadmap Generation
 - Personal Portfolio Website Development
 
-50 Days Remaining. The journey continues. 
+#50 Days Remaining. The journey continues. 
 
 #ClaudeAI #60DaysOfClaude #AI #PromptEngineering #WebDevelopment #PortfolioWebsite #GenerativeAI #BuildInPublic #AIEngineering
 
  ## HTML FILE OF THE PORTFOLIO
- [Portfolio]()
+ [Portfolio](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/sabrin_portfolio%20(1).html)
 
  ## SCREENSHOTS OF THE PORTFOLIO WEBSITE
  
- [1.Home Page]()
+ [1.Home Page](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/HOME%20PAGE.jpeg)
 
- [2.About Page]()
+ [2.About Page](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/ABOUT%20PAGE.jpeg)
 
- [3.Skills]()
+ [3.Skills](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/SKILLS.jpeg)
 
- [4.Projrcts page]()
+ [4.Projrcts page](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/project.jpeg)
 
- [5.achievements]()
+ [5.achievements](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/EXPERIENCE%20AND%20ACHIEVEMENTS.jpeg)
 
- [6.Contact Page]()
+ [6.Contact Page](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/CONTACT.jpeg)
  
