@@ -111,11 +111,11 @@ With the right prompt, Claude can generate production-ready website foundations 
 
  [2.About Page](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/ABOUT%20PAGE.jpeg)
 
- [3.Skills](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/SKILLS.jpeg)
+ [3.Skills page](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/SKILLS.jpeg)
 
- [4.Projrcts page](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/project.jpeg)
+ [4.Projects page](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/project.jpeg)
 
- [5.achievements](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/EXPERIENCE%20AND%20ACHIEVEMENTS.jpeg)
+ [5.achievements page](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/EXPERIENCE%20AND%20ACHIEVEMENTS.jpeg)
 
  [6.Contact Page](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day10/CONTACT.jpeg)
  
