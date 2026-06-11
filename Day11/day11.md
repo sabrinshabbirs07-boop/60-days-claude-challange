@@ -141,7 +141,7 @@ Successfully created an AI-powered ATS Resume Optimization workflow that:
 ## FILES:
 
 ## Screenshot of ATSScore
-[ATS Score]()
+[ATS Score](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day11/day%2011%20AtS%20Score.jpeg)
 
 ## Optimized Resme
-[Optimized Resme]()
+[Optimized Resme](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day11/day%2011%20resume.pdf)
