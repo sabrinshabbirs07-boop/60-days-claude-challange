@@ -173,4 +173,7 @@ This project demonstrated how Claude AI can be leveraged to:
 * ATS optimization increases visibility to recruiters.
 * Combining technical and communication skills creates a stronger candidate profile.
 
+## MY PERSONALIZED TOOLKIT
+[MYTOOLKIT](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day12/Data%20Analyst%20%E2%80%94%20Job%20Search%20%26%20Personal%20Branding%20Toolkit%20(day%2012).html)
+
 
