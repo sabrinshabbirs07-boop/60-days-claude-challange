@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)file:///C:/Users/hp/Downloads/data_analyst_job_toolkit.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Analyst — Job Search &amp; Personal Branding Toolkit</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
+
+  :root {
+    --ink: #0f1117;
+    --paper: #f7f6f2;
+    --accent: #1a56db;
+    --accent-light: #dbeafe;
+    --gold: #b45309;
+    --gold-light: #fef3c7;
+    --border: #d1d5db;
+    --muted: #6b7280;
+    --white: #ffffff;
+    --section-bg: #ffffff;
+    --tag-bg: #e0e7ff;
+    --tag-text: #3730a3;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--ink);
+    color: var(--white);
+    padding: 56px 48px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #1a56db33 0%, transparent 70%);
+  }
+  .hero-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #93c5fd;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.15;
+    max-width: 640px;
+    margin-bottom: 18px;
+  }
+  .hero h1 span { color: #60a5fa; }
+  .hero-sub {
+    color: #d1d5db;
+    font-size: 14px;
+    max-width: 520px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 20px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .hero-badge {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: #94a3b8;
+  }
+
+  /* ── NAV ── */
+  .toc {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 48px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .toc a {
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .toc a:hover { background: var(--accent-light); color: var(--accent); }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 900px; margin: 0 auto; padding: 48px 32px; }
+
+  /* ── SECTION ── */
+  .section {
+    background: var(--section-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+  .section-header {
+    background: var(--ink);
+    color: var(--white);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: #60a5fa;
+    background: #1e3a5f;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .section-title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .section-body { padding: 28px; }
+
+  /* ── COPY BOX ── */
+  .copy-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 22px 24px;
+    font-size: 14px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    position: relative;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 5px 12px;
+    cursor: pointer;
+    opacity: 0.85;
+    transition: opacity 0.15s;
+  }
+  .copy-btn:hover { opacity: 1; }
+
+  /* ── LABEL ── */
+  .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 8px;
+    margin-top: 20px;
+    display: block;
+  }
+  .label:first-of-type { margin-top: 0; }
+
+  /* ── TAGS ── */
+  .tag-group { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .tag {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .tag.gold { background: var(--gold-light); color: var(--gold); }
+  .tag.red { background: #fee2e2; color: #991b1b; }
+  .tag.green { background: #dcfce7; color: #166534; }
+
+  /* ── LIST ── */
+  .styled-list { list-style: none; padding: 0; }
+  .styled-list li {
+    padding: 9px 0 9px 22px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+    position: relative;
+  }
+  .styled-list li:last-child { border-bottom: none; }
+  .styled-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+
+  /* ── ROADMAP ── */
+  .roadmap { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 12px; }
+  .roadmap-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .roadmap-card h4 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .roadmap-card ul { font-size: 13px; padding-left: 16px; color: #374151; }
+  .roadmap-card ul li { margin-bottom: 5px; }
+  .phase-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .phase-1 .phase-dot { background: #ef4444; }
+  .phase-2 .phase-dot { background: #f59e0b; }
+  .phase-3 .phase-dot { background: #10b981; }
+
+  /* ── BRAND ── */
+  .brand-card {
+    background: linear-gradient(135deg, #0f1117 0%, #1e3a5f 100%);
+    color: white;
+    border-radius: 10px;
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  .brand-card .brand-label { font-size: 11px; color: #93c5fd; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+  .brand-card p { font-size: 15px; line-height: 1.7; }
+
+  /* ── TITLES GRID ── */
+  .titles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 8px; }
+  .title-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .title-rank {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    background: var(--paper);
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  /* ── INTERVIEW CARD ── */
+  .interview-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+  .interview-card h4 { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 6px; }
+  .interview-card p { font-size: 13.5px; color: #374151; }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  @media print {
+    .toc, .copy-btn { display: none; }
+    .section { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Job Search &amp; Personal Branding Toolkit</div>
+  <h1>Data Analyst — <span>Complete Career Kit</span></h1>
+  <p class="hero-sub">ATS-optimized cover letters, recruiter emails, LinkedIn messaging, personal brand statements, and interview prep — all tailored to this role.</p>
+  <div class="hero-meta">
+    <div class="hero-badge">Role: Data Analyst</div>
+    <div class="hero-badge">12 Sections</div>
+    <div class="hero-badge">Ready to Send</div>
+    <div class="hero-badge">ATS-Friendly</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="toc">
+  <a href="file:///C:/Users/hp/Downloads/data_analyst_job_toolkit.html#s1">Cover Letter</a>
+  <a href="file:///C:/Users/hp/Downloads/data_analyst_job_toolkit.html#s2">Recruiter Email</a>
+  <a href="file:///C:/Users/hp/Downloads/data_analyst_job_toolkit.html#s3">Hiring Manager</a>
+  <a href="file:///C:/Users/hp/Downloads/data_analyst_job_toolkit.html#s4">LinkedIn Request</a>
+  <a href="file:///C:/Users/hp/Downloads/data_analyst_job_toolkit.html#s5">Referral</a>
+  <a href="file:///C:/Users/hp/Downloads/data_analyst_job_toolkit.html#s6">Follow-Up</a>
+  <a href="file:///C:/Users/hp/Downloads/data_analyst_job_toolkit.html#s7">30-Sec Intro</a>
+  <a href="file:///C:/Users/hp/Downloads/data_analyst_job_toolkit.html#s8">Job Titles</a>
+  <a href="file:///C:/Users/hp/Downloads/data_analyst_job_toolkit.html#s9">Key Strengths</a>
+  <a href="file:///C:/Users/hp/Downloads/data_analyst_job_toolkit.html#s10">Skill Gap</a>
+  <a href="file:///C:/Users/hp/Downloads/data_analyst_job_toolkit.html#s11">Brand</a>
+  <a href="file:///C:/Users/hp/Downloads/data_analyst_job_toolkit.html#s12">Interview</a>
+</nav>
+
+<div class="container">
+
+  <!-- SECTION 1 -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">ATS-Friendly Cover Letter (350–450 words)</span>
+    </div>
+    <div class="section-body">
+      <div class="copy-box" id="box-s1">
+[Your Name]
+[Your Email] | [Phone] | [LinkedIn URL] | [City, State]
+[Date]
+
+Hiring Manager
+[Company Name]
+
+Dear Hiring Manager,
+
+I am applying for the Data Analyst position at [Company Name]. With hands-on experience in SQL, Excel, and data visualization using Power BI and Tableau, I am confident in my ability to deliver actionable business insights that drive informed decision-making across your organization.
+
+In my most recent role, I consistently translated raw, multi-source datasets into structured reports and interactive dashboards that directly supported leadership in identifying operational trends and optimizing key performance indicators. I wrote complex SQL queries to automate recurring reporting tasks — reducing manual effort and improving reporting accuracy. My ability to clean, validate, and model data from disparate sources has been central to every project I have contributed to.
+
+One area I am particularly proud of is stakeholder collaboration. I worked closely with business teams to define KPIs, align reporting frameworks with strategic goals, and present findings in a clear, non-technical narrative format. This cross-functional communication skill — paired with my analytical foundation — is what sets my work apart from data analysts who operate in isolation.
+
+I bring a structured, detail-oriented approach to every project: validating data integrity before analysis, documenting methodology for reproducibility, and building dashboards that are intuitive enough for non-technical stakeholders to navigate independently. My knowledge of statistical analysis and data wrangling best practices allows me to move from raw data to insight efficiently and reliably.
+
+I am currently expanding my capabilities in Python for data automation and ETL pipeline workflows, which aligns directly with the preferred skills outlined in your job description. I am eager to bring this growing skill set alongside my established proficiency in SQL, Power BI/Tableau, and Excel into your team's analytical workflows.
+
+[Company Name]'s focus on [data-driven culture / growth / operations — customize] is exactly the environment in which I thrive. I would welcome the opportunity to discuss how my technical skills and business insight can contribute to your team's goals.
+
+Thank you for your time and consideration.
+
+Sincerely,
+[Your Name]
+[Email] | [Phone]
+      </div>
+      <button class="copy-btn" onclick="copyText(&#39;box-s1&#39;, this)">Copy</button>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Recruiter Outreach Email</span>
+    </div>
+    <div class="section-body">
+      <span class="label">Subject Line</span>
+      <div class="copy-box" style="margin-bottom:14px;" id="box-s2-sub">Data Analyst | SQL + Power BI/Tableau | Open to Opportunities</div>
+      <button class="copy-btn" onclick="copyText(&#39;box-s2-sub&#39;, this)" style="position:relative;top:auto;right:auto;display:inline-block;margin-bottom:14px;">Copy</button>
+
+      <span class="label">Email Body</span>
+      <div class="copy-box" id="box-s2">
+Hi [Recruiter's First Name],
+
+I came across your profile while exploring opportunities in data analytics and wanted to reach out directly.
+
+I am a Data Analyst with experience in SQL query writing, data visualization (Power BI / Tableau), Excel-based reporting, and stakeholder KPI alignment. I have built dashboards that distilled complex multi-source datasets into clear business insights, and I am currently strengthening my Python and ETL skills to expand my technical scope.
+
+I am actively exploring new Data Analyst roles and would love to know if you are currently working on roles that align with this profile. I am open to a brief call if that makes sense.
+
+LinkedIn: [Your LinkedIn URL]
+Resume: [Link or "attached"]
+
+Thank you for your time, [Recruiter's Name]. Looking forward to connecting.
+
+Best,
+[Your Name]
+[Phone] | [Email]
+      </div>
+      <button class="copy-btn" onclick="copyText(&#39;box-s2&#39;, this)">Copy</button>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">Hiring Manager Email</span>
+    </div>
+    <div class="section-body">
+      <span class="label">Subject Line</span>
+      <div class="copy-box" style="margin-bottom:14px;" id="box-s3-sub">Interested in the Data Analyst Role — SQL, Power BI &amp; KPI-Focused Analyst</div>
+      <button class="copy-btn" onclick="copyText(&#39;box-s3-sub&#39;, this)" style="position:relative;top:auto;right:auto;display:inline-block;margin-bottom:14px;">Copy</button>
+
+      <span class="label">Email Body</span>
+      <div class="copy-box" id="box-s3">
+Hi [Manager's First Name],
+
+I am reaching out regarding the Data Analyst opening at [Company Name]. After reviewing the role, I believe there is a strong alignment between what your team needs and what I bring.
+
+Specifically:
+- SQL proficiency: I write queries for reporting, trend analysis, and data validation across relational databases.
+- Dashboard development: I build and maintain Power BI and Tableau dashboards used by business stakeholders to track KPIs in real time.
+- Data quality: I manage end-to-end data cleaning and validation workflows across multiple source systems.
+- Stakeholder collaboration: I have partnered directly with business teams to define metrics, align reporting with strategy, and communicate insights clearly.
+
+I applied through [portal/LinkedIn], but wanted to introduce myself directly as well. I would welcome a 20-minute conversation to explore whether this could be a mutual fit.
+
+Attached is my resume for reference.
+
+Best regards,
+[Your Name]
+[Email] | [Phone] | [LinkedIn]
+      </div>
+      <button class="copy-btn" onclick="copyText(&#39;box-s3&#39;, this)">Copy</button>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">LinkedIn Connection Request (Max 300 chars)</span>
+    </div>
+    <div class="section-body">
+      <div class="copy-box" id="box-s4">Hi [Name], I'm a Data Analyst skilled in SQL, Power BI, and Tableau. Your work at [Company] caught my attention and I'd love to connect — I'm exploring analyst opportunities and would value being in your network.</div>
+      <button class="copy-btn" onclick="copyText(&#39;box-s4&#39;, this)">Copy</button>
+      <p style="font-size:12px;color:var(--muted);margin-top:10px;">Character count: ~239 — within LinkedIn's 300-character limit.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Referral Request Message</span>
+    </div>
+    <div class="section-body">
+      <div class="copy-box" id="box-s5">
+Hi [Contact's Name],
+
+Hope you're doing well! I noticed that [Company Name] has an open Data Analyst position and I know you work there / are connected to the team.
+
+I'm actively exploring new roles and I believe my background in SQL, Power BI/Tableau dashboarding, and business KPI reporting would be a strong fit for that team.
+
+If you're comfortable, I'd really appreciate a referral or even just a quick note to the hiring team on my behalf. I've attached my resume and can share anything else that would be helpful.
+
+No pressure at all — I genuinely appreciate whatever you're able to do.
+
+Thanks so much,
+[Your Name]
+      </div>
+      <button class="copy-btn" onclick="copyText(&#39;box-s5&#39;, this)">Copy</button>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">Follow-Up Email (Send after 5 days of no response)</span>
+    </div>
+    <div class="section-body">
+      <span class="label">Subject Line</span>
+      <div class="copy-box" style="margin-bottom:14px;" id="box-s6-sub">Following Up — Data Analyst Application | [Your Name]</div>
+      <button class="copy-btn" onclick="copyText(&#39;box-s6-sub&#39;, this)" style="position:relative;top:auto;right:auto;display:inline-block;margin-bottom:14px;">Copy</button>
+
+      <span class="label">Email Body</span>
+      <div class="copy-box" id="box-s6">
+Hi [Name],
+
+I wanted to follow up on my application for the Data Analyst role at [Company Name], submitted on [date].
+
+I remain genuinely excited about this opportunity — the team's focus on [data infrastructure / business intelligence / analytics] aligns closely with the work I have done in SQL reporting, Power BI dashboard development, and cross-functional KPI analysis.
+
+If there is anything additional I can provide — portfolio samples, references, or a work sample — I am happy to share. I'd welcome a brief conversation at your convenience.
+
+Thank you again for your time and consideration.
+
+Best,
+[Your Name]
+[Email] | [Phone] | [LinkedIn]
+      </div>
+      <button class="copy-btn" onclick="copyText(&#39;box-s6&#39;, this)">Copy</button>
+    </div>
+  </div>
+
+  <!-- SECTION 7 -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">30-Second Professional Introduction</span>
+    </div>
+    <div class="section-body">
+      <span class="label">For Interviews, Networking Events, and Career Fairs</span>
+      <div class="copy-box" id="box-s7">
+I'm a Data Analyst with experience turning complex, multi-source datasets into clear, actionable business insights.
+
+My core work involves writing SQL queries for reporting and analysis, building dashboards in Power BI and Tableau, and collaborating with stakeholders to define and track KPIs that actually drive decisions — not just fill reports.
+
+What I enjoy most is the bridge between data and business impact: making sure the right numbers get to the right people in a way that's clear and useful.
+
+I'm currently open to new Data Analyst opportunities where I can combine my technical foundation with stakeholder collaboration skills to help a team work smarter with its data.
+      </div>
+      <button class="copy-btn" onclick="copyText(&#39;box-s7&#39;, this)">Copy</button>
+    </div>
+  </div>
+
+  <!-- SECTION 8 -->
+  <div class="section" id="s8">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="section-title">Top 10 Job Titles Best Suited for This Profile</span>
+    </div>
+    <div class="section-body">
+      <div class="titles-grid">
+        <div class="title-card"><span class="title-rank">01</span>Data Analyst</div>
+        <div class="title-card"><span class="title-rank">02</span>Business Analyst</div>
+        <div class="title-card"><span class="title-rank">03</span>BI Analyst</div>
+        <div class="title-card"><span class="title-rank">04</span>Reporting Analyst</div>
+        <div class="title-card"><span class="title-rank">05</span>SQL Analyst</div>
+        <div class="title-card"><span class="title-rank">06</span>Analytics Consultant</div>
+        <div class="title-card"><span class="title-rank">07</span>Dashboard Developer</div>
+        <div class="title-card"><span class="title-rank">08</span>Operations Analyst</div>
+        <div class="title-card"><span class="title-rank">09</span>Data Operations Analyst</div>
+        <div class="title-card"><span class="title-rank">10</span>Junior Data Engineer</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 9 -->
+  <div class="section" id="s9">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <span class="section-title">Key Strengths Recruiters Will Notice</span>
+    </div>
+    <div class="section-body">
+      <ul class="styled-list">
+        <li><strong>SQL Proficiency:</strong> Capable of writing complex queries for reporting, joins, aggregations, and performance optimization — a top-priority hard skill in every DA job description.</li>
+        <li><strong>Power BI / Tableau Visualization:</strong> Proficiency in the two dominant BI platforms signals immediate productivity with minimal onboarding time.</li>
+        <li><strong>Data Cleaning &amp; Validation:</strong> Recruiters know dirty data is the #1 blocker of reliable analysis — this skill is underrated but highly valued.</li>
+        <li><strong>Stakeholder Alignment:</strong> The ability to define KPIs collaboratively with business teams shows maturity beyond just technical ability.</li>
+        <li><strong>Statistical Thinking:</strong> Demonstrates the ability to move from descriptive to inferential analysis, not just surface-level reporting.</li>
+        <li><strong>Excel Mastery:</strong> Still the most universally required tool in business analytics — strong Excel skills are always a differentiator.</li>
+        <li><strong>Python (In Progress):</strong> Proactive upskilling signals ambition and awareness of industry direction toward automation and ML.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 10 -->
+  <div class="section" id="s10">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <span class="section-title">Skill Gap Analysis</span>
+    </div>
+    <div class="section-body">
+      <span class="label">Current Strengths (Matched to JD)</span>
+      <div class="tag-group">
+        <span class="tag green">SQL ✓</span>
+        <span class="tag green">Excel ✓</span>
+        <span class="tag green">Power BI ✓</span>
+        <span class="tag green">Tableau ✓</span>
+        <span class="tag green">Data Analysis ✓</span>
+        <span class="tag green">Data Visualization ✓</span>
+        <span class="tag green">Statistics ✓</span>
+        <span class="tag green">KPI Definition ✓</span>
+        <span class="tag green">Data Cleaning ✓</span>
+      </div>
+
+      <hr class="divider">
+
+      <span class="label">Skill Gaps (Preferred / Emerging)</span>
+      <div class="tag-group">
+        <span class="tag red">Python (Pandas, NumPy)</span>
+        <span class="tag red">ETL Pipelines</span>
+        <span class="tag red">Machine Learning Basics</span>
+        <span class="tag red">Git / Version Control</span>
+        <span class="tag red">Cloud Platforms (GCP / AWS / Azure)</span>
+        <span class="tag gold">dbt / Airflow (nice-to-have)</span>
+      </div>
+
+      <hr class="divider">
+
+      <span class="label">Recommended Learning Roadmap</span>
+      <div class="roadmap">
+        <div class="roadmap-card phase-1">
+          <h4><span class="phase-dot"></span>Phase 1 — Months 1–2</h4>
+          <ul>
+            <li>Python for Data Analysis (Pandas, NumPy)</li>
+            <li>Jupyter Notebooks basics</li>
+            <li>Git &amp; GitHub fundamentals</li>
+          </ul>
+        </div>
+        <div class="roadmap-card phase-2">
+          <h4><span class="phase-dot"></span>Phase 2 — Months 3–4</h4>
+          <ul>
+            <li>ETL concepts (extract, transform, load)</li>
+            <li>Intro to Apache Airflow or dbt</li>
+            <li>SQL performance tuning</li>
+          </ul>
+        </div>
+        <div class="roadmap-card phase-3">
+          <h4><span class="phase-dot"></span>Phase 3 — Months 5–6</h4>
+          <ul>
+            <li>Machine Learning fundamentals (Scikit-learn)</li>
+            <li>Cloud data tools (BigQuery or AWS Athena)</li>
+            <li>Build a portfolio project end-to-end</li>
+          </ul>
+        </div>
+      </div>
+
+      <p style="font-size:13px;color:var(--muted);margin-top:16px;">Recommended platforms: Google Data Analytics Certificate (Coursera), DataCamp, freeCodeCamp Python, Kaggle Learn.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 11 -->
+  <div class="section" id="s11">
+    <div class="section-header">
+      <span class="section-num">11</span>
+      <span class="section-title">Personal Brand Summary</span>
+    </div>
+    <div class="section-body">
+      <div class="brand-card">
+        <div class="brand-label">Unique Value Proposition</div>
+        <p>I bridge the gap between raw data and business decisions — translating messy, multi-source datasets into validated, stakeholder-ready insights through rigorous SQL analysis, clean dashboards, and collaborative KPI frameworks.</p>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-label">Professional Positioning Statement</div>
+        <p>A results-oriented Data Analyst with a proven ability to turn complex data into meaningful business intelligence using SQL, Power BI, Tableau, and Excel. Known for building dashboards that non-technical stakeholders actually use, and for partnering with teams to define the metrics that matter most.</p>
+      </div>
+
+      <div class="brand-card">
+        <div class="brand-label">LinkedIn Headline (choose one)</div>
+        <p>
+          Option A: <em>Data Analyst | SQL · Power BI · Tableau · Excel | Turning Data into Business Decisions</em><br><br>
+          Option B: <em>Data Analyst | Dashboard Development · SQL Reporting · KPI Analysis | Open to Opportunities</em><br><br>
+          Option C: <em>Data &amp; BI Analyst | SQL · Power BI · Tableau · Statistics | Insight-Driven Decision Making</em>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 12 -->
+  <div class="section" id="s12">
+    <div class="section-header">
+      <span class="section-num">12</span>
+      <span class="section-title">Interview Talking Points</span>
+    </div>
+    <div class="section-body">
+      <span class="label">Most Impressive Achievements to Lead With</span>
+      <div class="interview-card">
+        <h4>Dashboard That Drove Decisions</h4>
+        <p>Describe a dashboard you built in Power BI or Tableau that stakeholders actively used to make business decisions. Quantify it: "The dashboard reduced reporting time by X hours per week" or "Enabled the team to identify a [trend/issue] that resulted in [action]."</p>
+      </div>
+      <div class="interview-card">
+        <h4>SQL Automation Win</h4>
+        <p>Walk through a situation where you replaced a manual data process with an automated SQL query or report. Frame the before-and-after: time saved, errors reduced, or frequency increased.</p>
+      </div>
+      <div class="interview-card">
+        <h4>Data Quality Discovery</h4>
+        <p>Describe a time when your data validation process caught an issue that would have led to incorrect reporting. This demonstrates rigor and analytical discipline — qualities hiring managers deeply value.</p>
+      </div>
+
+      <hr class="divider">
+
+      <span class="label">Key Stories to Prepare (STAR Format)</span>
+      <ul class="styled-list">
+        <li>A time you collaborated with non-technical stakeholders to define KPIs from scratch</li>
+        <li>A challenging dataset you had to clean and the approach you took</li>
+        <li>A time your analysis directly influenced a business decision or changed a team's direction</li>
+        <li>How you managed competing priorities when multiple stakeholders needed reports simultaneously</li>
+      </ul>
+
+      <hr class="divider">
+
+      <span class="label">Areas Recruiters Are Likely to Probe</span>
+      <ul class="styled-list">
+        <li><strong>SQL depth:</strong> Expect live or whiteboard SQL — practice JOINs, subqueries, window functions, and GROUP BY.</li>
+        <li><strong>Tool preference:</strong> "Power BI or Tableau — which do you prefer and why?" — have a confident, experience-based answer.</li>
+        <li><strong>Statistics fluency:</strong> Be ready to explain mean vs. median, variance, correlation, and when to use which.</li>
+        <li><strong>Python gap:</strong> If asked about Python, be honest about your current level and confident about your roadmap.</li>
+        <li><strong>Stakeholder scenarios:</strong> Expect behavioral questions around communicating data findings to non-technical audiences.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Generated for: Data Analyst Role Application &nbsp;·&nbsp; All content is ATS-optimized and ready to use &nbsp;·&nbsp; Customize bracketed fields before sending
+</div>
+
+<script>
+  function copyText(id, btn) {
+    const el = document.getElementById(id);
+    const text = el.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.style.background = '#059669';
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.style.background = '';
+      }, 1800);
+    });
+  }
+</script>
+
+
+</body></html>
