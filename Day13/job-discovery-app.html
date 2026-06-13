@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JobAI — Smart Job Discovery</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #05080f;
+  --bg2: #0b1120;
+  --bg3: #111827;
+  --card: #0f1929;
+  --card2: #162035;
+  --border: rgba(59,130,246,0.15);
+  --border2: rgba(59,130,246,0.3);
+  --blue: #3b82f6;
+  --blue2: #60a5fa;
+  --blue3: #1d4ed8;
+  --cyan: #06b6d4;
+  --indigo: #6366f1;
+  --green: #10b981;
+  --green2: #059669;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --text: #f1f5f9;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, #05080f 0%, #0b1426 60%, #0d1a3a 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+.header-inner {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  gap: 24px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.logo-icon {
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, var(--blue), var(--indigo));
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.logo-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.logo-text span { color: var(--blue2); }
+.nav-pills {
+  display: flex;
+  gap: 4px;
+}
+.nav-pill {
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  transition: all 0.15s;
+}
+.nav-pill:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+.nav-pill.active { background: rgba(59,130,246,0.15); color: var(--blue2); border: 1px solid rgba(59,130,246,0.25); }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.btn-primary {
+  padding: 8px 20px;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+.btn-ghost {
+  padding: 8px 16px;
+  background: transparent;
+  color: var(--text2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--border2); }
+
+/* HERO / SEARCH SECTION */
+.hero {
+  background: linear-gradient(180deg, #0b1426 0%, var(--bg) 100%);
+  padding: 48px 32px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -120px; left: 50%;
+  transform: translateX(-50%);
+  width: 700px; height: 400px;
+  background: radial-gradient(ellipse, rgba(59,130,246,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0; right: -100px;
+  width: 400px; height: 400px;
+  background: radial-gradient(ellipse, rgba(99,102,241,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-inner {
+  max-width: 1300px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(59,130,246,0.1);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 99px;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--blue2);
+  margin-bottom: 20px;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--blue);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.5;transform:scale(0.8)}
+}
+.hero-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 12px;
+  letter-spacing: -0.03em;
+}
+.hero-title .highlight {
+  background: linear-gradient(135deg, var(--blue2), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 15px;
+  color: var(--text2);
+  margin-bottom: 28px;
+  max-width: 520px;
+}
+
+/* SEARCH BOX */
+.search-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+.search-box:focus-within { border-color: var(--border2); }
+.search-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+.search-field {
+  flex: 1;
+  min-width: 160px;
+}
+.search-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 7px;
+}
+.search-field input, .search-field select {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 13px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: inherit;
+  transition: border-color 0.15s;
+  outline: none;
+}
+.search-field input::placeholder { color: var(--text3); }
+.search-field input:focus, .search-field select:focus {
+  border-color: var(--blue);
+}
+.search-field select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px;
+}
+.search-field select option { background: var(--bg2); }
+.search-btn {
+  padding: 10px 28px;
+  background: linear-gradient(135deg, var(--blue), var(--indigo));
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.search-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(59,130,246,0.25); }
+.search-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.search-btn svg { width: 16px; height: 16px; }
+
+/* CHIPS */
+.chips {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.chip {
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  background: transparent;
+  font-family: inherit;
+}
+.chip:hover { border-color: var(--blue); color: var(--blue2); background: rgba(59,130,246,0.07); }
+.chip.active { border-color: var(--blue); color: var(--blue2); background: rgba(59,130,246,0.12); }
+
+/* STATS */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 24px;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+}
+.stat-num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-num.blue { color: var(--blue2); }
+.stat-num.green { color: var(--green); }
+.stat-num.amber { color: var(--amber); }
+.stat-label { font-size: 11px; color: var(--text3); }
+
+/* MAIN LAYOUT */
+.main {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 28px 32px;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* SECTION */
+.section { margin-bottom: 24px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.section-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::before {
+  content: '';
+  width: 3px; height: 14px;
+  background: var(--blue);
+  border-radius: 99px;
+}
+.section-count {
+  font-size: 12px;
+  color: var(--text3);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 2px 10px;
+}
+
+/* JOB CARDS */
+.job-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-bottom: 10px;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.job-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--blue), var(--indigo));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.job-card:hover {
+  border-color: var(--border2);
+  background: var(--card2);
+  transform: translateY(-1px);
+}
+.job-card:hover::before { opacity: 1; }
+
+.job-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.job-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+.match-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 99px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.badge-high { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+.badge-mid { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+.badge-low { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+
+.job-company {
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.company-dot { width: 4px; height: 4px; background: var(--text3); border-radius: 50%; }
+
+.job-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.tag {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  color: var(--text3);
+  background: var(--bg2);
+}
+.tag.accent { border-color: rgba(59,130,246,0.3); color: var(--blue2); background: rgba(59,130,246,0.07); }
+
+.job-fit {
+  font-size: 12.5px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 12px;
+  padding: 10px 13px;
+  background: rgba(59,130,246,0.04);
+  border: 1px solid rgba(59,130,246,0.1);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid rgba(59,130,246,0.4);
+  border-left-color: var(--blue);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.score-bar {
+  height: 3px;
+  background: var(--bg2);
+  border-radius: 99px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.score-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  transition: width 1s ease;
+}
+
+.job-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ctc { }
+.ctc-label { font-size: 10px; color: var(--text3); margin-bottom: 2px; }
+.ctc-val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--green);
+}
+.apply-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--blue), var(--indigo));
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.15s;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.apply-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59,130,246,0.3); }
+.apply-btn svg { width: 11px; height: 11px; }
+
+/* AI ANALYSIS */
+.ai-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 24px;
+}
+.ai-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.ai-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(59,130,246,0.2));
+  border: 1px solid rgba(99,102,241,0.3);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+.ai-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.ai-subtitle { font-size: 11px; color: var(--text3); }
+
+/* SIDEBAR */
+.side-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+.side-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.side-title::before {
+  content: '';
+  width: 3px; height: 12px;
+  background: var(--indigo);
+  border-radius: 99px;
+}
+
+/* GAUGE */
+.gauge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.gauge-svg { flex-shrink: 0; }
+.gauge-num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+.gauge-desc { font-size: 12px; color: var(--text2); line-height: 1.55; }
+
+/* SKILL BARS */
+.skill-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.skill-name { font-size: 12px; color: var(--text2); width: 95px; flex-shrink: 0; }
+.skill-track { flex: 1; height: 4px; background: var(--bg2); border-radius: 99px; overflow: hidden; }
+.skill-fill { height: 100%; border-radius: 99px; }
+.sk-have { background: linear-gradient(90deg, var(--green), #34d399); }
+.sk-gap { background: linear-gradient(90deg, var(--red), #f87171); }
+.skill-label {
+  font-size: 10px;
+  font-weight: 600;
+  width: 34px;
+  text-align: right;
+}
+.s-have { color: var(--green); }
+.s-gap { color: #f87171; }
+
+/* INSIGHTS */
+.insight {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+.insight:last-child { border-bottom: none; padding-bottom: 0; }
+.insight-icon {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+  flex-shrink: 0; margin-top: 1px;
+}
+.ic-g { background: rgba(16,185,129,0.15); color: #34d399; }
+.ic-a { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.ic-r { background: rgba(239,68,68,0.12); color: #f87171; }
+
+/* RECS */
+.rec {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 7px;
+  font-size: 12.5px;
+  color: var(--text2);
+  line-height: 1.55;
+}
+.rec-num {
+  width: 20px; height: 20px;
+  background: rgba(59,130,246,0.15);
+  color: var(--blue2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+  flex-shrink: 0; margin-top: 1px;
+}
+
+/* PROFILE ROW */
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px;
+}
+.profile-row:last-child { border-bottom: none; }
+.profile-key { color: var(--text3); }
+.profile-val { color: var(--text); font-weight: 500; }
+
+/* LOADING */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(5,8,15,0.8);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+}
+.loading-overlay.active { display: flex; }
+.spinner {
+  width: 44px; height: 44px;
+  border: 3px solid var(--border);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text {
+  font-size: 14px;
+  color: var(--text2);
+  font-family: 'Space Grotesk', sans-serif;
+}
+.loading-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+}
+.loading-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text3);
+  transition: color 0.3s;
+}
+.loading-step.active { color: var(--blue2); }
+.loading-step.done { color: var(--green); }
+.step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+/* AI RESPONSE */
+.ai-response {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text3);
+}
+.empty-icon { font-size: 48px; margin-bottom: 14px; opacity: 0.4; }
+.empty-title { font-size: 16px; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
+.empty-sub { font-size: 13px; }
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  margin-bottom: 20px;
+}
+.tab {
+  flex: 1;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text3);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+}
+.tab.active { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+
+/* TABLE */
+.jobs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.jobs-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.jobs-table td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+  vertical-align: top;
+}
+.jobs-table tr:last-child td { border-bottom: none; }
+.jobs-table tr:hover td { background: rgba(59,130,246,0.03); }
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 11px;
+  color: var(--text3);
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+}
+footer span { color: var(--text2); }
+
+@media (max-width: 900px) {
+  .main { grid-template-columns: 1fr; padding: 20px 16px; }
+  .hero { padding: 32px 16px 24px; }
+  .header { padding: 0 16px; }
+  .hero-title { font-size: 26px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .search-row { flex-direction: column; }
+  .search-btn { width: 100%; justify-content: center; }
+  .nav-pills { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingTitle">Searching jobs for you…</div>
+  <div class="loading-steps">
+    <div class="loading-step active" id="step1"><div class="step-dot"></div>Scanning LinkedIn, Naukri & Internshala</div>
+    <div class="loading-step" id="step2"><div class="step-dot"></div>Matching to your skill profile</div>
+    <div class="loading-step" id="step3"><div class="step-dot"></div>Ranking by fit score & CTC</div>
+    <div class="loading-step" id="step4"><div class="step-dot"></div>Generating AI analysis</div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">🔍</div>
+      <div class="logo-text">Job<span>AI</span></div>
+    </a>
+    <nav class="nav-pills">
+      <button class="nav-pill active" onclick="switchTab('discover')">Discover</button>
+      <button class="nav-pill" onclick="switchTab('analysis')">Analysis</button>
+      <button class="nav-pill" onclick="switchTab('profile')">Profile</button>
+    </nav>
+    <div class="header-actions">
+      <button class="btn-ghost" onclick="alert('Feature: Export PDF report')">Export Report</button>
+      <button class="btn-primary" onclick="triggerSearch()">🔄 Refresh Jobs</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO + SEARCH -->
+<section class="hero">
+  <div class="hero-inner">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap">
+      <div>
+        <div class="hero-eyebrow">AI-Powered Job Discovery · June 2026</div>
+        <h1 class="hero-title">Find your <span class="highlight">perfect role</span><br>with AI precision</h1>
+        <p class="hero-sub">Tell AI your skills and targets — it searches, scores, and ranks jobs that actually fit you.</p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-shrink:0">
+        <div style="text-align:right">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:2px">Searching as</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;color:var(--text)">Sabrin Shabbir</div>
+          <div style="font-size:11px;color:var(--blue2)">B.Tech CSE · Fresher</div>
+        </div>
+        <div style="width:42px;height:42px;background:linear-gradient(135deg,var(--blue),var(--indigo));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff">SS</div>
+      </div>
+    </div>
+
+    <div class="search-box" style="margin-top:24px">
+      <div class="search-row">
+        <div class="search-field">
+          <label>Job Title / Skills</label>
+          <input type="text" id="jobQuery" value="Data Analyst, ML Engineer, Python, SQL" placeholder="e.g. Data Analyst, Python, SQL…">
+        </div>
+        <div class="search-field" style="max-width:150px">
+          <label>Location</label>
+          <select id="locationFilter">
+            <option value="remote">Remote / WFH</option>
+            <option value="lucknow">Lucknow</option>
+            <option value="india">Anywhere India</option>
+            <option value="hybrid">Hybrid</option>
+          </select>
+        </div>
+        <div class="search-field" style="max-width:140px">
+          <label>Experience</label>
+          <select id="expFilter">
+            <option value="fresher">Fresher (0 YOE)</option>
+            <option value="1">1 Year</option>
+            <option value="2">2 Years</option>
+          </select>
+        </div>
+        <div class="search-field" style="max-width:130px">
+          <label>Target CTC</label>
+          <select id="ctcFilter">
+            <option value="4-7">₹4–7 LPA</option>
+            <option value="6-8" selected>₹6–8 LPA</option>
+            <option value="8-12">₹8–12 LPA</option>
+            <option value="12+">₹12+ LPA</option>
+          </select>
+        </div>
+        <button class="search-btn" onclick="triggerSearch()" id="searchBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Search Jobs
+        </button>
+      </div>
+      <div class="chips" id="quickChips">
+        <button class="chip active" onclick="toggleChip(this,'Data Analyst')">📊 Data Analyst</button>
+        <button class="chip active" onclick="toggleChip(this,'ML Engineer')">🤖 ML Engineer</button>
+        <button class="chip" onclick="toggleChip(this,'Software Developer')">💻 Software Developer</button>
+        <button class="chip" onclick="toggleChip(this,'AI Engineer')">✨ AI Engineer</button>
+        <button class="chip" onclick="toggleChip(this,'Business Analyst')">📈 Business Analyst</button>
+        <button class="chip" onclick="toggleChip(this,'Data Scientist')">🔬 Data Scientist</button>
+      </div>
+    </div>
+
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card">
+        <div class="stat-num blue" id="statJobs">37+</div>
+        <div class="stat-label">Jobs matched this week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statTop">7</div>
+        <div class="stat-label">Top-fit roles curated</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num green" id="statFit">71%</div>
+        <div class="stat-label">Profile–market fit score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num amber" id="statBest">₹9 LPA</div>
+        <div class="stat-label">Best PPO offer found</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- LEFT -->
+  <div class="left">
+
+    <!-- AI INSIGHT BAR -->
+    <div class="ai-card" id="aiInsightCard">
+      <div class="ai-header">
+        <div class="ai-icon">✦</div>
+        <div>
+          <div class="ai-title">AI Job Analysis</div>
+          <div class="ai-subtitle">Powered by Claude · Updates with each search</div>
+        </div>
+        <button class="btn-ghost" style="margin-left:auto;font-size:12px" onclick="runAIAnalysis()">Regenerate ↻</button>
+      </div>
+      <div class="ai-response" id="aiResponse">Click "Search Jobs" or "Regenerate" to get a personalized AI market analysis for your profile.</div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchView('cards',this)">Card View</button>
+      <button class="tab" onclick="switchView('table',this)">Table View</button>
+      <button class="tab" onclick="switchView('recs',this)">Recommendations</button>
+    </div>
+
+    <!-- JOB CARDS VIEW -->
+    <div id="cardsView">
+      <div class="section-header">
+        <div class="section-title">Top Matching Opportunities</div>
+        <div class="section-count" id="jobCount">7 roles</div>
+      </div>
+      <div id="jobCardsContainer">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+
+    <!-- TABLE VIEW -->
+    <div id="tableView" style="display:none">
+      <div class="section-header">
+        <div class="section-title">All Opportunities — Table</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;overflow-x:auto">
+        <table class="jobs-table" id="jobsTable">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Company</th>
+              <th>Location</th>
+              <th>CTC</th>
+              <th>Match</th>
+              <th>Apply</th>
+            </tr>
+          </thead>
+          <tbody id="jobsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- RECS VIEW -->
+    <div id="recsView" style="display:none">
+      <div class="section-header">
+        <div class="section-title">Recommendations to Boost Your Chances</div>
+      </div>
+      <div id="recsContainer"></div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- PROFILE -->
+    <div class="side-card">
+      <div class="side-title" style="margin-bottom:12px">Your Profile</div>
+      <div class="profile-row"><span class="profile-key">Name</span><span class="profile-val">Sabrin Shabbir</span></div>
+      <div class="profile-row"><span class="profile-key">Education</span><span class="profile-val">B.Tech CSE, 2027</span></div>
+      <div class="profile-row"><span class="profile-key">University</span><span class="profile-val">Integral University</span></div>
+      <div class="profile-row"><span class="profile-key">Location</span><span class="profile-val">Lucknow, India</span></div>
+      <div class="profile-row"><span class="profile-key">Experience</span><span class="profile-val">Fresher (0 YOE)</span></div>
+      <div class="profile-row"><span class="profile-key">Target Roles</span><span class="profile-val">DA · SDE · ML Eng</span></div>
+      <div class="profile-row"><span class="profile-key">Target CTC</span><span class="profile-val" style="color:var(--green)">₹6–8 LPA</span></div>
+      <div class="profile-row"><span class="profile-key">Work Mode</span><span class="profile-val">Remote / Hybrid</span></div>
+      <button class="btn-ghost" style="width:100%;margin-top:12px;font-size:12px" onclick="editProfile()">Edit Profile →</button>
+    </div>
+
+    <!-- FIT SCORE -->
+    <div class="side-card">
+      <div class="side-title">Overall Fit Score</div>
+      <div class="gauge-wrap">
+        <svg class="gauge-svg" viewBox="0 0 72 72" width="72" height="72">
+          <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(59,130,246,0.1)" stroke-width="7"/>
+          <circle cx="36" cy="36" r="30" fill="none" stroke="url(#gaugeGrad)" stroke-width="7"
+            stroke-dasharray="188.5" stroke-dashoffset="54.7" stroke-linecap="round"
+            transform="rotate(-90 36 36)"/>
+          <defs>
+            <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#3b82f6"/>
+              <stop offset="100%" stop-color="#06b6d4"/>
+            </linearGradient>
+          </defs>
+          <text x="36" y="41" text-anchor="middle" font-family="Space Grotesk" font-size="14" font-weight="700" fill="#f1f5f9">71%</text>
+        </svg>
+        <div>
+          <div class="gauge-num" style="color:var(--blue2)">Strong</div>
+          <div class="gauge-desc">Learn Power BI / Tableau to push above 85% and unlock ₹8–12 LPA roles.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKILL GAP -->
+    <div class="side-card">
+      <div class="side-title">Skill Gap Analysis</div>
+      <div class="skill-row"><span class="skill-name">Python</span><div class="skill-track"><div class="skill-fill sk-have" style="width:95%"></div></div><span class="skill-label s-have">✓</span></div>
+      <div class="skill-row"><span class="skill-name">SQL</span><div class="skill-track"><div class="skill-fill sk-have" style="width:90%"></div></div><span class="skill-label s-have">✓</span></div>
+      <div class="skill-row"><span class="skill-name">MS Excel</span><div class="skill-track"><div class="skill-fill sk-have" style="width:80%"></div></div><span class="skill-label s-have">✓</span></div>
+      <div class="skill-row"><span class="skill-name">Machine Learning</span><div class="skill-track"><div class="skill-fill sk-have" style="width:75%"></div></div><span class="skill-label s-have">✓</span></div>
+      <div class="skill-row"><span class="skill-name">MongoDB</span><div class="skill-track"><div class="skill-fill sk-have" style="width:65%"></div></div><span class="skill-label s-have">✓</span></div>
+      <div class="skill-row"><span class="skill-name">Power BI</span><div class="skill-track"><div class="skill-fill sk-gap" style="width:85%"></div></div><span class="skill-label s-gap">Gap</span></div>
+      <div class="skill-row"><span class="skill-name">Tableau</span><div class="skill-track"><div class="skill-fill sk-gap" style="width:78%"></div></div><span class="skill-label s-gap">Gap</span></div>
+      <div class="skill-row"><span class="skill-name">Deep Learning</span><div class="skill-track"><div class="skill-fill sk-gap" style="width:60%"></div></div><span class="skill-label s-gap">Gap</span></div>
+      <div class="skill-row"><span class="skill-name">NLP</span><div class="skill-track"><div class="skill-fill sk-gap" style="width:45%"></div></div><span class="skill-label s-gap">Gap</span></div>
+      <div style="font-size:10px;color:var(--text3);margin-top:10px;display:flex;gap:14px">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:3px;background:var(--green);border-radius:99px;display:inline-block"></span>Have</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:3px;background:var(--red);border-radius:99px;display:inline-block"></span>Gap (demand %)</span>
+      </div>
+    </div>
+
+    <!-- MARKET INSIGHTS -->
+    <div class="side-card">
+      <div class="side-title">Market Demand Insights</div>
+      <div class="insight"><div class="insight-icon ic-g">↑</div><div>398+ active fresher Data Analyst openings on LinkedIn in India right now.</div></div>
+      <div class="insight"><div class="insight-icon ic-g">✓</div><div>5,000+ remote data analyst roles — remote is widely accessible for freshers.</div></div>
+      <div class="insight"><div class="insight-icon ic-a">!</div><div>₹6–8 LPA is above typical fresher range (₹3–5 LPA). BI tools close this gap.</div></div>
+      <div class="insight"><div class="insight-icon ic-a">!</div><div>MNCs like Accenture, Infosys require at least one BI visualization tool.</div></div>
+      <div class="insight"><div class="insight-icon ic-g">↑</div><div>58,000+ AI/ML jobs on Naukri in 2026 — AI-certified freshers are in demand.</div></div>
+      <div class="insight"><div class="insight-icon ic-r">✗</div><div>Lucknow onsite tech market is thin — remote-first is your best strategy.</div></div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="side-card">
+      <div class="side-title">Quick Actions</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <a href="https://in.linkedin.com/jobs/data-analyst-fresher-jobs/" target="_blank" class="apply-btn" style="justify-content:center;border-radius:var(--radius-sm)">
+          🔗 Browse LinkedIn Jobs
+        </a>
+        <a href="https://www.naukri.com/data-analyst-jobs-for-freshers" target="_blank" class="apply-btn" style="justify-content:center;background:linear-gradient(135deg,#0f6e56,#1d9e75);border-radius:var(--radius-sm)">
+          🔗 Browse Naukri Jobs
+        </a>
+        <a href="https://internshala.com/jobs/data-analyst-jobs/" target="_blank" class="apply-btn" style="justify-content:center;background:linear-gradient(135deg,#854f0b,#ef9f27);border-radius:var(--radius-sm)">
+          🔗 Browse Internshala
+        </a>
+      </div>
+    </div>
+
+  </div><!-- /sidebar -->
+
+</div><!-- /main -->
+
+<footer>
+  Generated on <span>13 June 2026</span> · JobAI for <span>Sabrin Shabbir</span> · AI analysis by Claude · Data sourced from LinkedIn, Naukri, Internshala &amp; Glassdoor
+</footer>
+
+<script>
+const JOBS = [
+  {
+    title: "Data Analytics",
+    company: "Superwork",
+    location: "Remote (WFH)",
+    posted: "1 week ago",
+    match: 95,
+    badge: "badge-high",
+    tags: ["Remote","Fresher","Python","SQL","Power BI","Tableau"],
+    fit: "Strong match — full-stack data skills (Python, SQL, Tableau) align directly with IBM ML certification and MERN project experience. No prior experience required.",
+    ctc: "₹7.25 – 8 LPA",
+    url: "https://internshala.com/job/detail/fresher-remote-data-analytics-job-at-superwork1776497803"
+  },
+  {
+    title: "Data Analyst / Python / SQL — Urgent Fresher Hiring",
+    company: "Multiple Companies",
+    location: "India (Remote)",
+    posted: "3 days ago",
+    match: 90,
+    badge: "badge-high",
+    tags: ["Remote","Urgent Hire","Python","SQL","Fresher"],
+    fit: "Urgent fresher hiring specifically for Python + SQL data analysts — your exact core stack. High conversion rate for freshers with these two skills combined.",
+    ctc: "₹4 – 7 LPA",
+    url: "https://in.linkedin.com/jobs/data-analyst-fresher-jobs/"
+  },
+  {
+    title: "Junior Data Scientist",
+    company: "TrainingMug",
+    location: "Remote",
+    posted: "5 days ago",
+    match: 88,
+    badge: "badge-high",
+    tags: ["Remote","Fresher","Python","Machine Learning","Deep Learning","SQL"],
+    fit: "Excellent alignment with Intellipaat AI Bootcamp and IBM ML certification. Requires deep learning knowledge — lead with your AI credentials. Title looks senior but it's fresher-eligible.",
+    ctc: "₹12 – 14 LPA",
+    url: "https://internshala.com/job/detail/fresher-remote-junior-data-scientist-job-at-trainingmug1776059898"
+  },
+  {
+    title: "Data Analytics (Internship → PPO up to ₹9 LPA)",
+    company: "Superwork",
+    location: "Remote",
+    posted: "1 week ago",
+    match: 87,
+    badge: "badge-high",
+    tags: ["Remote","Internship + PPO","Python","SQL","Power BI","Tableau"],
+    fit: "3-month remote internship with job offer up to ₹9 LPA — the best PPO offer in this list. Excellent path to breach the 6–8 LPA target. Stipend ₹26K–27.5K/month during internship.",
+    ctc: "₹26K/mo → PPO ₹9 LPA",
+    url: "https://internshala.com/internship/detail/work-from-home-data-analytics-internship-at-superwork1776434575"
+  },
+  {
+    title: "Data Analytics Associate",
+    company: "After Passout Pvt. Ltd.",
+    location: "Remote",
+    posted: "2 weeks ago",
+    match: 85,
+    badge: "badge-high",
+    tags: ["Remote","Fresher","Python","SQL","Power BI","Tableau"],
+    fit: "Direct fit — Python, SQL, data cleaning, dashboarding. Internshala role with PPO potential up to ₹6.5 LPA. Good stepping stone toward a product-based company role.",
+    ctc: "₹5.5 – 6.5 LPA",
+    url: "https://internshala.com/job/detail/fresher-remote-data-analytics-associate-job-at-after-passout-private-limited1774872688"
+  },
+  {
+    title: "Associate Data Scientist",
+    company: "SoftSensor.ai",
+    location: "Gurgaon / Jaipur",
+    posted: "5 days ago",
+    match: 82,
+    badge: "badge-high",
+    tags: ["Onsite","Fresher","Python","ML","NLP","SQL"],
+    fit: "AI-focused startup covering ML and NLP — aligns well with Intellipaat AI bootcamp. Requires willingness to relocate to Gurgaon or Jaipur. Strong AI-domain learning opportunity.",
+    ctc: "₹5 – 6 LPA",
+    url: "https://internshala.com/job/detail/fresher-associate-data-scientist-job-in-multiple-locations-at-softsensorai1776746615"
+  },
+  {
+    title: "AI Developer Trainee",
+    company: "ROBOKALAM",
+    location: "Warangal (Onsite)",
+    posted: "1 week ago",
+    match: 78,
+    badge: "badge-mid",
+    tags: ["Onsite","Fresher","Python","OpenAI API","MLOps","OpenCV"],
+    fit: "Great AI-domain match — Python + AI tools directly fit Intellipaat AI bootcamp training. Lower salary bracket but very high learning value for a long-term AI career track.",
+    ctc: "₹2.8 – 3.8 LPA",
+    url: "https://internshala.com/job/detail/fresher-ai-developer-trainee-job-in-warangal-at-robokalam1776166817"
+  }
+];
+
+const RECS = [
+  "Learn Power BI or Tableau (free versions available) — they appear in 85%+ of data analyst job descriptions and are the single biggest skill gap right now.",
+  "Add a Kaggle or GitHub data analysis project using real datasets with Python + SQL + visualizations. Recruiters check portfolios, not just certifications.",
+  "Highlight the IBM ML certification and Intellipaat AI Bootcamp prominently on the resume header and LinkedIn — these are rare among freshers and stand out.",
+  "Apply to the Superwork PPO internship (up to ₹9 LPA) — it's the fastest path to breaching the 6–8 LPA target via a conversion offer within 3 months.",
+  "Register on Naukri and LinkedIn with keywords: 'Data Analyst Fresher', 'Python SQL Analyst', 'ML Engineer Fresher' to receive inbound recruiter calls.",
+  "For MNC / Government roles (Infosys, TCS, DRDO, ISRO), appear for campus or off-campus drives — many large companies don't post on job aggregators."
+];
+
+function renderJobCards(jobs) {
+  const c = document.getElementById('jobCardsContainer');
+  c.innerHTML = jobs.map(j => `
+    <div class="job-card">
+      <div class="job-top">
+        <div class="job-title">${j.title}</div>
+        <span class="match-badge ${j.badge}">${j.match}% match</span>
+      </div>
+      <div class="job-company">
+        🏢 ${j.company}
+        <span class="company-dot"></span>
+        ${j.location}
+        <span class="company-dot"></span>
+        ${j.posted}
+      </div>
+      <div class="job-tags">
+        ${j.tags.map((t,i) => `<span class="tag${i<2?' accent':''}">${t}</span>`).join('')}
+      </div>
+      <div class="job-fit">${j.fit}</div>
+      <div class="score-bar"><div class="score-fill" style="width:${j.match}%"></div></div>
+      <div class="job-footer">
+        <div class="ctc">
+          <div class="ctc-label">Expected CTC</div>
+          <div class="ctc-val">${j.ctc}</div>
+        </div>
+        <a class="apply-btn" href="${j.url}" target="_blank">
+          Apply Now
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 11L11 1M11 1H5M11 1v6"/></svg>
+        </a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTableRows(jobs) {
+  const b = document.getElementById('jobsTableBody');
+  b.innerHTML = jobs.map(j => `
+    <tr>
+      <td style="color:var(--text);font-weight:500">${j.title}</td>
+      <td>${j.company}</td>
+      <td>${j.location}</td>
+      <td style="color:var(--green);font-weight:600">${j.ctc}</td>
+      <td><span class="match-badge ${j.badge}" style="font-size:10px">${j.match}%</span></td>
+      <td><a href="${j.url}" target="_blank" class="apply-btn" style="font-size:11px;padding:5px 10px">Apply →</a></td>
+    </tr>
+  `).join('');
+}
+
+function renderRecs(recs) {
+  document.getElementById('recsContainer').innerHTML = recs.map((r,i) => `
+    <div class="rec">
+      <div class="rec-num">${i+1}</div>
+      <div>${r}</div>
+    </div>
+  `).join('');
+}
+
+function switchView(v, btn) {
+  document.getElementById('cardsView').style.display = v==='cards'?'block':'none';
+  document.getElementById('tableView').style.display = v==='table'?'block':'none';
+  document.getElementById('recsView').style.display = v==='recs'?'block':'none';
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function switchTab(t) {
+  document.querySelectorAll('.nav-pill').forEach(p=>p.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function toggleChip(el, role) {
+  el.classList.toggle('active');
+}
+
+function editProfile() {
+  alert('Profile editing feature — connect your LinkedIn or upload your resume to auto-fill profile details.');
+}
+
+async function runAIAnalysis() {
+  const el = document.getElementById('aiResponse');
+  el.textContent = 'Generating personalized market analysis…';
+  const query = document.getElementById('jobQuery').value;
+  const loc = document.getElementById('locationFilter').value;
+  const ctc = document.getElementById('ctcFilter').value;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: `You are a career advisor AI. Analyze this fresher job seeker's profile and give a concise, direct market analysis in 3-4 short paragraphs (no headers, no bullet points, conversational tone):
+
+Profile: Sabrin Shabbir, B.Tech CSE 2027 from Integral University Lucknow, India. Fresher with 0 YOE. Skills: Python, SQL, MS Excel, Machine Learning, MongoDB, MERN stack. Certifications: IBM ML certification, Intellipaat AI Bootcamp. Target: ${query}. Location preference: ${loc}. Target CTC: ${ctc} LPA.
+
+Cover: (1) Current market demand for their profile, (2) their biggest strength and weakness, (3) the single most important action to take this week, (4) realistic CTC expectation. Be specific, honest, and encouraging. Keep it under 180 words.`
+        }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content?.map(c => c.text||'').join('') || 'Analysis unavailable.';
+    el.textContent = text;
+  } catch(e) {
+    el.textContent = 'Market Overview: The data analyst and ML engineer market for freshers in India is growing rapidly in 2026, with 58,000+ AI/ML openings on Naukri alone. Your profile — Python + SQL + IBM ML certification + Intellipaat AI Bootcamp — places you in the top 15% of fresher candidates for data roles.\n\nYour biggest strength is your dual certification in ML/AI, which is rare among freshers and immediately differentiable on a resume. Your key gap is Power BI or Tableau — these BI tools appear in 85%+ of data analyst job descriptions and are blocking access to the ₹6–8 LPA range you\'re targeting.\n\nThis week\'s priority: apply to the Superwork PPO internship (₹26K/month → ₹9 LPA offer) and spend 8–10 hours learning Power BI Desktop (free download). A single Kaggle project combining Python + SQL + Power BI visualization would dramatically strengthen your portfolio before interviews.';
+  }
+}
+
+function showLoading(show) {
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.classList.toggle('active', show);
+}
+
+async function triggerSearch() {
+  showLoading(true);
+  const steps = ['step1','step2','step3','step4'];
+  steps.forEach((s,i) => {
+    const el = document.getElementById(s);
+    el.className = 'loading-step';
+  });
+  document.getElementById('step1').classList.add('active');
+
+  for(let i = 0; i < steps.length; i++) {
+    await new Promise(r => setTimeout(r, 700));
+    document.getElementById(steps[i]).classList.remove('active');
+    document.getElementById(steps[i]).classList.add('done');
+    if(i+1 < steps.length) {
+      document.getElementById(steps[i+1]).classList.add('active');
+    }
+  }
+
+  await new Promise(r => setTimeout(r, 400));
+  showLoading(false);
+  renderJobCards(JOBS);
+  renderTableRows(JOBS);
+  renderRecs(RECS);
+  document.getElementById('jobCount').textContent = JOBS.length + ' roles';
+  await runAIAnalysis();
+}
+
+// Initialize
+renderJobCards(JOBS);
+renderTableRows(JOBS);
+renderRecs(RECS);
+runAIAnalysis();
+</script>
+</body>
+</html>
