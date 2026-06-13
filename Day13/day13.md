@@ -101,4 +101,4 @@ This challenge demonstrated that AI is not just a coding assistant—it can beco
 
 [HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day13/job-discovery-app.html)
 
- [screenshot]()
+
