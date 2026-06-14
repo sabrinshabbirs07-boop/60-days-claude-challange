@@ -102,7 +102,7 @@ This tool acts as a first layer of due diligence, helping job seekers:
 * Industry-Specific Risk Models
 
 ## RED FLAG DEECTOR
-[HTML FILE]()
+[HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day14/job_red_flag_detector)
 
 ## screen shot
-[image]()
+[image](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day14/red%20flag%20rist%20analysis%20day%2014.jpeg)
