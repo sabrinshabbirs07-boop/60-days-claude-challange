@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Job Red Flag Detector — Junior Full Stack Developer @ Jellyfish Technologies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0D0F14;
+    --bg-card: #14171E;
+    --bg-card2: #1C202B;
+    --bg-input: #1A1D26;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.16);
+    --text-primary: #F0F2F7;
+    --text-secondary: #8B90A0;
+    --text-muted: #5A5F72;
+    --accent: #FF6B6B;
+    --accent2: #4ECDC4;
+    --accent3: #FFE66D;
+    --green: #6BCB77;
+    --orange: #FF9F43;
+    --red: #FF6B6B;
+    --yellow: #FFE66D;
+    --purple: #A29BFE;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --font: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, #FF6B6B22, #FF6B6B44);
+    border: 1px solid #FF6B6B55;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .header-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+  .header-sub { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+  .header-badge {
+    background: rgba(255,107,107,0.12);
+    border: 1px solid rgba(255,107,107,0.3);
+    color: #FF6B6B;
+    font-size: 12px; font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+  .section { margin-bottom: 32px; }
+  .section-title {
+    font-size: 11px; font-weight: 600; letter-spacing: 1.2px;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 1px;
+    background: var(--border);
+  }
+
+  /* ── SCORE HERO ── */
+  .score-hero {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .score-ring-wrap { position: relative; width: 140px; height: 140px; flex-shrink: 0; }
+  .score-ring-wrap svg { transform: rotate(-90deg); }
+  .score-ring-label {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .score-ring-number { font-size: 36px; font-weight: 700; color: var(--orange); line-height: 1; }
+  .score-ring-text { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-weight: 500; letter-spacing: 0.5px; }
+  .score-info-title { font-size: 22px; font-weight: 700; color: var(--orange); }
+  .score-info-sub { font-size: 14px; color: var(--text-secondary); margin-top: 6px; line-height: 1.5; }
+  .score-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .pill {
+    font-size: 12px; font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 100px;
+    border: 1px solid;
+  }
+  .pill-orange { background: rgba(255,159,67,0.1); border-color: rgba(255,159,67,0.3); color: var(--orange); }
+  .pill-red { background: rgba(255,107,107,0.1); border-color: rgba(255,107,107,0.3); color: var(--red); }
+  .pill-green { background: rgba(107,203,119,0.1); border-color: rgba(107,203,119,0.3); color: var(--green); }
+  .pill-yellow { background: rgba(255,230,109,0.1); border-color: rgba(255,230,109,0.3); color: var(--yellow); }
+  .pill-purple { background: rgba(162,155,254,0.1); border-color: rgba(162,155,254,0.3); color: var(--purple); }
+
+  /* ── RED FLAGS ── */
+  .flag-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .flag-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .flag-header:hover { background: var(--bg-card2); }
+  .flag-severity {
+    width: 36px; height: 36px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+    font-family: var(--mono);
+  }
+  .sev-critical { background: rgba(255,107,107,0.2); color: #FF6B6B; border: 1px solid rgba(255,107,107,0.4); }
+  .sev-high { background: rgba(255,159,67,0.2); color: #FF9F43; border: 1px solid rgba(255,159,67,0.4); }
+  .sev-medium { background: rgba(255,230,109,0.15); color: #E8C84A; border: 1px solid rgba(255,230,109,0.3); }
+  .flag-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .flag-category { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .flag-chevron { margin-left: auto; color: var(--text-muted); font-size: 18px; transition: transform 0.2s; }
+  .flag-body {
+    padding: 0 20px;
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.2s;
+  }
+  .flag-body.open { max-height: 300px; padding: 0 20px 18px; }
+  .flag-body-inner {
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+    font-size: 13px; color: var(--text-secondary); line-height: 1.7;
+  }
+  .flag-quote {
+    font-family: var(--mono); font-size: 12px;
+    background: var(--bg-input); border-left: 3px solid var(--accent);
+    padding: 10px 14px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 10px 0; color: var(--text-primary);
+  }
+  .flag-chevron.open { transform: rotate(180deg); }
+
+  /* ── RISK TABLE ── */
+  .risk-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+  .risk-table th {
+    text-align: left; font-size: 11px; font-weight: 600;
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
+    padding: 10px 16px;
+    background: var(--bg-card2);
+  }
+  .risk-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+  .risk-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+  .risk-table td {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 14px; color: var(--text-primary);
+  }
+  .risk-table tr:last-child td:first-child { border-radius: 0 0 0 var(--radius-sm); }
+  .risk-table tr:last-child td:last-child { border-radius: 0 0 var(--radius-sm) 0; }
+  .risk-table tbody tr { background: var(--bg-card); }
+  .risk-table tbody tr:hover { background: var(--bg-card2); }
+
+  .risk-bar-wrap { display: flex; align-items: center; gap: 12px; }
+  .risk-bar-bg {
+    flex: 1; height: 6px; background: var(--bg-input);
+    border-radius: 100px; overflow: hidden; max-width: 120px;
+  }
+  .risk-bar-fill { height: 100%; border-radius: 100px; }
+  .risk-label { font-size: 12px; font-weight: 600; min-width: 60px; }
+  .risk-critical { color: #FF6B6B; }
+  .risk-high { color: #FF9F43; }
+  .risk-medium { color: #E8C84A; }
+  .risk-low { color: #6BCB77; }
+  .fill-critical { background: #FF6B6B; }
+  .fill-high { background: #FF9F43; }
+  .fill-medium { background: #E8C84A; }
+  .fill-low { background: #6BCB77; }
+
+  /* ── POSITIVE SIGNALS ── */
+  .pos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .pos-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(107,203,119,0.2);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .pos-icon {
+    width: 28px; height: 28px;
+    background: rgba(107,203,119,0.1);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0; margin-top: 2px;
+  }
+  .pos-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .pos-desc { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+
+  /* ── VERDICT ── */
+  .verdict-card {
+    border-radius: var(--radius-xl);
+    padding: 28px 32px;
+    border: 1px solid rgba(255,159,67,0.3);
+    background: rgba(255,159,67,0.05);
+    display: flex; align-items: center; gap: 24px;
+  }
+  .verdict-emoji { font-size: 56px; line-height: 1; }
+  .verdict-title { font-size: 22px; font-weight: 700; color: var(--orange); }
+  .verdict-text { font-size: 14px; color: var(--text-secondary); margin-top: 6px; line-height: 1.6; max-width: 580px; }
+
+  /* ── INTERVIEW QUESTIONS ── */
+  .q-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .q-num {
+    font-family: var(--mono); font-size: 13px; font-weight: 500;
+    color: var(--accent2); min-width: 24px; margin-top: 1px;
+  }
+  .q-text { font-size: 14px; color: var(--text-primary); line-height: 1.6; }
+  .q-why { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+  /* ── DISCLAIMER ── */
+  .disclaimer {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    font-size: 12px; color: var(--text-muted);
+    text-align: center; line-height: 1.6;
+  }
+
+  @media (max-width: 600px) {
+    .score-hero { grid-template-columns: 1fr; text-align: center; }
+    .score-ring-wrap { margin: 0 auto; }
+    .score-pills { justify-content: center; }
+    .container { padding: 20px 16px; }
+    .header { padding: 16px 20px; }
+    .verdict-card { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-icon">🚩</div>
+    <div>
+      <div class="header-title">Job Red Flag Detector</div>
+      <div class="header-sub">Junior Full Stack Developer · Jellyfish Technologies</div>
+    </div>
+  </div>
+  <div class="header-badge">AI Analysis Report</div>
+</div>
+
+<div class="container">
+
+  <!-- OVERALL RISK SCORE -->
+  <div class="section">
+    <div class="section-title">Overall Risk Assessment</div>
+    <div class="score-hero">
+      <div class="score-ring-wrap">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+          <circle cx="70" cy="70" r="58" fill="none" stroke="#1C202B" stroke-width="12"/>
+          <circle cx="70" cy="70" r="58" fill="none" stroke="#FF9F43" stroke-width="12"
+            stroke-dasharray="364.4" stroke-dashoffset="109.3" stroke-linecap="round"/>
+        </svg>
+        <div class="score-ring-label">
+          <div class="score-ring-number">62</div>
+          <div class="score-ring-text">/ 100</div>
+        </div>
+      </div>
+      <div>
+        <div class="score-info-title">Moderate–High Risk</div>
+        <div class="score-info-sub">
+          This job description contains significant structural red flags — particularly around mismatched seniority expectations for a "junior" role and hidden relocation requirements. However, the company (Jellyfish Technologies) has verifiable credentials that reduce some risk. Proceed with caution and validate key claims in interviews.
+        </div>
+        <div class="score-pills">
+          <span class="pill pill-red">Seniority Mismatch</span>
+          <span class="pill pill-red">Hidden Relocation</span>
+          <span class="pill pill-orange">Skill Overload</span>
+          <span class="pill pill-orange">No Salary Info</span>
+          <span class="pill pill-yellow">Culture Signals</span>
+          <span class="pill pill-green">14yr Company</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP RED FLAGS -->
+  <div class="section">
+    <div class="section-title">Top Red Flags</div>
+
+    <!-- Flag 1 -->
+    <div class="flag-card">
+      <div class="flag-header" onclick="toggleFlag(this)">
+        <div class="flag-severity sev-critical">9</div>
+        <div>
+          <div class="flag-title">"Junior" role requiring 5+ years of experience</div>
+          <div class="flag-category">Category: Unrealistic Requirements · Severity 9/10</div>
+        </div>
+        <div class="flag-chevron">⌄</div>
+      </div>
+      <div class="flag-body">
+        <div class="flag-body-inner">
+          A "Junior Full Stack Developer" title with a 5+ year experience requirement is a direct contradiction. Industry standard for junior roles is 0–2 years. This often signals: (1) the company wants to pay junior salaries for senior work, (2) inexperienced hiring managers, or (3) a deliberate lowball strategy.
+          <div class="flag-quote">"Junior Full Stack Developer — 5+ years of experience required"</div>
+          This misalignment alone is reason to negotiate title and compensation aggressively, or walk away.
+        </div>
+      </div>
+    </div>
+
+    <!-- Flag 2 -->
+    <div class="flag-card">
+      <div class="flag-header" onclick="toggleFlag(this)">
+        <div class="flag-severity sev-critical">8</div>
+        <div>
+          <div class="flag-title">Remote role with mandatory relocation clause</div>
+          <div class="flag-category">Category: Remote Job Authenticity · Severity 8/10</div>
+        </div>
+        <div class="flag-chevron">⌄</div>
+      </div>
+      <div class="flag-body">
+        <div class="flag-body-inner">
+          The job is listed as "Remote" but includes a hidden clause that relocation to Bengaluru may be required after probation. This is a classic bait-and-switch in remote job postings. The term "may be required" is deliberately vague — it provides no commitment either way and can be enforced at the employer's discretion.
+          <div class="flag-quote">"Remote (Relocation to Bengaluru may be required after probation)"</div>
+          Always get a written, explicit remote-work agreement before accepting any role with this language.
+        </div>
+      </div>
+    </div>
+
+    <!-- Flag 3 -->
+    <div class="flag-card">
+      <div class="flag-header" onclick="toggleFlag(this)">
+        <div class="flag-severity sev-high">8</div>
+        <div>
+          <div class="flag-title">Exhaustive multi-cloud, multi-language tech stack demand</div>
+          <div class="flag-category">Category: Unrealistic Requirements · Severity 8/10</div>
+        </div>
+        <div class="flag-chevron">⌄</div>
+      </div>
+      <div class="flag-body">
+        <div class="flag-body-inner">
+          Requiring proficiency across React + Angular + Vue (3 competing frontend frameworks), Node.js + Python + Java + Golang (4 backend languages), AWS + Azure + GCP (all 3 major cloud platforms), and Docker + Kubernetes — for a single "junior" role — is unrealistic. Most senior engineers specialize in 1–2 frameworks and 1 cloud provider. This signals either an uninformed hiring manager or an expectation of a 1-person engineering department.
+          <div class="flag-quote">"React, Angular, Vue · Node.js, Python, Java, Golang · AWS, Azure, GCP · Docker, Kubernetes"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flag 4 -->
+    <div class="flag-card">
+      <div class="flag-header" onclick="toggleFlag(this)">
+        <div class="flag-severity sev-high">7</div>
+        <div>
+          <div class="flag-title">24/7 support obligation buried in responsibilities</div>
+          <div class="flag-category">Category: Toxic Workplace Signals · Severity 7/10</div>
+        </div>
+        <div class="flag-chevron">⌄</div>
+      </div>
+      <div class="flag-body">
+        <div class="flag-body-inner">
+          "Provide 24/7 support when needed" is a significant burnout risk indicator. This phrasing gives no boundary around when "needed" applies, no mention of on-call compensation, rotation schedules, or SLA expectations. Combined with "fast-paced startup environment" and "must thrive under pressure," this paints a picture of an always-on culture with no defined boundaries.
+          <div class="flag-quote">"Provide 24/7 support when needed"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flag 5 -->
+    <div class="flag-card">
+      <div class="flag-header" onclick="toggleFlag(this)">
+        <div class="flag-severity sev-high">7</div>
+        <div>
+          <div class="flag-title">Responsibilities span junior dev to senior architect to team lead</div>
+          <div class="flag-category">Category: Unrealistic Requirements · Severity 7/10</div>
+        </div>
+        <div class="flag-chevron">⌄</div>
+      </div>
+      <div class="flag-body">
+        <div class="flag-body-inner">
+          The responsibilities list asks one "junior" developer to: build web apps, manage cloud infrastructure, design architecture, lead client meetings, mentor other juniors, and provide 24/7 support. These represent at minimum 3–4 distinct roles (Dev, DevOps/SRE, Solutions Architect, Client Success). This is a classic "many hats" trap, often leading to overwork and under-specialization.
+        </div>
+      </div>
+    </div>
+
+    <!-- Flag 6 -->
+    <div class="flag-card">
+      <div class="flag-header" onclick="toggleFlag(this)">
+        <div class="flag-severity sev-high">7</div>
+        <div>
+          <div class="flag-title">No salary range disclosed</div>
+          <div class="flag-category">Category: Hiring Risks · Severity 7/10</div>
+        </div>
+        <div class="flag-chevron">⌄</div>
+      </div>
+      <div class="flag-body">
+        <div class="flag-body-inner">
+          The complete absence of salary or compensation details is a common tactic to anchor candidates low after significant interview investment. Combined with the seniority mismatch (junior title, senior requirements), there is high risk of being offered below-market pay for senior-level responsibilities. Research Glassdoor/AmbitionBox benchmarks for Noida-based full stack roles before engaging.
+        </div>
+      </div>
+    </div>
+
+    <!-- Flag 7 -->
+    <div class="flag-card">
+      <div class="flag-header" onclick="toggleFlag(this)">
+        <div class="flag-severity sev-medium">5</div>
+        <div>
+          <div class="flag-title">Toxic culture signaling language in benefits</div>
+          <div class="flag-category">Category: Toxic Workplace Signals · Severity 5/10</div>
+        </div>
+        <div class="flag-chevron">⌄</div>
+      </div>
+      <div class="flag-body">
+        <div class="flag-body-inner">
+          Phrases like "Work hard, play hard culture," "must thrive under pressure," and "we are like a family" are well-documented red flags in HR analysis. "Family" culture language is often used to justify blurred work-life boundaries. "Thrive under pressure" as a requirement—rather than a trait the company works to minimize—signals an environment that has normalized high stress rather than managed it.
+          <div class="flag-quote">"Work hard, play hard · Must thrive under pressure · We are like a family"</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- POSITIVE SIGNALS -->
+  <div class="section">
+    <div class="section-title">Positive Signals</div>
+    <div class="pos-grid">
+      <div class="pos-card">
+        <div class="pos-icon">🏢</div>
+        <div>
+          <div class="pos-title">14+ years in business</div>
+          <div class="pos-desc">Jellyfish Technologies was founded in 2011 — a stable, established company, not a fly-by-night startup.</div>
+        </div>
+      </div>
+      <div class="pos-card">
+        <div class="pos-icon">👥</div>
+        <div>
+          <div class="pos-title">150+ full-time staff</div>
+          <div class="pos-desc">Large enough to have structure, HR policies, and defined growth paths — less chaos than a micro-startup.</div>
+        </div>
+      </div>
+      <div class="pos-card">
+        <div class="pos-icon">📊</div>
+        <div>
+          <div class="pos-title">250+ delivered projects</div>
+          <div class="pos-desc">Strong project track record with 93% repeat clients suggests reliable revenue and client relationships.</div>
+        </div>
+      </div>
+      <div class="pos-card">
+        <div class="pos-icon">🎓</div>
+        <div>
+          <div class="pos-title">Mentorship & learning programs</div>
+          <div class="pos-desc">Explicitly lists structured learning programs and mentorship — positive for career development.</div>
+        </div>
+      </div>
+      <div class="pos-card">
+        <div class="pos-icon">🔄</div>
+        <div>
+          <div class="pos-title">Agile development practices</div>
+          <div class="pos-desc">Agile is a standard, healthy methodology that tends to produce more structured workloads.</div>
+        </div>
+      </div>
+      <div class="pos-card">
+        <div class="pos-icon">🌍</div>
+        <div>
+          <div class="pos-title">Diverse client portfolio</div>
+          <div class="pos-desc">Works with startups, SMEs, and enterprises globally — good exposure to varied tech challenges.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RISK BREAKDOWN TABLE -->
+  <div class="section">
+    <div class="section-title">Risk Breakdown by Category</div>
+    <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;">
+      <table class="risk-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Risk Level</th>
+            <th>Score</th>
+            <th>Key Issue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Requirements</td>
+            <td><div class="risk-bar-wrap">
+              <div class="risk-bar-bg"><div class="risk-bar-fill fill-critical" style="width:90%"></div></div>
+              <span class="risk-label risk-critical">Critical</span>
+            </div></td>
+            <td style="font-family: var(--mono); font-size: 13px; color: #FF6B6B;">9/10</td>
+            <td style="font-size: 13px; color: var(--text-secondary);">Junior title + 5yr exp + 10+ technologies</td>
+          </tr>
+          <tr>
+            <td>Culture</td>
+            <td><div class="risk-bar-wrap">
+              <div class="risk-bar-bg"><div class="risk-bar-fill fill-high" style="width:70%"></div></div>
+              <span class="risk-label risk-high">High</span>
+            </div></td>
+            <td style="font-family: var(--mono); font-size: 13px; color: #FF9F43;">7/10</td>
+            <td style="font-size: 13px; color: var(--text-secondary);">24/7 support, "family" culture language</td>
+          </tr>
+          <tr>
+            <td>Remote Authenticity</td>
+            <td><div class="risk-bar-wrap">
+              <div class="risk-bar-bg"><div class="risk-bar-fill fill-high" style="width:80%"></div></div>
+              <span class="risk-label risk-high">High</span>
+            </div></td>
+            <td style="font-family: var(--mono); font-size: 13px; color: #FF9F43;">8/10</td>
+            <td style="font-size: 13px; color: var(--text-secondary);">Potential forced relocation post-probation</td>
+          </tr>
+          <tr>
+            <td>Hiring Transparency</td>
+            <td><div class="risk-bar-wrap">
+              <div class="risk-bar-bg"><div class="risk-bar-fill fill-high" style="width:70%"></div></div>
+              <span class="risk-label risk-high">High</span>
+            </div></td>
+            <td style="font-family: var(--mono); font-size: 13px; color: #FF9F43;">7/10</td>
+            <td style="font-size: 13px; color: var(--text-secondary);">No salary range, vague scope of role</td>
+          </tr>
+          <tr>
+            <td>Company Stability</td>
+            <td><div class="risk-bar-wrap">
+              <div class="risk-bar-bg"><div class="risk-bar-fill fill-low" style="width:25%"></div></div>
+              <span class="risk-label risk-low">Low</span>
+            </div></td>
+            <td style="font-family: var(--mono); font-size: 13px; color: #6BCB77;">2/10</td>
+            <td style="font-size: 13px; color: var(--text-secondary);">14yr history, 150+ staff, strong client base</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FINAL VERDICT -->
+  <div class="section">
+    <div class="section-title">Final Verdict</div>
+    <div class="verdict-card">
+      <div class="verdict-emoji">⚠️</div>
+      <div>
+        <div class="verdict-title">Apply with Caution</div>
+        <div class="verdict-text">
+          Jellyfish Technologies is a legitimate, established company — the company-level risks are low. However, this specific job description has serious structural problems: a contradictory seniority level, unrealistic tech stack breadth, culture-risk language, and a deceptive remote clause. If you choose to apply, go in armed: negotiate the title upward, demand a written remote-work commitment, benchmark salaries independently, and ask pointed interview questions about scope, on-call policy, and team structure before accepting any offer.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERVIEW QUESTIONS -->
+  <div class="section">
+    <div class="section-title">5 Smart Interview Questions to Validate Risk</div>
+
+    <div class="q-card">
+      <div class="q-num">01</div>
+      <div>
+        <div class="q-text">The role is titled "Junior Developer" but requires 5+ years of experience. Can you clarify what career level and compensation band this role actually maps to internally?</div>
+        <div class="q-why">⚡ Validates: Seniority mismatch / salary lowballing risk</div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">02</div>
+      <div>
+        <div class="q-text">The listing mentions "relocation to Bengaluru may be required after probation." Can you tell me definitively whether this role will be permanently remote, or is in-office a genuine possibility? And can that be included in the offer letter?</div>
+        <div class="q-why">⚡ Validates: Remote bait-and-switch risk</div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">03</div>
+      <div>
+        <div class="q-text">The JD lists 24/7 support as a responsibility. What does on-call actually look like in practice — how frequently, is there a rotation schedule, and is there additional compensation for after-hours incidents?</div>
+        <div class="q-why">⚡ Validates: Work-life balance / burnout risk</div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">04</div>
+      <div>
+        <div class="q-text">The requirements list React, Angular, Vue, Node.js, Python, Java, Golang, and three cloud platforms. Which 2–3 technologies does this specific team use day-to-day, and which of the listed skills are actually nice-to-have?</div>
+        <div class="q-why">⚡ Validates: Unrealistic skill expectations / realistic scope</div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">05</div>
+      <div>
+        <div class="q-text">Can you walk me through the day-to-day responsibilities for this role in the first 90 days — specifically, which of the listed responsibilities (architecture design, client meetings, mentoring) would actually apply at this stage?</div>
+        <div class="q-why">⚡ Validates: Scope inflation / role clarity</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    This analysis is AI-generated based on the job description and company information provided. It is intended as a decision-support tool, not a definitive verdict. Always conduct independent research via Glassdoor, LinkedIn, and direct conversations with current or former employees before making career decisions.
+  </div>
+
+</div>
+
+<script>
+  function toggleFlag(header) {
+    const card = header.parentElement;
+    const body = card.querySelector('.flag-body');
+    const chevron = header.querySelector('.flag-chevron');
+    const isOpen = body.classList.contains('open');
+    document.querySelectorAll('.flag-body.open').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.flag-chevron.open').forEach(c => c.classList.remove('open'));
+    if (!isOpen) {
+      body.classList.add('open');
+      chevron.classList.add('open');
+    }
+  }
+
+  // Animate score ring on load
+  window.addEventListener('load', () => {
+    const circle = document.querySelector('.score-ring-wrap circle:last-child');
+    if (!circle) return;
+    const total = 2 * Math.PI * 58;
+    const score = 62;
+    const offset = total * (1 - score / 100);
+    circle.style.strokeDasharray = total;
+    circle.style.strokeDashoffset = total;
+    setTimeout(() => {
+      circle.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
+      circle.style.strokeDashoffset = offset;
+    }, 200);
+  });
+</script>
+</body>
+</html>
