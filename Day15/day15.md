@@ -107,7 +107,7 @@ AI is not replacing creativity—it's amplifying it.
 Every day of this challenge is teaching me how to turn ideas into working projects faster than ever before.
 
 ## Powered Vedic Astrology Report
-[ai chat]()
+[html file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day15/astrology%20report%20day%2015.html)
 
 
 
