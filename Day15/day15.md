@@ -108,6 +108,8 @@ Every day of this challenge is teaching me how to turn ideas into working projec
 
 ## Powered Vedic Astrology Report
 [html file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day15/astrology%20report%20day%2015.html)
+ ## image 
+ [image](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day15/ChatGPT%20Image%20Jun%2015%2C%202026%2C%2010_30_18%20PM.png)
 
 
 
