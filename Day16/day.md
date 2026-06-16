@@ -137,6 +137,6 @@ This project is created solely for educational and learning purposes. It should 
 If you found this project useful, feel free to star the repository and follow my journey through the 60 Days Claude Challenge.
 
 ## Stock-Analyzer
-[HTML FILE]()
+[HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day16/infosys-deep-dive.html)
 
-[image]()
+[image](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day16/day%2016%20image..png)
