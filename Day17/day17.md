@@ -123,7 +123,7 @@ Through this project, I learned:
 
 
 ## Fuel Analysis Dashboard
-[html file]()
+[html file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day17/e85_dashboard.html)
 
 ## Dashboard image
-[image]()
+[image](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day17/ChatGPT%20Image%20Jun%2017%2C%202026%2C%2008_04_16%20PM.png)
