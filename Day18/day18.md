@@ -122,10 +122,10 @@ Through this project, I learned:
 * Structured output generation
 * User-centric AI solutions
 
-##  Bain Dump planner 
-[HTML FILE]()
+##  Brain Dump planner 
+[HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day18/quarterly_growth_strategy_meeting.html)
 
 ##  image
-[image]()
+[image](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day18/quarterly_growth_strategy_meeting.html)
 
 
