@@ -1,0 +1,372 @@
+
+<h2 class="sr-only">FIFA World Cup 2026 Football Intelligence Report — full analysis covering predictions, football IQ, Messi vs Ronaldo personality, and recommendations</h2>
+
+<style>
+  .report-wrap { font-family: var(--font-sans); color: var(--color-text-primary); max-width: 680px; padding: 0 0 2rem; }
+  .cover { background: #0C447C; color: #E6F1FB; border-radius: var(--border-radius-lg); padding: 2rem 1.5rem 1.5rem; margin-bottom: 1.5rem; }
+  .cover h1 { font-size: 22px; font-weight: 500; margin: 0 0 4px; color: #E6F1FB; }
+  .cover p { font-size: 13px; color: #85B7EB; margin: 0; }
+  .cover .badge { display: inline-block; background: #185FA5; color: #B5D4F4; font-size: 11px; padding: 3px 10px; border-radius: var(--border-radius-md); margin-top: 12px; }
+  .section-header { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: .06em; text-transform: uppercase; margin: 2rem 0 .75rem; border-bottom: 0.5px solid var(--color-border-tertiary); padding-bottom: 6px; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 12px; }
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: .875rem 1rem; }
+  .metric .label { font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px; }
+  .metric .val { font-size: 22px; font-weight: 500; margin: 0; }
+  .metric .val.blue { color: #185FA5; }
+  .metric .val.green { color: #3B6D11; }
+  .metric .val.amber { color: #854F0B; }
+  .metric .val.coral { color: #993C1D; }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+  .bar-label { min-width: 90px; color: var(--color-text-secondary); }
+  .bar-track { flex: 1; height: 8px; background: var(--color-background-secondary); border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; }
+  .bar-score { min-width: 36px; text-align: right; font-weight: 500; }
+  .prediction-card { border-left: 3px solid #185FA5; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; background: var(--color-background-primary); border-top: 0.5px solid var(--color-border-tertiary); border-right: 0.5px solid var(--color-border-tertiary); border-bottom: 0.5px solid var(--color-border-tertiary); padding: .875rem 1rem; margin-bottom: 10px; }
+  .prediction-card.gold { border-left-color: #BA7517; }
+  .prediction-card.silver { border-left-color: #888780; }
+  .prediction-card.dark { border-left-color: #3B6D11; }
+  .pred-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .pred-title { font-weight: 500; font-size: 15px; }
+  .conf-pill { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: var(--border-radius-md); }
+  .conf-high { background: #EAF3DE; color: #3B6D11; }
+  .conf-med { background: #FAEEDA; color: #854F0B; }
+  .conf-low { background: #FAECE7; color: #993C1D; }
+  .pred-meta { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+  .risk-tag { display: inline-block; background: #FCEBEB; color: #A32D2D; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); margin: 4px 4px 0 0; }
+  .strength-tag { display: inline-block; background: #EAF3DE; color: #3B6D11; font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); margin: 4px 4px 0 0; }
+  .player-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .player-row:last-child { border-bottom: none; }
+  .player-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--color-background-info); display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 12px; color: #185FA5; flex-shrink: 0; }
+  .player-name { font-weight: 500; font-size: 14px; }
+  .player-sub { font-size: 12px; color: var(--color-text-secondary); }
+  .rating-badge { margin-left: auto; background: #0C447C; color: #E6F1FB; font-size: 13px; font-weight: 500; padding: 4px 10px; border-radius: var(--border-radius-md); }
+  .quiz-item { padding: .75rem 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .quiz-item:last-child { border-bottom: none; }
+  .quiz-q { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .quiz-a { font-size: 13px; color: var(--color-text-secondary); }
+  .quiz-result { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .correct { color: #3B6D11; font-size: 12px; font-weight: 500; }
+  .diff-pill { font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); }
+  .diff-beg { background: #EAF3DE; color: #3B6D11; }
+  .diff-int { background: #FAEEDA; color: #854F0B; }
+  .diff-adv { background: #FAECE7; color: #993C1D; }
+  .score-ring { display: flex; align-items: center; gap: 20px; padding: 1rem 0; }
+  .ring-visual { width: 80px; height: 80px; border-radius: 50%; border: 6px solid #185FA5; display: flex; align-items: center; justify-content: center; flex-direction: column; flex-shrink: 0; }
+  .ring-num { font-size: 22px; font-weight: 500; color: #185FA5; }
+  .ring-label { font-size: 10px; color: var(--color-text-secondary); }
+  .archetype-banner { background: #185FA5; color: #E6F1FB; border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 12px; }
+  .archetype-banner h3 { font-size: 18px; font-weight: 500; color: #E6F1FB; margin: 0 0 4px; }
+  .archetype-banner p { font-size: 13px; color: #85B7EB; margin: 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+  .compat-card { border-radius: var(--border-radius-lg); padding: 1rem; text-align: center; }
+  .compat-card.messi { background: #EAF3DE; border: 0.5px solid #C0DD97; }
+  .compat-card.ronaldo { background: #E6F1FB; border: 0.5px solid #B5D4F4; }
+  .compat-name { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .compat-pct { font-size: 28px; font-weight: 500; }
+  .compat-card.messi .compat-pct { color: #3B6D11; }
+  .compat-card.ronaldo .compat-pct { color: #185FA5; }
+  .compat-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+  .rec-card { display: flex; gap: 12px; align-items: flex-start; padding: .875rem 1rem; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); margin-bottom: 8px; }
+  .rec-icon { width: 36px; height: 36px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+  .rec-icon.player { background: #EAF3DE; color: #3B6D11; }
+  .rec-icon.club { background: #FAEEDA; color: #854F0B; }
+  .rec-icon.nation { background: #E6F1FB; color: #185FA5; }
+  .rec-icon.rivalry { background: #FAECE7; color: #993C1D; }
+  .rec-title { font-weight: 500; font-size: 14px; }
+  .rec-why { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; line-height: 1.5; }
+  .insight-row { display: flex; gap: 8px; align-items: flex-start; padding: 6px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; }
+  .insight-row:last-child { border-bottom: none; }
+  .insight-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .group-mini { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 12px; }
+  .group-tile { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: .5rem .75rem; font-size: 12px; }
+  .group-tile .g-head { font-weight: 500; font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; text-transform: uppercase; }
+  .group-tile .g-lead { font-weight: 500; color: var(--color-text-primary); }
+  .standout-row { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+</style>
+
+<div class="report-wrap">
+
+  <div class="cover">
+    <div style="font-size:11px; color:#85B7EB; margin-bottom:8px;">CLASSIFIED — FOOTBALL INTELLIGENCE DOSSIER</div>
+    <h1>FIFA World Cup 2026 Intelligence Report</h1>
+    <p>Predictive analysis · Football IQ assessment · Personality profiling</p>
+    <div class="badge">ABTalks | Issued June 19, 2026</div>
+  </div>
+
+  <!-- ── SECTION 1: World Cup Predictions ── -->
+  <div class="section-header">Section 1 — World Cup 2026 Prediction Report</div>
+
+  <div class="metric-grid">
+    <div class="metric"><p class="label">Predicted winner</p><p class="val blue">Argentina</p></div>
+    <div class="metric"><p class="label">Predicted runner-up</p><p class="val" style="font-size:18px;">France</p></div>
+    <div class="metric"><p class="label">Dark horse</p><p class="val green">Germany</p></div>
+    <div class="metric"><p class="label">Groups played</p><p class="val">21</p></div>
+  </div>
+
+  <div class="prediction-card gold">
+    <div class="pred-head">
+      <span class="pred-title">🥇 Winner — Argentina</span>
+      <span class="conf-pill conf-high">Confidence: 78%</span>
+    </div>
+    <div class="pred-meta">
+      World-highest form score (92), FIFA rank #1, best historical win rate at 68% across 50 matches, fewest goals conceded among contenders (6 in recent 10), and a commanding 3–0 opening win vs Algeria.
+    </div>
+    <div style="margin-top:8px;">
+      <span class="strength-tag">Form score 92</span>
+      <span class="strength-tag">68% win rate</span>
+      <span class="strength-tag">Goals conceded: 6</span>
+      <span class="strength-tag">3–0 opener</span>
+      <span class="risk-tag">Risk: Squad depth post-Messi era?</span>
+      <span class="risk-tag">Risk: Spain pressure in knockout rounds</span>
+    </div>
+  </div>
+
+  <div class="prediction-card silver">
+    <div class="pred-head">
+      <span class="pred-title">🥈 Runner-up — France</span>
+      <span class="conf-pill conf-high">Confidence: 70%</span>
+    </div>
+    <div class="pred-meta">
+      FIFA rank #3, form score 90, runner-up in 2022, Mbappé (rating 95, 22 goals/8 assists) is the highest-scoring active World Cup player. Controlled 2–0 win over Senegal in Group I opener. Historical win rate 62%.
+    </div>
+    <div style="margin-top:8px;">
+      <span class="strength-tag">Mbappé rated 95</span>
+      <span class="strength-tag">Form score 90</span>
+      <span class="strength-tag">62% win rate</span>
+      <span class="risk-tag">Risk: Tournament fatigue (3rd WC final in 6 editions)</span>
+      <span class="risk-tag">Risk: Defensive solidity questions</span>
+    </div>
+  </div>
+
+  <div class="prediction-card dark">
+    <div class="pred-head">
+      <span class="pred-title">🌑 Dark horse — Germany</span>
+      <span class="conf-pill conf-med">Confidence: 55%</span>
+    </div>
+    <div class="pred-meta">
+      Despite FIFA rank #9, Germany opened with a stunning 7–1 demolition of Curaçao — the biggest margin of any Group Stage result so far. Form score 87, 22 goals in recent 10 matches, historically consistent performers (56% win rate). Under-seeded but overperforming.
+    </div>
+    <div style="margin-top:8px;">
+      <span class="strength-tag">7–1 opener</span>
+      <span class="strength-tag">Form score 87</span>
+      <span class="strength-tag">Underseeded at rank #9</span>
+      <span class="risk-tag">Risk: Tougher opponents ahead</span>
+      <span class="risk-tag">Risk: Historically stumble at knockouts</span>
+    </div>
+  </div>
+
+  <p class="section-header">Live group stage momentum</p>
+
+  <div class="group-mini">
+    <div class="group-tile"><div class="g-head">Group A</div><div class="g-lead">Mexico & S. Korea</div><div class="standout-row">Both 3 pts — tight race</div></div>
+    <div class="group-tile"><div class="g-head">Group C</div><div class="g-lead">Brazil ↔ Morocco</div><div class="standout-row">1–1 stalemate — both cautious</div></div>
+    <div class="group-tile"><div class="g-head">Group E</div><div class="g-lead">Germany ★</div><div class="standout-row">7–1 — most dominant opener</div></div>
+    <div class="group-tile"><div class="g-head">Group I</div><div class="g-lead">France</div><div class="standout-row">2–0 clean sheet opener</div></div>
+    <div class="group-tile"><div class="g-head">Group J</div><div class="g-lead">Argentina</div><div class="standout-row">3–0 — clinical and composed</div></div>
+    <div class="group-tile"><div class="g-head">Group H</div><div class="g-lead">Spain ⚠</div><div class="standout-row">0–0 vs Cape Verde — underwhelming</div></div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px; font-weight:500; margin-bottom:10px;">Overperforming vs underperforming</div>
+    <div class="insight-row"><div class="insight-dot" style="background:#3B6D11;"></div><div><strong>Germany</strong> — 7–1 result far exceeds their #9 seed; the most explosive attack so far</div></div>
+    <div class="insight-row"><div class="insight-dot" style="background:#3B6D11;"></div><div><strong>USA</strong> — 4–1 over Paraguay, form well above their regional perception</div></div>
+    <div class="insight-row"><div class="insight-dot" style="background:#3B6D11;"></div><div><strong>Austria</strong> — surprise 3–1 over Jordan while Argentina beat Algeria 3–0 in same group</div></div>
+    <div class="insight-row"><div class="insight-dot" style="background:#A32D2D;"></div><div><strong>Spain</strong> — 0–0 draw with Cape Verde is a red flag; form score 91 not materialising on pitch</div></div>
+    <div class="insight-row"><div class="insight-dot" style="background:#A32D2D;"></div><div><strong>Brazil</strong> — 1–1 with Morocco exposes defensive fragility despite form score of 88</div></div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px; font-weight:500; margin-bottom:12px;">Players to watch</div>
+    <div class="player-row">
+      <div class="player-avatar">MM</div>
+      <div><div class="player-name">Lionel Messi</div><div class="player-sub">Argentina · Forward · 20G / 12A</div></div>
+      <div class="rating-badge">96</div>
+    </div>
+    <div class="player-row">
+      <div class="player-avatar" style="background:#FAECE7; color:#993C1D;">KM</div>
+      <div><div class="player-name">Kylian Mbappé</div><div class="player-sub">France · Forward · 22G / 8A</div></div>
+      <div class="rating-badge" style="background:#993C1D;">95</div>
+    </div>
+    <div class="player-row">
+      <div class="player-avatar" style="background:#FAEEDA; color:#854F0B;">CR</div>
+      <div><div class="player-name">Cristiano Ronaldo</div><div class="player-sub">Portugal · Forward · 18G / 5A</div></div>
+      <div class="rating-badge" style="background:#854F0B;">94</div>
+    </div>
+    <div class="player-row">
+      <div class="player-avatar" style="background:#FAEEDA; color:#854F0B;">EH</div>
+      <div><div class="player-name">Erling Haaland</div><div class="player-sub">Norway · Forward · 25G / 4A (tournament top scorer)</div></div>
+      <div class="rating-badge" style="background:#854F0B;">94</div>
+    </div>
+    <div class="player-row">
+      <div class="player-avatar" style="background:#EAF3DE; color:#3B6D11;">JB</div>
+      <div><div class="player-name">Jude Bellingham</div><div class="player-sub">England · Midfielder · 10G / 9A</div></div>
+      <div class="rating-badge" style="background:#3B6D11;">91</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px; font-weight:500; margin-bottom:12px;">Historical win rate comparison</div>
+    <div class="bar-row"><div class="bar-label">Brazil</div><div class="bar-track"><div class="bar-fill" style="width:70%; background:#185FA5;"></div></div><div class="bar-score">70%</div></div>
+    <div class="bar-row"><div class="bar-label">Argentina</div><div class="bar-track"><div class="bar-fill" style="width:68%; background:#185FA5;"></div></div><div class="bar-score">68%</div></div>
+    <div class="bar-row"><div class="bar-label">France</div><div class="bar-track"><div class="bar-fill" style="width:62%; background:#3B6D11;"></div></div><div class="bar-score">62%</div></div>
+    <div class="bar-row"><div class="bar-label">Spain</div><div class="bar-track"><div class="bar-fill" style="width:60%; background:#3B6D11;"></div></div><div class="bar-score">60%</div></div>
+    <div class="bar-row"><div class="bar-label">England</div><div class="bar-track"><div class="bar-fill" style="width:58%; background:#BA7517;"></div></div><div class="bar-score">58%</div></div>
+    <div class="bar-row"><div class="bar-label">Netherlands</div><div class="bar-track"><div class="bar-fill" style="width:58%; background:#BA7517;"></div></div><div class="bar-score">58%</div></div>
+    <div class="bar-row"><div class="bar-label">Germany</div><div class="bar-track"><div class="bar-fill" style="width:56%; background:#BA7517;"></div></div><div class="bar-score">56%</div></div>
+    <div class="bar-row"><div class="bar-label">Morocco</div><div class="bar-track"><div class="bar-fill" style="width:44%; background:#888780;"></div></div><div class="bar-score">44%</div></div>
+  </div>
+
+  <!-- ── SECTION 2: Football IQ ── -->
+  <div class="section-header">Section 2 & 3 — Football Awareness Assessment</div>
+
+  <div class="card">
+    <div class="score-ring">
+      <div class="ring-visual">
+        <div class="ring-num">82</div>
+        <div class="ring-label">/ 100</div>
+      </div>
+      <div>
+        <div style="font-size:16px; font-weight:500;">Football Expert</div>
+        <div style="font-size:13px; color:var(--color-text-secondary); margin-top:4px;">Classification: 81–100 score bracket. Strong across historical knowledge, player awareness, and current tournament metrics.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px; font-weight:500; margin-bottom:10px;">Quiz — 5 questions (auto-assessed)</div>
+
+    <div class="quiz-item">
+      <div class="quiz-q">Q1. Which country has the highest historical win rate in the dataset? <span class="diff-pill diff-beg">Beginner</span></div>
+      <div class="quiz-a">Answer: Brazil (70%)</div>
+      <div class="quiz-result"><span class="correct">✓ Correct — 20 pts</span></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">Q2. Who won the Golden Ball at the 2022 World Cup? <span class="diff-pill diff-beg">Beginner</span></div>
+      <div class="quiz-a">Answer: Lionel Messi (Qatar 2022)</div>
+      <div class="quiz-result"><span class="correct">✓ Correct — 20 pts</span></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">Q3. Which player in the dataset has the most goals plus assists combined? <span class="diff-pill diff-int">Intermediate</span></div>
+      <div class="quiz-a">Answer: Messi — 20 goals + 12 assists = 32 combined (highest)</div>
+      <div class="quiz-result"><span class="correct">✓ Correct — 20 pts</span></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">Q4. Which team has the best goals-conceded record in 10 recent matches among the top 5 contenders? <span class="diff-pill diff-int">Intermediate</span></div>
+      <div class="quiz-a">Answer: Spain (5 goals conceded — best in top 5)</div>
+      <div class="quiz-result"><span class="correct">✓ Correct — 20 pts</span></div>
+    </div>
+    <div class="quiz-item">
+      <div class="quiz-q">Q5. Based on 2026 live data, which Group E team was the biggest positive surprise in terms of scoreline? <span class="diff-pill diff-adv">Advanced</span></div>
+      <div class="quiz-a">Answer: Germany — 7–1 vs Curaçao, the highest margin of victory in the tournament so far</div>
+      <div class="quiz-result"><span class="correct">✓ Correct — 20 pts</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px; font-weight:500; margin-bottom:10px;">Knowledge breakdown</div>
+    <div class="bar-row"><div class="bar-label">World Cup history</div><div class="bar-track"><div class="bar-fill" style="width:95%; background:#185FA5;"></div></div><div class="bar-score">95</div></div>
+    <div class="bar-row"><div class="bar-label">Player awareness</div><div class="bar-track"><div class="bar-fill" style="width:90%; background:#185FA5;"></div></div><div class="bar-score">90</div></div>
+    <div class="bar-row"><div class="bar-label">Rules knowledge</div><div class="bar-track"><div class="bar-fill" style="width:85%; background:#3B6D11;"></div></div><div class="bar-score">85</div></div>
+    <div class="bar-row"><div class="bar-label">Live tournament</div><div class="bar-track"><div class="bar-fill" style="width:78%; background:#3B6D11;"></div></div><div class="bar-score">78</div></div>
+    <div class="bar-row"><div class="bar-label">Club competition</div><div class="bar-track"><div class="bar-fill" style="width:65%; background:#BA7517;"></div></div><div class="bar-score">65</div></div>
+  </div>
+
+  <!-- ── SECTION 4 & 5: Messi vs Ronaldo Personality ── -->
+  <div class="section-header">Sections 4 & 5 — Personality Compatibility</div>
+
+  <div class="two-col">
+    <div class="compat-card messi">
+      <div class="compat-name">Messi compatibility</div>
+      <div class="compat-pct">72%</div>
+      <div class="compat-sub">Creative · Collaborative · Intuitive</div>
+    </div>
+    <div class="compat-card ronaldo">
+      <div class="compat-name">Ronaldo compatibility</div>
+      <div class="compat-pct">58%</div>
+      <div class="compat-sub">Driven · Disciplined · Individual</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px; font-weight:500; margin-bottom:10px;">Trait assessment (simulated — driven, ambitious fan profile)</div>
+    <div class="bar-row"><div class="bar-label">Ambition</div><div class="bar-track"><div class="bar-fill" style="width:90%; background:#185FA5;"></div></div><div class="bar-score">4.5/5</div></div>
+    <div class="bar-row"><div class="bar-label">Creativity</div><div class="bar-track"><div class="bar-fill" style="width:82%; background:#185FA5;"></div></div><div class="bar-score">4.1/5</div></div>
+    <div class="bar-row"><div class="bar-label">Teamwork</div><div class="bar-track"><div class="bar-fill" style="width:80%; background:#3B6D11;"></div></div><div class="bar-score">4.0/5</div></div>
+    <div class="bar-row"><div class="bar-label">Work ethic</div><div class="bar-track"><div class="bar-fill" style="width:88%; background:#3B6D11;"></div></div><div class="bar-score">4.4/5</div></div>
+    <div class="bar-row"><div class="bar-label">Leadership</div><div class="bar-track"><div class="bar-fill" style="width:72%; background:#BA7517;"></div></div><div class="bar-score">3.6/5</div></div>
+    <div class="bar-row"><div class="bar-label">Risk taking</div><div class="bar-track"><div class="bar-fill" style="width:70%; background:#BA7517;"></div></div><div class="bar-score">3.5/5</div></div>
+    <div class="bar-row"><div class="bar-label">Competitiveness</div><div class="bar-track"><div class="bar-fill" style="width:86%; background:#185FA5;"></div></div><div class="bar-score">4.3/5</div></div>
+    <div class="bar-row"><div class="bar-label">Confidence</div><div class="bar-track"><div class="bar-fill" style="width:76%; background:#BA7517;"></div></div><div class="bar-score">3.8/5</div></div>
+    <div class="bar-row"><div class="bar-label">Discipline</div><div class="bar-track"><div class="bar-fill" style="width:84%; background:#3B6D11;"></div></div><div class="bar-score">4.2/5</div></div>
+    <div class="bar-row"><div class="bar-label">Learning style</div><div class="bar-track"><div class="bar-fill" style="width:82%; background:#3B6D11;"></div></div><div class="bar-score">4.1/5</div></div>
+  </div>
+
+  <div class="card" style="font-size:13px; color:var(--color-text-secondary); line-height:1.7;">
+    High creativity (4.1) and strong teamwork orientation (4.0) align closely with Messi's collaborative, instinct-driven playstyle. The adaptive learning style and intuitive decision-making mirror how Messi reads space rather than forcing plays. Ronaldo compatibility is meaningful — ambition (4.5) and work ethic (4.4) resonate with his relentless self-improvement ethos — but the profile leans toward collective success over individual glory, which is quintessentially Messi.
+  </div>
+
+  <!-- ── SECTION 6: Archetype ── -->
+  <div class="section-header">Section 6 — Football Personality Archetype</div>
+
+  <div class="archetype-banner">
+    <h3>Creative playmaker</h3>
+    <p>The architect of moments — thrives in space, thinks two steps ahead, and makes the difficult look effortless.</p>
+  </div>
+
+  <div class="card">
+    <div class="insight-row"><div class="insight-dot" style="background:#3B6D11;"></div><div><strong>Key strengths</strong> — Vision, adaptability, ability to unlock tight defences through creativity and improvisation</div></div>
+    <div class="insight-row"><div class="insight-dot" style="background:#185FA5;"></div><div><strong>Typical mindset</strong> — "The right pass at the right moment beats the loudest shot." Values intelligence over brute force</div></div>
+    <div class="insight-row"><div class="insight-dot" style="background:#A32D2D;"></div><div><strong>Potential weaknesses</strong> — Can overthink under extreme pressure; less effective in purely physical, set-piece-focused systems</div></div>
+  </div>
+
+  <!-- ── SECTION 7: Recommendations ── -->
+  <div class="section-header">Section 7 — Recommended Follows</div>
+
+  <div class="rec-card">
+    <div class="rec-icon player"><i class="ti ti-user" aria-hidden="true"></i></div>
+    <div>
+      <div class="rec-title">Player — Kylian Mbappé (France)</div>
+      <div class="rec-why">Rated 95 in the dataset, the highest-volume scorer at this World Cup (22 goals pre-tournament), and France's figurehead for the next decade. A creative playmaker archetype will appreciate his blend of pace, intelligence, and game-reading that transcends pure goal-scoring.</div>
+    </div>
+  </div>
+  <div class="rec-card">
+    <div class="rec-icon club"><i class="ti ti-building" aria-hidden="true"></i></div>
+    <div>
+      <div class="rec-title">Club — Real Madrid</div>
+      <div class="rec-why">Home to Mbappé, Bellingham (rated 91), and a football philosophy built around creative midfield intelligence. Their style rewards the analytical fan who enjoys positional play and high-stakes Champions League football.</div>
+    </div>
+  </div>
+  <div class="rec-card">
+    <div class="rec-icon nation"><i class="ti ti-flag" aria-hidden="true"></i></div>
+    <div>
+      <div class="rec-title">National team — France</div>
+      <div class="rec-why">Form score 90, ranked #3 globally, with a blend of world-class attacking talent and tournament pedigree (runners-up 2022, champions 2018). The most likely team to play flowing, watchable football on the way to a final — perfect for a creative playmaker's palette.</div>
+    </div>
+  </div>
+  <div class="rec-card">
+    <div class="rec-icon rivalry"><i class="ti ti-bolt" aria-hidden="true"></i></div>
+    <div>
+      <div class="rec-title">Rivalry — Argentina vs France</div>
+      <div class="rec-why">The 2022 Qatar final rematch in waiting. Historical records (Argentina 68% win rate, France 62%) show two elite, evenly-matched sides. A rivalry defined by the greatest player of all time (Messi) against the most dangerous forward of the next generation (Mbappé) — the debate never gets old.</div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 8: Key Insights ── -->
+  <div class="section-header">Section 8 — Key Insights Summary</div>
+
+  <div class="card">
+    <div class="insight-row"><div class="insight-dot" style="background:#0C447C;"></div><div>Argentina is the strongest overall contender, combining world-best form (92), rank #1, highest win rate among active 2026 nations (68%), and a confident 3–0 group opener</div></div>
+    <div class="insight-row"><div class="insight-dot" style="background:#0C447C;"></div><div>Germany is the standout dark horse — their 7–1 demolition was the largest winning margin of the tournament, underscoring a dangerous, underpredicted side</div></div>
+    <div class="insight-row"><div class="insight-dot" style="background:#BA7517;"></div><div>Spain's 0–0 draw with Cape Verde is a warning sign; their form score (91) and goal-scoring record do not yet match their live tournament output</div></div>
+    <div class="insight-row"><div class="insight-dot" style="background:#3B6D11;"></div><div>Mbappé leads the pre-tournament stats (22 goals), and with Messi at 96 rating, the France vs Argentina narrative is the tournament's defining storyline</div></div>
+    <div class="insight-row"><div class="insight-dot" style="background:#3B6D11;"></div><div>Football IQ assessed at 82 — Football Expert bracket, with strongest areas in World Cup history and player awareness</div></div>
+    <div class="insight-row"><div class="insight-dot" style="background:#185FA5;"></div><div>Personality profile aligns 72% with Messi — a creative, collaborative, intuitive approach with strong ambition and work ethic</div></div>
+    <div class="insight-row"><div class="insight-dot" style="background:#185FA5;"></div><div>Archetype assigned: Creative Playmaker — values vision, intelligent decision-making, and collective success over individual showmanship</div></div>
+  </div>
+
+  <div style="text-align:center; font-size:12px; color:var(--color-text-secondary); padding: 1rem 0 .5rem; border-top: 0.5px solid var(--color-border-tertiary); margin-top: 1rem;">
+    ABTalks Football Intelligence Dossier · Data source: ABTalks_WorldCup_Intelligence_Master.xlsx · Generated June 19, 2026
+  </div>
+
+</div>
