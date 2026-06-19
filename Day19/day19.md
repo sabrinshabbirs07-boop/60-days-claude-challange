@@ -44,6 +44,6 @@ This report integrates multiple analytical dimensions of football into a single 
 This project demonstrates how Generative AI can convert raw sports data into professional intelligence reports. By combining analytics, visualization, and structured storytelling, AI can help create insightful reports that support learning, decision-making, and audience engagement.
 
 ## FIFA World Cup 2026 Football Intelligence Report
-[html file()
+[html file(https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day19/football_intelligence_report_2026.html)
 ## image
-[image]()
+[image](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day19/fifa%20report%20day%2019.jpeg)
