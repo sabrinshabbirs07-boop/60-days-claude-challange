@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Face Puzzle Booth</title>
+<style>
+  :root{
+    --ink:#18141C;
+    --panel:#241E2C;
+    --panel-2:#2D2535;
+    --paper:#F2E9DC;
+    --flash:#FFC857;
+    --film:#FF6B4A;
+    --correct:#34D399;
+    --text:#F2E9DC;
+    --muted:#A89BAE;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --radius-lg:26px;
+    --radius-md:16px;
+  }
+  *,*::before,*::after{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    min-height:100%;
+    font-family:var(--sans);
+    color:var(--text);
+    background:
+      radial-gradient(circle at 18% -8%, rgba(255,200,87,0.14), transparent 55%),
+      radial-gradient(circle at 102% 110%, rgba(255,107,74,0.12), transparent 55%),
+      var(--ink);
+    padding:28px 16px 60px;
+    -webkit-font-smoothing:antialiased;
+  }
+  button{ font-family:inherit; }
+  button:focus-visible, .tab:focus-visible, .diff-btn:focus-visible{
+    outline:2px solid var(--flash);
+    outline-offset:2px;
+  }
+  .hidden{ display:none !important; }
+
+  header{
+    max-width:560px;
+    margin:0 auto 22px;
+    text-align:center;
+  }
+  .eyebrow{
+    margin:0 0 8px;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--film);
+    font-weight:700;
+  }
+  h1{
+    margin:0 0 10px;
+    font-size:clamp(28px,6vw,40px);
+    line-height:1.05;
+    letter-spacing:-0.01em;
+    text-transform:uppercase;
+    font-weight:800;
+  }
+  .lede{
+    margin:0;
+    color:var(--muted);
+    font-size:15px;
+    line-height:1.5;
+  }
+
+  main{ max-width:560px; margin:0 auto; }
+
+  .steps{
+    display:flex;
+    gap:18px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-bottom:14px;
+  }
+  .step{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    opacity:.55;
+  }
+  .step.active{ opacity:1; color:var(--flash); font-weight:700; }
+  .step.done{ opacity:.8; color:var(--correct); }
+
+  .stage-panel{
+    position:relative;
+    background:var(--panel);
+    border-radius:var(--radius-lg);
+    padding:14px 14px 18px;
+    box-shadow:0 24px 60px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.04);
+    overflow:hidden;
+  }
+  .sprockets{
+    height:14px;
+    background-color:var(--panel-2);
+    background-image:radial-gradient(circle, var(--ink) 42%, transparent 43%);
+    background-size:20px 100%;
+    background-repeat:repeat-x;
+    background-position:center;
+    border-radius:8px;
+    margin-bottom:12px;
+  }
+  .sprockets.bottom{ margin-bottom:0; margin-top:12px; }
+
+  .viewfinder{
+    position:relative;
+    width:100%;
+    max-width:520px;
+    margin:0 auto;
+    aspect-ratio:1/1;
+    border-radius:18px;
+    overflow:hidden;
+    background:#000;
+  }
+  video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transform:scaleX(-1);
+    display:block;
+    background:#000;
+  }
+  #previewCanvas{
+    width:100%;
+    height:auto;
+    display:block;
+  }
+  .camera-status, .perm-msg{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:24px;
+  }
+  .camera-status{
+    background:rgba(0,0,0,.55);
+    font-family:var(--mono);
+    font-size:14px;
+    letter-spacing:.04em;
+    color:var(--text);
+  }
+  .perm-msg{
+    flex-direction:column;
+    gap:14px;
+    background:var(--panel-2);
+  }
+  .perm-msg p{
+    margin:0;
+    max-width:340px;
+    color:var(--text);
+    font-size:14px;
+    line-height:1.5;
+  }
+  .flash-overlay{
+    position:absolute;
+    inset:14px;
+    border-radius:18px;
+    background:#fff;
+    opacity:0;
+    pointer-events:none;
+  }
+  .flash-overlay.flash-active{ animation:flashAnim .45s ease forwards; }
+  @keyframes flashAnim{ 0%{opacity:0;} 12%{opacity:.92;} 100%{opacity:0;} }
+
+  .puzzle-wrap{ display:flex; justify-content:center; }
+  .puzzle-grid{
+    position:relative;
+    border-radius:16px;
+    overflow:hidden;
+    background:#000;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.06);
+  }
+  .tile{
+    position:absolute;
+    top:0; left:0;
+    background-repeat:no-repeat;
+    touch-action:none;
+    cursor:grab;
+    border:2px solid rgba(0,0,0,.3);
+    user-select:none;
+    -webkit-user-drag:none;
+  }
+  .tile.dragging{
+    cursor:grabbing;
+    border-color:var(--film);
+    box-shadow:0 10px 26px rgba(0,0,0,.5);
+  }
+  .tile.correct{
+    border-color:var(--correct);
+    box-shadow:0 0 0 2px var(--correct) inset;
+  }
+  .tile-badge{
+    position:absolute;
+    right:3px; bottom:3px;
+    font-family:var(--mono);
+    font-size:10px;
+    line-height:1;
+    padding:3px 5px;
+    border-radius:5px;
+    background:rgba(0,0,0,.55);
+    color:rgba(255,255,255,.78);
+    pointer-events:none;
+  }
+
+  .hud{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin:18px 0 4px;
+  }
+  .hud-chip{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    background:var(--panel);
+    border-radius:12px;
+    padding:8px 18px;
+    min-width:86px;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
+  }
+  .hud-label{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .hud-value{
+    font-family:var(--mono);
+    font-size:18px;
+    font-weight:700;
+    color:var(--text);
+  }
+
+  .controls{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    margin-top:18px;
+  }
+  .row-buttons{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+  button.primary, button.ghost{
+    appearance:none;
+    border-radius:999px;
+    padding:13px 26px;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    cursor:pointer;
+    border:2px solid transparent;
+    transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    min-height:46px;
+  }
+  button.primary{ background:var(--flash); color:var(--ink); }
+  button.primary:hover{ transform:translateY(-2px); box-shadow:0 10px 22px rgba(255,200,87,.25); }
+  button.ghost{ background:transparent; color:var(--paper); border-color:rgba(242,233,220,.35); }
+  button.ghost:hover{ transform:translateY(-2px); border-color:rgba(242,233,220,.6); }
+  button:disabled{ opacity:.4; cursor:not-allowed; transform:none !important; box-shadow:none !important; }
+
+  .difficulty-select{ display:flex; gap:8px; }
+  .diff-btn{
+    appearance:none;
+    border:2px solid rgba(242,233,220,.25);
+    background:transparent;
+    color:var(--text);
+    border-radius:999px;
+    padding:9px 18px;
+    font-family:var(--mono);
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .diff-btn.active{ background:var(--flash); color:var(--ink); border-color:var(--flash); }
+
+  .leaderboard{
+    margin-top:40px;
+    background:var(--panel);
+    border-radius:var(--radius-lg);
+    padding:22px 20px;
+    box-shadow:0 18px 40px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.04);
+  }
+  .leaderboard h2{
+    margin:0 0 14px;
+    font-size:18px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  .tabs{ display:flex; gap:8px; margin-bottom:14px; }
+  .tab{
+    appearance:none;
+    border:none;
+    background:var(--panel-2);
+    color:var(--muted);
+    border-radius:999px;
+    padding:7px 16px;
+    font-family:var(--mono);
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .tab.active{ background:var(--film); color:#1a1009; }
+  .lb-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
+  .lb-row{
+    display:grid;
+    grid-template-columns:28px 1fr 1fr 70px;
+    align-items:center;
+    gap:8px;
+    padding:10px 12px;
+    border-radius:10px;
+    background:var(--panel-2);
+    font-family:var(--mono);
+    font-size:13px;
+  }
+  .lb-row.lb-first{ box-shadow:inset 0 0 0 1px rgba(255,200,87,.5); }
+  .lb-rank{ color:var(--flash); font-weight:700; }
+  .lb-first .lb-rank{ color:var(--flash); }
+  .lb-time{ font-weight:700; }
+  .lb-moves{ color:var(--muted); }
+  .lb-date{ color:var(--muted); text-align:right; font-size:12px; }
+  .lb-empty{
+    color:var(--muted);
+    font-size:13px;
+    padding:12px;
+    text-align:center;
+    background:var(--panel-2);
+    border-radius:10px;
+  }
+
+  .results-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(24,20,28,.86);
+    backdrop-filter:blur(6px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:200;
+  }
+  .results-card{
+    background:var(--panel);
+    border-radius:var(--radius-lg);
+    padding:30px 26px;
+    max-width:380px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 30px 70px rgba(0,0,0,.55);
+    animation:cardIn .25s ease;
+  }
+  @keyframes cardIn{ from{ opacity:0; transform:translateY(12px) scale(.97);} to{ opacity:1; transform:none; } }
+  .results-card h2{ margin:0 0 18px; font-size:24px; text-transform:uppercase; }
+  .results-stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .results-stats > div{
+    background:var(--panel-2);
+    border-radius:12px;
+    padding:12px 6px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .stat-label{ font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  .stat-value{ font-family:var(--mono); font-size:17px; font-weight:700; }
+  .new-best{
+    margin:0 0 18px;
+    font-family:var(--mono);
+    font-size:13px;
+    font-weight:700;
+    color:var(--flash);
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+
+  @media (max-width:420px){
+    body{ padding:20px 12px 48px; }
+    .lb-date{ display:none; }
+    .lb-row{ grid-template-columns:24px 1fr 1fr; }
+    .results-stats{ grid-template-columns:1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Face Puzzle Booth</p>
+  <h1>Snap. Scramble. Solve.</h1>
+  <p class="lede">Take a selfie, slice it into a sliding puzzle, and race the clock to put your face back together piece by piece.</p>
+</header>
+
+<main>
+
+  <div class="steps" id="stepsTracker">
+    <span class="step active" data-step="camera">01 · Capture</span>
+    <span class="step" data-step="preview">02 · Choose grid</span>
+    <span class="step" data-step="puzzle">03 · Solve</span>
+  </div>
+
+  <section class="stage-panel" id="stagePanel">
+    <div class="sprockets top"></div>
+
+    <div class="stage" id="stageCamera">
+      <div class="viewfinder">
+        <video id="video" autoplay playsinline muted></video>
+        <div class="camera-status" id="cameraStatus">Starting camera&hellip;</div>
+        <div class="perm-msg hidden" id="permMsg">
+          <p id="permMsgText">Camera access wasn't granted.</p>
+          <div class="row-buttons">
+            <button class="primary" id="btnRetryPermission">Try Again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage hidden" id="stagePreview">
+      <div class="viewfinder">
+        <canvas id="previewCanvas"></canvas>
+      </div>
+    </div>
+
+    <div class="stage hidden" id="stagePuzzle">
+      <div class="puzzle-wrap">
+        <div class="puzzle-grid" id="puzzleGrid"></div>
+      </div>
+    </div>
+
+    <div class="flash-overlay" id="flashOverlay"></div>
+    <div class="sprockets bottom"></div>
+  </section>
+
+  <div class="hud hidden" id="hud">
+    <div class="hud-chip"><span class="hud-label">Time</span><span class="hud-value" id="hudTime">00:00.0</span></div>
+    <div class="hud-chip"><span class="hud-label">Moves</span><span class="hud-value" id="hudMoves">0</span></div>
+    <div class="hud-chip"><span class="hud-label">Correct</span><span class="hud-value" id="hudCorrect">0/9</span></div>
+  </div>
+
+  <div class="controls" id="controlsCamera">
+    <div class="row-buttons">
+      <button class="primary" id="btnTakePhoto" disabled>Take Photo</button>
+      <button class="ghost" id="btnUploadFallback">Upload Photo Instead</button>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" class="hidden">
+  </div>
+
+  <div class="controls hidden" id="controlsPreview">
+    <div class="difficulty-select" id="diffSelect">
+      <button class="diff-btn active" data-n="3">3×3</button>
+      <button class="diff-btn" data-n="4">4×4</button>
+      <button class="diff-btn" data-n="5">5×5</button>
+    </div>
+    <div class="row-buttons">
+      <button class="ghost" id="btnRetake">Retake Photo</button>
+      <button class="primary" id="btnStart">Start Puzzle</button>
+    </div>
+  </div>
+
+  <div class="controls hidden" id="controlsPuzzle">
+    <button class="ghost" id="btnNewPhotoMid">New Photo</button>
+  </div>
+
+  <section class="leaderboard">
+    <h2>Best Times</h2>
+    <div class="tabs" id="lbTabs">
+      <button class="tab active" data-n="3">3×3</button>
+      <button class="tab" data-n="4">4×4</button>
+      <button class="tab" data-n="5">5×5</button>
+    </div>
+    <ol class="lb-list" id="lbList"></ol>
+  </section>
+
+</main>
+
+<div class="results-overlay hidden" id="resultsOverlay">
+  <div class="results-card">
+    <p class="eyebrow">Puzzle Solved</p>
+    <h2>Frame complete.</h2>
+    <div class="results-stats">
+      <div><span class="stat-label">Time</span><span class="stat-value" id="resTime">00:00.0</span></div>
+      <div><span class="stat-label">Moves</span><span class="stat-value" id="resMoves">0</span></div>
+      <div><span class="stat-label">Grid</span><span class="stat-value" id="resGrid">3×3</span></div>
+    </div>
+    <p class="new-best hidden" id="newBestMsg">New personal best for this grid!</p>
+    <div class="row-buttons">
+      <button class="primary" id="btnPlayAgain">Play Again</button>
+      <button class="ghost" id="btnNewPhotoEnd">New Photo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ---------- element references ----------
+  var video = document.getElementById('video');
+  var cameraStatus = document.getElementById('cameraStatus');
+  var permMsg = document.getElementById('permMsg');
+  var permMsgText = document.getElementById('permMsgText');
+  var btnRetryPermission = document.getElementById('btnRetryPermission');
+  var btnTakePhoto = document.getElementById('btnTakePhoto');
+  var btnUploadFallback = document.getElementById('btnUploadFallback');
+  var fileInput = document.getElementById('fileInput');
+  var flashOverlay = document.getElementById('flashOverlay');
+
+  var stageCamera = document.getElementById('stageCamera');
+  var stagePreview = document.getElementById('stagePreview');
+  var stagePuzzle = document.getElementById('stagePuzzle');
+  var previewCanvas = document.getElementById('previewCanvas');
+  var puzzleGrid = document.getElementById('puzzleGrid');
+
+  var controlsCamera = document.getElementById('controlsCamera');
+  var controlsPreview = document.getElementById('controlsPreview');
+  var controlsPuzzle = document.getElementById('controlsPuzzle');
+
+  var diffSelect = document.getElementById('diffSelect');
+  var btnRetake = document.getElementById('btnRetake');
+  var btnStart = document.getElementById('btnStart');
+  var btnNewPhotoMid = document.getElementById('btnNewPhotoMid');
+  var btnNewPhotoEnd = document.getElementById('btnNewPhotoEnd');
+  var btnPlayAgain = document.getElementById('btnPlayAgain');
+
+  var hud = document.getElementById('hud');
+  var hudTime = document.getElementById('hudTime');
+  var hudMoves = document.getElementById('hudMoves');
+  var hudCorrect = document.getElementById('hudCorrect');
+
+  var resultsOverlay = document.getElementById('resultsOverlay');
+  var resTime = document.getElementById('resTime');
+  var resMoves = document.getElementById('resMoves');
+  var resGrid = document.getElementById('resGrid');
+  var newBestMsg = document.getElementById('newBestMsg');
+
+  var stepsTracker = document.getElementById('stepsTracker');
+  var lbTabs = document.getElementById('lbTabs');
+  var lbList = document.getElementById('lbList');
+
+  // ---------- state ----------
+  var stream = null;
+  var capturedDataURL = null;
+  var gridN = 3;
+  var stageSize = 480;
+  var tileSize = stageSize / gridN;
+  var tiles = [];
+  var slots = [];
+  var moveCount = 0;
+  var startTime = null;
+  var elapsedMs = 0;
+  var timerInterval = null;
+  var dragState = null;
+  var currentLbTab = 3;
+  var resizeTimer = null;
+
+  var LB_KEY = 'facePuzzleBoothScores_v1';
+  var STEP_ORDER = ['camera','preview','puzzle'];
+
+  // ---------- helpers ----------
+  function pad(n){ return n.toString().padStart(2,'0'); }
+
+  function formatTime(ms){
+    var totalTenths = Math.floor(ms/100);
+    var tenths = totalTenths % 10;
+    var totalSeconds = Math.floor(totalTenths/10);
+    var seconds = totalSeconds % 60;
+    var minutes = Math.floor(totalSeconds/60);
+    return pad(minutes) + ':' + pad(seconds) + '.' + tenths;
+  }
+
+  function formatDate(iso){
+    var d = new Date(iso);
+    return d.toLocaleDateString(undefined,{ month:'short', day:'numeric' });
+  }
+
+  function shuffleArray(arr){
+    for(var i=arr.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var tmp = arr[i]; arr[i]=arr[j]; arr[j]=tmp;
+    }
+    return arr;
+  }
+
+  function arraysEqual(a,b){
+    if(a.length!==b.length) return false;
+    for(var i=0;i<a.length;i++){ if(a[i]!==b[i]) return false; }
+    return true;
+  }
+
+  function computeStageSize(){
+    var s = Math.min(window.innerWidth*0.86, 520, window.innerHeight*0.5);
+    s = Math.max(s, 220);
+    return Math.round(s);
+  }
+
+  function setStep(name){
+    var items = stepsTracker.querySelectorAll('.step');
+    var targetIdx = STEP_ORDER.indexOf(name);
+    items.forEach(function(el){
+      var idx = STEP_ORDER.indexOf(el.dataset.step);
+      el.classList.toggle('active', idx===targetIdx);
+      el.classList.toggle('done', idx<targetIdx);
+    });
+  }
+
+  // ---------- camera ----------
+  function showPermissionError(msg){
+    permMsgText.textContent = msg;
+    permMsg.classList.remove('hidden');
+    cameraStatus.classList.add('hidden');
+    btnTakePhoto.disabled = true;
+  }
+
+  function hidePermissionError(){
+    permMsg.classList.add('hidden');
+  }
+
+  function initCamera(){
+    hidePermissionError();
+    btnTakePhoto.disabled = true;
+    cameraStatus.textContent = 'Starting camera\u2026';
+    cameraStatus.classList.remove('hidden');
+
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      showPermissionError("This browser can't access a camera. You can upload a photo instead.");
+      return;
+    }
+
+    navigator.mediaDevices.getUserMedia({
+      video:{ facingMode:'user', width:{ ideal:1280 }, height:{ ideal:1280 } },
+      audio:false
+    }).then(function(s){
+      stream = s;
+      video.srcObject = stream;
+      video.play().catch(function(){});
+    }).catch(function(err){
+      var msg = "Camera access wasn't granted. Allow camera permission and try again, or upload a photo instead.";
+      if(err && err.name==='NotFoundError'){
+        msg = "No camera was found on this device. You can upload a photo instead.";
+      } else if(err && err.name==='NotAllowedError'){
+        msg = "Camera access was denied. Allow camera permission in your browser settings and try again, or upload a photo instead.";
+      } else if(err && err.name==='NotReadableError'){
+        msg = "The camera is already in use by another app. Close it and try again, or upload a photo instead.";
+      }
+      showPermissionError(msg);
+    });
+  }
+
+  video.addEventListener('loadeddata', function(){
+    btnTakePhoto.disabled = false;
+    cameraStatus.classList.add('hidden');
+  });
+
+  btnRetryPermission.addEventListener('click', initCamera);
+
+  // ---------- capture ----------
+  function triggerFlash(){
+    flashOverlay.classList.remove('flash-active');
+    void flashOverlay.offsetWidth;
+    flashOverlay.classList.add('flash-active');
+  }
+
+  function takePhoto(){
+    if(!video.videoWidth) return;
+    triggerFlash();
+    var vw = video.videoWidth, vh = video.videoHeight;
+    var size = Math.min(vw, vh);
+    var sx = (vw-size)/2, sy = (vh-size)/2;
+    var outSize = 640;
+    var c = document.createElement('canvas');
+    c.width = outSize; c.height = outSize;
+    var cx = c.getContext('2d');
+    cx.save();
+    cx.translate(outSize,0);
+    cx.scale(-1,1);
+    cx.drawImage(video, sx, sy, size, size, 0, 0, outSize, outSize);
+    cx.restore();
+    capturedDataURL = c.toDataURL('image/jpeg', 0.92);
+    showPreview();
+  }
+
+  btnTakePhoto.addEventListener('click', takePhoto);
+
+  btnUploadFallback.addEventListener('click', function(){
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', function(e){
+    var file = e.target.files && e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var img = new Image();
+      img.onload = function(){
+        var size = Math.min(img.width, img.height);
+        var sx = (img.width-size)/2, sy = (img.height-size)/2;
+        var outSize = 640;
+        var c = document.createElement('canvas');
+        c.width = outSize; c.height = outSize;
+        var cx = c.getContext('2d');
+        cx.drawImage(img, sx, sy, size, size, 0, 0, outSize, outSize);
+        capturedDataURL = c.toDataURL('image/jpeg', 0.92);
+        showPreview();
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+    fileInput.value = '';
+  });
+
+  function showPreview(){
+    var img = new Image();
+    img.onload = function(){
+      previewCanvas.width = 640;
+      previewCanvas.height = 640;
+      previewCanvas.getContext('2d').drawImage(img,0,0,640,640);
+    };
+    img.src = capturedDataURL;
+
+    stageCamera.classList.add('hidden');
+    stagePuzzle.classList.add('hidden');
+    stagePreview.classList.remove('hidden');
+    controlsCamera.classList.add('hidden');
+    controlsPuzzle.classList.add('hidden');
+    hud.classList.add('hidden');
+    controlsPreview.classList.remove('hidden');
+    setStep('preview');
+  }
+
+  // ---------- difficulty selection ----------
+  diffSelect.querySelectorAll('.diff-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      diffSelect.querySelectorAll('.diff-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      gridN = parseInt(btn.dataset.n,10);
+    });
+  });
+
+  btnRetake.addEventListener('click', showCameraStage);
+
+  function showCameraStage(){
+    if(timerInterval){ clearInterval(timerInterval); timerInterval=null; }
+    resultsOverlay.classList.add('hidden');
+    stagePreview.classList.add('hidden');
+    stagePuzzle.classList.add('hidden');
+    controlsPreview.classList.add('hidden');
+    controlsPuzzle.classList.add('hidden');
+    hud.classList.add('hidden');
+    stageCamera.classList.remove('hidden');
+    controlsCamera.classList.remove('hidden');
+    hidePermissionError();
+    setStep('camera');
+  }
+
+  btnNewPhotoMid.addEventListener('click', showCameraStage);
+  btnNewPhotoEnd.addEventListener('click', showCameraStage);
+
+  // ---------- puzzle build ----------
+  function buildPuzzle(n){
+    gridN = n;
+    var total = n*n;
+    stageSize = computeStageSize();
+    tileSize = stageSize/n;
+    puzzleGrid.style.width = stageSize+'px';
+    puzzleGrid.style.height = stageSize+'px';
+    puzzleGrid.innerHTML = '';
+
+    tiles = new Array(total);
+    slots = new Array(total);
+
+    var order = [];
+    for(var i=0;i<total;i++){ order.push(i); }
+    var shuffled = shuffleArray(order.slice());
+
+    function fixedPoints(arr){
+      var c=0;
+      for(var k=0;k<arr.length;k++){ if(arr[k]===k) c++; }
+      return c;
+    }
+    var attempts = 0;
+    var maxFixed = Math.max(1, Math.floor(total*0.2));
+    while(attempts<25 && (arraysEqual(shuffled, order) || fixedPoints(shuffled)>maxFixed)){
+      shuffled = shuffleArray(order.slice());
+      attempts++;
+    }
+
+    for(var k=0;k<total;k++){
+      tiles[k] = { correctSlot:k, currentSlot:shuffled[k], el:null };
+      slots[shuffled[k]] = k;
+    }
+
+    for(var k2=0;k2<total;k2++){
+      (function(k){
+        var tile = tiles[k];
+        var el = document.createElement('div');
+        el.className = 'tile';
+        el.style.width = tileSize+'px';
+        el.style.height = tileSize+'px';
+        el.style.backgroundImage = 'url(' + capturedDataURL + ')';
+        el.style.backgroundSize = stageSize+'px '+stageSize+'px';
+        var ccol = tile.correctSlot % n, crow = Math.floor(tile.correctSlot/n);
+        el.style.backgroundPosition = (-ccol*tileSize)+'px '+(-crow*tileSize)+'px';
+
+        var badge = document.createElement('span');
+        badge.className = 'tile-badge';
+        badge.textContent = tile.correctSlot+1;
+        el.appendChild(badge);
+
+        el.addEventListener('pointerdown', function(e){ onPointerDown(e,k); });
+        el.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+
+        puzzleGrid.appendChild(el);
+        tile.el = el;
+        setTilePosition(tile, false);
+      })(k2);
+    }
+
+    recalcCorrectness();
+  }
+
+  function setTilePosition(tile, animate){
+    var col = tile.currentSlot % gridN, row = Math.floor(tile.currentSlot/gridN);
+    var x = col*tileSize, y = row*tileSize;
+    var el = tile.el;
+    if(animate===false){
+      el.style.transition = 'none';
+      el.style.transform = 'translate('+x+'px,'+y+'px)';
+      void el.offsetWidth;
+      el.style.transition = '';
+    } else {
+      el.style.transition = 'transform .22s cubic-bezier(.22,.8,.2,1)';
+      el.style.transform = 'translate('+x+'px,'+y+'px)';
+    }
+  }
+
+  function recalcCorrectness(){
+    var count = 0;
+    tiles.forEach(function(tile){
+      if(tile.currentSlot===tile.correctSlot){
+        tile.el.classList.add('correct');
+        count++;
+      } else {
+        tile.el.classList.remove('correct');
+      }
+    });
+    hudCorrect.textContent = count+'/'+tiles.length;
+    return count;
+  }
+
+  function checkWin(){
+    var count = recalcCorrectness();
+    if(count===tiles.length){
+      stopTimer();
+      showResults();
+    }
+  }
+
+  // ---------- drag handling (pointer events: mouse + touch) ----------
+  function onPointerDown(e,k){
+    e.preventDefault();
+    var tile = tiles[k];
+    var el = tile.el;
+    try{ el.setPointerCapture(e.pointerId); }catch(err){}
+    el.style.transition = 'none';
+    el.classList.add('dragging');
+    el.style.zIndex = 50;
+
+    var col = tile.currentSlot % gridN, row = Math.floor(tile.currentSlot/gridN);
+    dragState = {
+      k:k,
+      originX: col*tileSize,
+      originY: row*tileSize,
+      currentX: col*tileSize,
+      currentY: row*tileSize,
+      startClientX: e.clientX,
+      startClientY: e.clientY,
+      pointerId: e.pointerId
+    };
+
+    el.addEventListener('pointermove', onPointerMove);
+    el.addEventListener('pointerup', onPointerUp);
+    el.addEventListener('pointercancel', onPointerUp);
+  }
+
+  function onPointerMove(e){
+    if(!dragState) return;
+    e.preventDefault();
+    var dx = e.clientX - dragState.startClientX;
+    var dy = e.clientY - dragState.startClientY;
+    var x = dragState.originX + dx;
+    var y = dragState.originY + dy;
+    x = Math.max(0, Math.min(stageSize-tileSize, x));
+    y = Math.max(0, Math.min(stageSize-tileSize, y));
+    dragState.currentX = x;
+    dragState.currentY = y;
+    tiles[dragState.k].el.style.transform = 'translate('+x+'px,'+y+'px)';
+  }
+
+  function onPointerUp(e){
+    if(!dragState) return;
+    var k = dragState.k;
+    var tile = tiles[k];
+    var el = tile.el;
+    el.removeEventListener('pointermove', onPointerMove);
+    el.removeEventListener('pointerup', onPointerUp);
+    el.removeEventListener('pointercancel', onPointerUp);
+    try{ el.releasePointerCapture(dragState.pointerId); }catch(err){}
+    el.classList.remove('dragging');
+    el.style.zIndex = '';
+
+    var col = Math.min(gridN-1, Math.max(0, Math.round(dragState.currentX/tileSize)));
+    var row = Math.min(gridN-1, Math.max(0, Math.round(dragState.currentY/tileSize)));
+    var targetSlot = row*gridN + col;
+    var originSlot = tile.currentSlot;
+
+    if(targetSlot!==originSlot){
+      var otherK = slots[targetSlot];
+      slots[originSlot] = otherK;
+      slots[targetSlot] = k;
+      tile.currentSlot = targetSlot;
+      tiles[otherK].currentSlot = originSlot;
+      setTilePosition(tile, true);
+      setTilePosition(tiles[otherK], true);
+      moveCount++;
+      hudMoves.textContent = moveCount;
+      checkWin();
+    } else {
+      setTilePosition(tile, true);
+    }
+    dragState = null;
+  }
+
+  // ---------- timer ----------
+  function startTimer(){
+    startTime = performance.now();
+    elapsedMs = 0;
+    hudTime.textContent = formatTime(0);
+    if(timerInterval){ clearInterval(timerInterval); }
+    timerInterval = setInterval(function(){
+      elapsedMs = performance.now()-startTime;
+      hudTime.textContent = formatTime(elapsedMs);
+    }, 100);
+  }
+
+  function stopTimer(){
+    if(timerInterval){
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    elapsedMs = performance.now()-startTime;
+    hudTime.textContent = formatTime(elapsedMs);
+  }
+
+  // ---------- start / replay ----------
+  function startPuzzle(){
+    stageCamera.classList.add('hidden');
+    stagePreview.classList.add('hidden');
+    stagePuzzle.classList.remove('hidden');
+    controlsCamera.classList.add('hidden');
+    controlsPreview.classList.add('hidden');
+    controlsPuzzle.classList.remove('hidden');
+    hud.classList.remove('hidden');
+    setStep('puzzle');
+
+    moveCount = 0;
+    hudMoves.textContent = '0';
+    buildPuzzle(gridN);
+    startTimer();
+  }
+
+  btnStart.addEventListener('click', startPuzzle);
+
+  btnPlayAgain.addEventListener('click', function(){
+    resultsOverlay.classList.add('hidden');
+    startPuzzle();
+  });
+
+  // ---------- leaderboard ----------
+  function loadScores(){
+    try{
+      return JSON.parse(localStorage.getItem(LB_KEY)) || {};
+    }catch(err){
+      return {};
+    }
+  }
+
+  function saveScoreEntry(n, timeMs, moves){
+    var data = loadScores();
+    var arr = data[n] || [];
+    var entry = { date:new Date().toISOString(), timeMs:timeMs, moves:moves };
+    arr.push(entry);
+    arr.sort(function(a,b){ return a.timeMs-b.timeMs; });
+    var trimmed = arr.slice(0,5);
+    data[n] = trimmed;
+    localStorage.setItem(LB_KEY, JSON.stringify(data));
+    var madeBoard = trimmed.indexOf(entry)!==-1;
+    var isNewBest = madeBoard && trimmed[0]===entry;
+    return isNewBest;
+  }
+
+  function renderLeaderboard(n){
+    currentLbTab = n;
+    lbTabs.querySelectorAll('.tab').forEach(function(t){
+      t.classList.toggle('active', parseInt(t.dataset.n,10)===n);
+    });
+    var data = loadScores();
+    var arr = data[n] || [];
+    lbList.innerHTML = '';
+    if(arr.length===0){
+      var li = document.createElement('li');
+      li.className = 'lb-empty';
+      li.textContent = 'No times yet for this grid \u2014 set the first record.';
+      lbList.appendChild(li);
+      return;
+    }
+    arr.forEach(function(entry, idx){
+      var li = document.createElement('li');
+      li.className = 'lb-row'+(idx===0 ? ' lb-first' : '');
+      li.innerHTML =
+        '<span class="lb-rank">'+(idx+1)+'</span>'+
+        '<span class="lb-time">'+formatTime(entry.timeMs)+'</span>'+
+        '<span class="lb-moves">'+entry.moves+' moves</span>'+
+        '<span class="lb-date">'+formatDate(entry.date)+'</span>';
+      lbList.appendChild(li);
+    });
+  }
+
+  lbTabs.querySelectorAll('.tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      renderLeaderboard(parseInt(t.dataset.n,10));
+    });
+  });
+
+  // ---------- results ----------
+  function showResults(){
+    resTime.textContent = formatTime(elapsedMs);
+    resMoves.textContent = String(moveCount);
+    resGrid.textContent = gridN+'\u00d7'+gridN;
+    var isNewBest = saveScoreEntry(gridN, elapsedMs, moveCount);
+    newBestMsg.classList.toggle('hidden', !isNewBest);
+    renderLeaderboard(gridN);
+    resultsOverlay.classList.remove('hidden');
+  }
+
+  // ---------- responsive relayout ----------
+  function relayoutPuzzle(){
+    var newSize = computeStageSize();
+    if(Math.abs(newSize-stageSize)<2) return;
+    stageSize = newSize;
+    tileSize = stageSize/gridN;
+    puzzleGrid.style.width = stageSize+'px';
+    puzzleGrid.style.height = stageSize+'px';
+    tiles.forEach(function(tile){
+      tile.el.style.width = tileSize+'px';
+      tile.el.style.height = tileSize+'px';
+      tile.el.style.backgroundSize = stageSize+'px '+stageSize+'px';
+      var ccol = tile.correctSlot % gridN, crow = Math.floor(tile.correctSlot/gridN);
+      tile.el.style.backgroundPosition = (-ccol*tileSize)+'px '+(-crow*tileSize)+'px';
+      setTilePosition(tile, false);
+    });
+  }
+
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function(){
+      if(!stagePuzzle.classList.contains('hidden') && tiles.length){
+        relayoutPuzzle();
+      }
+    }, 150);
+  });
+
+  window.addEventListener('beforeunload', function(){
+    if(stream){ stream.getTracks().forEach(function(t){ t.stop(); }); }
+  });
+
+  // ---------- init ----------
+  renderLeaderboard(3);
+  setStep('camera');
+  initCamera();
+
+})();
+</script>
+</body>
+</html>
