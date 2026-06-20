@@ -129,9 +129,14 @@ Successfully built a fully functional Face Puzzle Game that allows users to capt
 This project demonstrates how AI can accelerate the development of complete interactive web applications while maintaining a strong focus on user experience and functionality.
 
 ##  AI-Powered Face Puzzle Game
-[html file]()
+[html file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day20/face-puzzle-booth.html)
 
-## snap of the game pages
-[image]()
+## stages of the game pages
+[stage 1](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day20/Screenshot_20-6-2026_194621_.jpeg)
 
+[stage 2](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day20/Screenshot_20-6-2026_194126_.jpeg)
+
+[stage 3](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day20/Screenshot_20-6-2026_194237_.jpeg)
+
+[stage 4](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day20/Screenshot_20-6-2026_194416_.jpeg)
 
