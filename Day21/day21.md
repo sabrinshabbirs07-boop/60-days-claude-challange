@@ -199,25 +199,30 @@ Through this project, I explored:
 * Privacy risk visualization
 * Responsible AI implementation
 * Converting raw data into meaningful insights
- ## all Dashboard screen shot
+
+## Digital Privacy Dashboard
+
+[HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day21/digital-footprint-dashboard.html)
+
+## all Dashboard screen shot
  
- [Digital Footprint Score]()
+[Digital Footprint Score](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day21/Digital%20Footprint%20Report.png)
 
- [Exposure Heatmap]()
+[Exposure Heatmap](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day21/Exposure%20Heatmap.jpeg)
 
- [Company Exposure Ranking]()
+[Company Exposure Ranking](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day21/Ranking.jpeg)
  
- [Data Collection Matrix]()
+[Data Collection Matrix](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day21/Data%20Collection%20Matrix.jpeg)
 
-  [Risk Radar]()
+[Risk Radar](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day21/Risk%20Rdar.jpeg)
 
-  [Digital Twin Profile]()
+[Digital Twin Profile](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day21/Digital%20Twin%20Profile.png)
 
-  [Most Valuable Data Assets]()
+[Most Valuable Data Assets](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day21/Values.jpeg)
 
-   [Privacy Improvement Simulator]()
+[Privacy Improvement Simulator](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day21/Action.jpeg)
 
-   [Summary]()
+[Summary](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day21/Summary.jpeg)
 
   
 
