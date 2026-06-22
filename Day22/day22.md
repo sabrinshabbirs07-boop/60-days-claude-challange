@@ -152,6 +152,6 @@ Planned improvements:
 * Advanced investor insights
 
  ##  AI-Powered Career Intelligence Platform
- [html file]()
+ [html file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day22/startup_validation_report.html)
 
 
