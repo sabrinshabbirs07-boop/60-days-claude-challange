@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Startup Validation Report — AI Career Intelligence Platform</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink: #0D0F14;
+    --ink-light: #3A3F4B;
+    --ink-muted: #6B7280;
+    --bg: #F7F6F2;
+    --bg-card: #FFFFFF;
+    --accent: #1B4FD8;
+    --accent-light: #EBF0FD;
+    --accent2: #0FA880;
+    --accent2-light: #E6F7F3;
+    --warn: #D97706;
+    --warn-light: #FEF3C7;
+    --danger: #DC2626;
+    --danger-light: #FEE2E2;
+    --border: #E2E1DC;
+    --rule: #C8C5BC;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background: var(--ink);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 64px 72px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 520px; height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(27,79,216,0.35) 0%, transparent 70%);
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -80px;
+    width: 360px; height: 360px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(15,168,128,0.2) 0%, transparent 70%);
+  }
+  .cover-firm {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+  .cover-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #6B9EFF;
+    margin-bottom: 20px;
+  }
+  .cover-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 56px;
+    font-weight: 900;
+    line-height: 1.08;
+    max-width: 760px;
+    color: #fff;
+  }
+  .cover-title span { color: #6B9EFF; }
+  .cover-subtitle {
+    margin-top: 24px;
+    font-size: 16px;
+    color: rgba(255,255,255,0.55);
+    max-width: 520px;
+  }
+  .cover-meta {
+    display: flex;
+    gap: 48px;
+    margin-top: 48px;
+  }
+  .cover-meta-item label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 4px;
+  }
+  .cover-meta-item span {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+  }
+  .cover-verdict {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(15,168,128,0.15);
+    border: 1px solid rgba(15,168,128,0.4);
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: #4DD9AC;
+    margin-top: 40px;
+  }
+  .cover-verdict .dot { width: 8px; height: 8px; border-radius: 50%; background: #0FA880; }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 1060px; margin: 0 auto; padding: 0 40px 80px; }
+
+  /* ── TOC ── */
+  .toc-section {
+    background: var(--ink);
+    color: #fff;
+    padding: 64px 72px;
+  }
+  .toc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 32px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 48px;
+  }
+  .toc-item {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.65);
+    font-size: 13px;
+  }
+  .toc-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #6B9EFF;
+    min-width: 24px;
+  }
+
+  /* ── SECTION CHROME ── */
+  .section { margin-top: 64px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border);
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  /* ── PROSE ── */
+  p { margin-bottom: 14px; color: var(--ink-light); }
+  strong { color: var(--ink); }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+  .callout-blue { background: var(--accent-light); border-left: 4px solid var(--accent); }
+  .callout-green { background: var(--accent2-light); border-left: 4px solid var(--accent2); }
+  .callout-warn { background: var(--warn-light); border-left: 4px solid var(--warn); }
+  .callout-danger { background: var(--danger-light); border-left: 4px solid var(--danger); }
+  .callout-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .callout-blue .callout-title { color: var(--accent); }
+  .callout-green .callout-title { color: var(--accent2); }
+  .callout-warn .callout-title { color: var(--warn); }
+  .callout-danger .callout-title { color: var(--danger); }
+
+  /* ── TABLES ── */
+  .table-wrap { overflow-x: auto; margin: 24px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead tr { background: var(--ink); color: #fff; }
+  thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:nth-child(even) { background: #FAFAF8; }
+  tbody td { padding: 11px 16px; color: var(--ink-light); vertical-align: top; }
+  tbody td strong { color: var(--ink); }
+
+  /* ── SCORE BADGE ── */
+  .score-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+  }
+  .score-high { background: var(--accent2); }
+  .score-mid  { background: var(--accent); }
+  .score-low  { background: var(--warn); }
+
+  /* ── METRICS ROW ── */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 18px;
+  }
+  .metric-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+  .metric-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .metric-sub { font-size: 11px; color: var(--ink-muted); margin-top: 4px; }
+
+  /* ── FUNNEL CHART ── */
+  .funnel-chart { margin: 32px 0; }
+  .funnel-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+  .funnel-bar-wrap { flex: 1; }
+  .funnel-bar {
+    height: 44px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+    transition: width 0.4s;
+  }
+  .funnel-label {
+    min-width: 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-align: right;
+  }
+  .funnel-value {
+    min-width: 100px;
+    text-align: right;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--ink);
+  }
+
+  /* ── RADAR CHART (SVG) ── */
+  .chart-center { display: flex; justify-content: center; margin: 28px 0; }
+
+  /* ── PERSONA CARD ── */
+  .persona-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0; }
+  .persona-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+  }
+  .persona-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .persona-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+  }
+  .persona-row { font-size: 13px; color: var(--ink-light); margin-bottom: 6px; }
+  .persona-row strong { color: var(--ink); min-width: 80px; display: inline-block; }
+
+  /* ── JOURNEY MAP ── */
+  .journey { display: flex; gap: 0; margin: 28px 0; overflow-x: auto; }
+  .journey-step {
+    flex: 1;
+    min-width: 130px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-right: none;
+    padding: 20px 16px;
+  }
+  .journey-step:last-child { border-right: 1px solid var(--border); border-radius: 0 8px 8px 0; }
+  .journey-step:first-child { border-radius: 8px 0 0 8px; }
+  .journey-stage {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .journey-action { font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+  .journey-note { font-size: 12px; color: var(--ink-muted); }
+  .journey-arrow {
+    display: flex;
+    align-items: center;
+    color: var(--rule);
+    font-size: 18px;
+    padding-top: 40px;
+  }
+
+  /* ── RISK MATRIX ── */
+  .risk-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .risk-high { background: var(--danger-light); color: var(--danger); }
+  .risk-med  { background: var(--warn-light); color: var(--warn); }
+  .risk-low  { background: var(--accent2-light); color: var(--accent2); }
+
+  /* ── ACTION PLAN ── */
+  .week-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+  .week-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+  }
+  .week-header {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .week-num {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  .week-task {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--ink-light);
+    align-items: flex-start;
+  }
+  .week-task::before {
+    content: '→';
+    color: var(--accent);
+    font-size: 12px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── VERDICT ── */
+  .verdict-box {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 12px;
+    padding: 40px 48px;
+    margin: 32px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .verdict-box::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(15,168,128,0.2) 0%, transparent 70%);
+  }
+  .verdict-stamp {
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    font-weight: 900;
+    color: #0FA880;
+    line-height: 1;
+    margin-bottom: 12px;
+    letter-spacing: -2px;
+  }
+  .verdict-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .verdict-text { color: rgba(255,255,255,0.75); max-width: 640px; }
+
+  /* ── SCORECARD GRID ── */
+  .scorecard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 24px 0;
+  }
+  .scorecard-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .scorecard-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 12px;
+  }
+  .scorecard-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .scorecard-denom {
+    font-size: 14px;
+    color: var(--ink-muted);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+  .sc-high { color: var(--accent2); }
+  .sc-mid  { color: var(--accent); }
+  .sc-low  { color: var(--warn); }
+
+  /* ── FOOTER ── */
+  .report-footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.35);
+    padding: 32px 72px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 80px;
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    .cover { page-break-after: always; }
+    .section { page-break-inside: avoid; }
+    body { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ COVER ═══════════════════════════ -->
+<div class="cover">
+  <div class="cover-firm">Confidential — VC Due Diligence Report · June 2025</div>
+  <div>
+    <div class="cover-eyebrow">Startup Validation Report</div>
+    <div class="cover-title">AI-Powered <span>Career Intelligence</span> Platform</div>
+    <div class="cover-subtitle">A comprehensive venture-grade analysis covering market opportunity, competitive positioning, financial viability, and investment readiness.</div>
+    <div class="cover-meta">
+      <div class="cover-meta-item"><label>Category</label><span>EdTech / HRTech / AI SaaS</span></div>
+      <div class="cover-meta-item"><label>Stage</label><span>Pre-Seed / MVP</span></div>
+      <div class="cover-meta-item"><label>Primary Market</label><span>India → SEA → Global</span></div>
+      <div class="cover-meta-item"><label>Report Date</label><span>June 2025</span></div>
+    </div>
+    <div class="cover-verdict">
+      <div class="dot"></div>
+      COMMITTEE VERDICT: VALIDATE FURTHER — HIGH POTENTIAL
+    </div>
+  </div>
+  <div></div>
+</div>
+
+<!-- ═══════════════════════════ TOC ═══════════════════════════ -->
+<div class="toc-section">
+  <div class="toc-title">Table of Contents</div>
+  <div class="toc-grid">
+    <div class="toc-item"><span class="toc-num">01</span>Executive Summary</div>
+    <div class="toc-item"><span class="toc-num">11</span>Buying Triggers & Objections</div>
+    <div class="toc-item"><span class="toc-num">02</span>Startup Overview</div>
+    <div class="toc-item"><span class="toc-num">12</span>Customer Journey Map</div>
+    <div class="toc-item"><span class="toc-num">03</span>Problem Validation</div>
+    <div class="toc-item"><span class="toc-num">13</span>Business Model Evaluation</div>
+    <div class="toc-item"><span class="toc-num">04</span>Founder-Market Fit</div>
+    <div class="toc-item"><span class="toc-num">14</span>Financial Model Analysis</div>
+    <div class="toc-item"><span class="toc-num">05</span>Market Analysis (TAM/SAM/SOM)</div>
+    <div class="toc-item"><span class="toc-num">15</span>Risk Assessment Matrix</div>
+    <div class="toc-item"><span class="toc-num">06</span>Competitor Analysis</div>
+    <div class="toc-item"><span class="toc-num">16</span>Pivot Opportunities</div>
+    <div class="toc-item"><span class="toc-num">07</span>Market Gap Analysis</div>
+    <div class="toc-item"><span class="toc-num">17</span>Startup Scorecard</div>
+    <div class="toc-item"><span class="toc-num">08</span>Ideal Customer Profile</div>
+    <div class="toc-item"><span class="toc-num">18</span>VC Investment Analysis</div>
+    <div class="toc-item"><span class="toc-num">09</span>Buyer Personas</div>
+    <div class="toc-item"><span class="toc-num">19</span>Final Recommendation</div>
+    <div class="toc-item"><span class="toc-num">10</span>Customer Pain Points</div>
+    <div class="toc-item"><span class="toc-num">20</span>30-Day Action Plan</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ BODY ═══════════════════════════ -->
+<div class="page">
+
+<!-- ── 01 EXECUTIVE SUMMARY ── -->
+<div class="section" id="s01">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Executive Summary</h2>
+  </div>
+
+  <div class="callout callout-green">
+    <div class="callout-title">Investment Thesis</div>
+    The AI Career Intelligence Platform addresses a structurally underserved market — the 600M+ career-confused individuals in emerging economies — with a defensible, AI-native product at a moment when large language models make personalized mentorship economically viable for the first time.
+  </div>
+
+  <p>This report evaluates an early-stage AI SaaS startup targeting students, fresh graduates, early-career professionals, and career switchers in India, with expansion ambitions across Southeast Asia and global emerging markets. The platform proposes to unify career mentoring, skill assessment, learning recommendations, productivity tracking, and career planning into a single, AI-powered ecosystem.</p>
+
+  <p>The <strong>core thesis is sound</strong>: fragmentation of career development tools is a genuine, high-frequency pain point with measurable demand, poor incumbent substitutes, and a large addressable market. The EdTech and HR technology markets in India alone are projected to reach $10B+ by 2028, and no single player has achieved dominant "career OS" positioning.</p>
+
+  <div class="metrics-row">
+    <div class="metric-card">
+      <div class="metric-label">Global TAM</div>
+      <div class="metric-value">$366B</div>
+      <div class="metric-sub">EdTech + HR Tech combined</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">India SAM</div>
+      <div class="metric-value">$4.2B</div>
+      <div class="metric-sub">Addressable career-dev segment</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">3-Year SOM</div>
+      <div class="metric-value">$18M</div>
+      <div class="metric-sub">Realistic revenue opportunity</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Overall Score</div>
+      <div class="metric-value">6.7<span style="font-size:16px;color:var(--ink-muted)">/10</span></div>
+      <div class="metric-sub">VC Investment Readiness</div>
+    </div>
+  </div>
+
+  <p><strong>Key risk:</strong> The primary risk is not market existence but <em>execution differentiation</em> — distinguishing the platform from a dozen well-funded global incumbents, retaining users past the initial curiosity phase, and converting free users to paid before runway exhaustion.</p>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">Committee Verdict</div>
+    <strong>VALIDATE FURTHER.</strong> The opportunity is real and sizeable. However, investment readiness requires demonstrating: (a) measurable retention above 40% at 90 days, (b) willingness-to-pay evidence from ≥200 target users, and (c) a clear AI differentiation moat beyond API-wrapping incumbents.
+  </div>
+</div>
+
+<!-- ── 02 STARTUP OVERVIEW ── -->
+<div class="section" id="s02">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Startup Overview</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Dimension</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Product</strong></td><td>AI-Powered Personal Productivity & Career Growth Platform (SaaS)</td></tr>
+        <tr><td><strong>Stage</strong></td><td>MVP Development / Pre-Launch</td></tr>
+        <tr><td><strong>Team</strong></td><td>Founder-led; hiring pipeline for AI/ML, PM, Growth, BizDev</td></tr>
+        <tr><td><strong>Primary Market</strong></td><td>India (urban Tier-1 & Tier-2 cities)</td></tr>
+        <tr><td><strong>Expansion Markets</strong></td><td>Southeast Asia → Global emerging markets</td></tr>
+        <tr><td><strong>Business Model</strong></td><td>Freemium B2C SaaS + B2B institutional licensing</td></tr>
+        <tr><td><strong>Revenue Status</strong></td><td>Pre-revenue; community building in progress</td></tr>
+        <tr><td><strong>12-Month Goal</strong></td><td>10,000 users, initial revenue, seed funding preparation</td></tr>
+        <tr><td><strong>Mission</strong></td><td>Democratize career growth using AI at scale</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The platform's integrated vision — combining what currently requires LinkedIn Learning, Coursera, Notion, a career coach, and a job board — is directionally correct and reflects a clear understanding of user friction. The challenge will be building sufficient depth in each pillar to match specialized incumbents while maintaining a coherent, unified user experience.</p>
+</div>
+
+<!-- ── 03 PROBLEM VALIDATION ── -->
+<div class="section" id="s03">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Problem Validation</h2>
+  </div>
+
+  <div class="callout callout-blue">
+    <div class="callout-title">Problem Severity Assessment</div>
+    The career guidance gap is a <strong>High-Severity, High-Frequency</strong> problem affecting hundreds of millions of individuals in emerging markets annually, with measurable economic consequences (underemployment, skill-job mismatch, stalled income growth).
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pain Dimension</th><th>Severity (1–5)</th><th>Frequency</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Lack of personalized career guidance</strong></td><td>⭐⭐⭐⭐⭐ 5</td><td>Daily</td><td>India has 1 career counselor per 30,000+ students (vs 1:500 globally recommended)</td></tr>
+        <tr><td><strong>Skill-to-job path confusion</strong></td><td>⭐⭐⭐⭐⭐ 5</td><td>Weekly</td><td>68% of Indian graduates are unemployable in their stated field (NASSCOM 2023)</td></tr>
+        <tr><td><strong>Course/resource overload</strong></td><td>⭐⭐⭐⭐ 4</td><td>Daily</td><td>Coursera alone has 7,000+ courses; decision paralysis is documented</td></tr>
+        <tr><td><strong>Poor productivity habits</strong></td><td>⭐⭐⭐ 3</td><td>Daily</td><td>Real but highly competitive category; lower differentiation opportunity</td></tr>
+        <tr><td><strong>Fragmented tools</strong></td><td>⭐⭐⭐⭐ 4</td><td>Chronic</td><td>Average knowledge worker uses 9+ tools; integration fatigue is rising</td></tr>
+        <tr><td><strong>Unaffordable mentorship</strong></td><td>⭐⭐⭐⭐⭐ 5</td><td>Chronic</td><td>Quality mentors charge ₹2,000–10,000/hr, unaffordable for most students</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:16px;font-weight:600;margin:24px 0 12px;">Why Existing Alternatives Fail</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Existing Solution</th><th>What It Does</th><th>Core Failure</th></tr></thead>
+      <tbody>
+        <tr><td><strong>LinkedIn Learning</strong></td><td>Skill courses</td><td>No personalized roadmap; passive consumption</td></tr>
+        <tr><td><strong>Coursera / Udemy</strong></td><td>Course marketplace</td><td>Zero career context; no guidance on what to learn or why</td></tr>
+        <tr><td><strong>Teal / Careerflow</strong></td><td>Job application tracking</td><td>Only covers the last mile (applications), not career development</td></tr>
+        <tr><td><strong>Career coaches</strong></td><td>1:1 mentorship</td><td>Cost-prohibitive; not scalable</td></tr>
+        <tr><td><strong>Notion/productivity apps</strong></td><td>Task management</td><td>Generic; no career intelligence layer</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── 04 FOUNDER-MARKET FIT ── -->
+<div class="section" id="s04">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Founder-Market Fit Analysis</h2>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:20px;margin-bottom:24px;">
+    <div class="score-badge score-mid" style="width:64px;height:64px;font-size:22px;">6.5</div>
+    <div>
+      <div style="font-weight:700;font-size:18px;">Founder-Market Fit Score: 6.5 / 10</div>
+      <div style="color:var(--ink-muted);font-size:13px;">Adequate — Mission-driven founder with lived experience. Team depth required.</div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Dimension</th><th>Score</th><th>Assessment</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Domain Empathy</strong></td><td>9/10</td><td>Founder has deep personal experience with the problem — a genuine founder-problem match</td></tr>
+        <tr><td><strong>Market Knowledge</strong></td><td>7/10</td><td>Initial research completed; user conversations conducted; needs more rigorous quantitative validation</td></tr>
+        <tr><td><strong>Technical Capability</strong></td><td>5/10</td><td>AI/ML engineer not yet on team — critical gap for an AI-native product</td></tr>
+        <tr><td><strong>Distribution Network</strong></td><td>4/10</td><td>No stated network in universities, HR teams, or EdTech ecosystem</td></tr>
+        <tr><td><strong>Prior Startup Experience</strong></td><td>Unknown</td><td>Not stated; assumed first-time founder — increases execution risk</td></tr>
+        <tr><td><strong>Capital Efficiency Mindset</strong></td><td>7/10</td><td>Lean MVP approach; realistic milestone thinking</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">Critical Gap</div>
+    The absence of a technical co-founder or contracted AI/ML engineer at the MVP stage is the single most important risk to address before seeking investment. Investors will discount valuations significantly without technical leadership in place.
+  </div>
+
+  <p><strong>Strengths:</strong> Authentic mission-alignment, user empathy, and a realistic understanding of the fragmentation problem. The founder's lived experience as the target user creates genuine product intuition.</p>
+  <p><strong>Weaknesses:</strong> No demonstrated growth/distribution track record, no technical co-founder, and no stated network advantage in the institutional (B2B) segment.</p>
+</div>
+
+<!-- ── 05 MARKET ANALYSIS ── -->
+<div class="section" id="s05">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2 class="section-title">Market Analysis — TAM / SAM / SOM</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Level</th><th>Size</th><th>Assumptions</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>TAM</strong><br><small>Total Addressable Market</small></td>
+          <td><strong>$366B</strong></td>
+          <td>Global EdTech ($142B, 2027 projection) + HR Tech ($224B, 2028) — combined career development & learning spend globally</td>
+        </tr>
+        <tr>
+          <td><strong>SAM</strong><br><small>Serviceable Addressable Market</small></td>
+          <td><strong>$4.2B</strong></td>
+          <td>India online career development market: ~85M target users (students + early professionals) × avg willingness to pay $49/yr = $4.2B; corroborated by India EdTech market 2028 forecast</td>
+        </tr>
+        <tr>
+          <td><strong>SOM</strong><br><small>Serviceable Obtainable Market</small></td>
+          <td><strong>$18M (Yr 3)</strong></td>
+          <td>Conservative 0.43% market penetration of SAM by Year 3 post-launch; 360,000 paid users at $50/yr avg</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="funnel-chart">
+    <div class="funnel-item">
+      <span class="funnel-label">TAM</span>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="background:var(--accent);width:100%;">Global EdTech + HR Tech</div>
+      </div>
+      <span class="funnel-value">$366B</span>
+    </div>
+    <div class="funnel-item">
+      <span class="funnel-label">SAM</span>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="background:var(--accent2);width:62%;">India Career Dev (Online)</div>
+      </div>
+      <span class="funnel-value">$4.2B</span>
+    </div>
+    <div class="funnel-item">
+      <span class="funnel-label">SOM</span>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="background:#D97706;width:28%;">Year 3 Target Revenue</div>
+      </div>
+      <span class="funnel-value">$18M</span>
+    </div>
+  </div>
+
+  <div class="callout callout-blue">
+    <div class="callout-title">Market Tailwinds</div>
+    India produces 1.5M engineering graduates annually, 900K MBA graduates, and has 560M internet users with rapidly growing smartphone penetration. The National Education Policy 2020 is accelerating skill-based learning adoption, creating institutional demand alongside B2C opportunity.
+  </div>
+</div>
+
+<!-- ── 06 COMPETITOR ANALYSIS ── -->
+<div class="section" id="s06">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2 class="section-title">Competitor Analysis</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Target Audience</th>
+          <th>Strengths</th>
+          <th>Weaknesses</th>
+          <th>Pricing</th>
+          <th>Positioning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>LinkedIn Learning</strong></td>
+          <td>Working professionals globally</td>
+          <td>Brand trust; 21K+ courses; employer integration; AI skill recommendations</td>
+          <td>No career roadmap; no mentorship; premium-only; not emerging market-friendly</td>
+          <td>$39.99/mo</td>
+          <td>Professional upskilling marketplace</td>
+        </tr>
+        <tr>
+          <td><strong>Coursera</strong></td>
+          <td>Students & professionals, global</td>
+          <td>University partnerships; certifications; breadth of content</td>
+          <td>No personalized path; passive learning; no productivity or career planning</td>
+          <td>$49–$399/course or $59/mo Plus</td>
+          <td>Online degree & certificate marketplace</td>
+        </tr>
+        <tr>
+          <td><strong>Udemy</strong></td>
+          <td>Self-learners, broad</td>
+          <td>Affordable; breadth; frequent discounts</td>
+          <td>No career context; quality inconsistency; zero guidance layer</td>
+          <td>$10–$30/course</td>
+          <td>Course marketplace</td>
+        </tr>
+        <tr>
+          <td><strong>Teal</strong></td>
+          <td>US job seekers</td>
+          <td>Job tracking UX; resume tools; network mapping</td>
+          <td>US-centric; no learning or skill dev; post-search only</td>
+          <td>Freemium; $29/mo Pro</td>
+          <td>Job search operations platform</td>
+        </tr>
+        <tr>
+          <td><strong>Careerflow</strong></td>
+          <td>Tech professionals, job switchers</td>
+          <td>AI resume; LinkedIn optimizer; job tracker</td>
+          <td>Application-stage only; no career development; limited market</td>
+          <td>Freemium; $19–49/mo</td>
+          <td>AI job search assistant</td>
+        </tr>
+        <tr>
+          <td><strong>Pathrise</strong></td>
+          <td>Tech job seekers</td>
+          <td>Mentorship + placement; outcomes-based</td>
+          <td>High cost; US-only; limited scale; ISA model</td>
+          <td>$2,000–$4,000 or ISA</td>
+          <td>Premium career accelerator</td>
+        </tr>
+        <tr>
+          <td><strong>Unstop / Internshala</strong></td>
+          <td>Indian students & graduates</td>
+          <td>India brand recognition; internship listings; competitions</td>
+          <td>No AI; no personalized career path; listing-heavy</td>
+          <td>Free / freemium</td>
+          <td>Indian student career marketplace</td>
+        </tr>
+        <tr>
+          <td><strong>This Startup</strong></td>
+          <td>Students, graduates, early professionals</td>
+          <td>AI-native integration; India-first pricing; full-stack career OS vision</td>
+          <td>Pre-launch; no brand; no content moat yet; thin team</td>
+          <td>TBD freemium + ₹299–999/mo</td>
+          <td>AI career intelligence OS</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── 07 MARKET GAP ANALYSIS ── -->
+<div class="section" id="s07">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2 class="section-title">Market Gap Analysis</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Gap Identified</th><th>Current Incumbent</th><th>Opportunity for This Platform</th></tr></thead>
+      <tbody>
+        <tr><td><strong>No "Career OS" for India</strong></td><td>None — market is fragmented</td><td>First-mover advantage in integrated career intelligence for Indian users</td></tr>
+        <tr><td><strong>AI personalization is shallow</strong></td><td>Most use basic recommendation engines</td><td>Deep LLM-driven mentorship that adapts to user context, goals, and constraints</td></tr>
+        <tr><td><strong>Emerging market pricing gap</strong></td><td>LinkedIn/Coursera priced for US market</td><td>India-native pricing (₹299–999/mo) makes premium AI coaching accessible</td></tr>
+        <tr><td><strong>No productivity + career integration</strong></td><td>Tools exist in silos</td><td>Unified dashboard linking daily habits to long-term career goals</td></tr>
+        <tr><td><strong>Institutional (B2B) vacuum</strong></td><td>Platforms serve consumers; universities under-digitized</td><td>White-label or licensing deal with tier-2/3 universities in India</td></tr>
+        <tr><td><strong>Vernacular & local context</strong></td><td>All platforms are English-first</td><td>Hindi/regional language support; India-specific job market intelligence</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── 08 ICP ── -->
+<div class="section" id="s08">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <h2 class="section-title">Ideal Customer Profile (ICP)</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Attribute</th><th>B2C Primary ICP</th><th>B2B Secondary ICP</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Who</strong></td><td>22–28 yr old Indian graduate, urban, tech-adjacent</td><td>Tier-2/3 Indian university or private training institute</td></tr>
+        <tr><td><strong>Location</strong></td><td>Tier-1 (Bengaluru, Mumbai, Delhi) or Tier-2 (Pune, Jaipur, Hyderabad)</td><td>India; states with high engineering college density (UP, TN, MH)</td></tr>
+        <tr><td><strong>Income</strong></td><td>₹0–5 LPA (student/fresher); ₹5–12 LPA (early career)</td><td>₹20L–2Cr annual L&D budget per institution</td></tr>
+        <tr><td><strong>Behavior</strong></td><td>Active on LinkedIn; follows career content; has tried 2+ online courses; uses YouTube for learning</td><td>Has a placement cell; partnering with companies for campus hiring</td></tr>
+        <tr><td><strong>Frustration</strong></td><td>"I don't know what skills to learn next or why"</td><td>"Our students aren't industry-ready; placement rates are declining"</td></tr>
+        <tr><td><strong>Willingness to Pay</strong></td><td>₹299–599/mo if clear ROI on career outcomes</td><td>₹500–2,000 per student/year on institutional licensing</td></tr>
+        <tr><td><strong>Decision Trigger</strong></td><td>Job rejection, failed interview, graduation approaching, career switch desire</td><td>NAAC accreditation pressure; placement cell KPIs; NEP 2020 compliance</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── 09 BUYER PERSONAS ── -->
+<div class="section" id="s09">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <h2 class="section-title">Buyer Personas</h2>
+  </div>
+
+  <div class="persona-grid">
+    <div class="persona-card">
+      <div class="persona-name">Priya S.</div>
+      <div class="persona-role">THE CONFUSED GRADUATE</div>
+      <div class="persona-row"><strong>Age:</strong> 23, B.Tech CSE, Pune</div>
+      <div class="persona-row"><strong>Goal:</strong> Land a software role at a product company within 6 months</div>
+      <div class="persona-row"><strong>Frustration:</strong> Has completed 4 Udemy courses but doesn't know what to learn next</div>
+      <div class="persona-row"><strong>Spends time on:</strong> LinkedIn, YouTube, Reddit (r/developersIndia)</div>
+      <div class="persona-row"><strong>WTP:</strong> ₹499/mo if the platform shows her a clear, actionable roadmap</div>
+      <div class="persona-row"><strong>Quote:</strong> <em>"I'm learning everything but going nowhere."</em></div>
+    </div>
+    <div class="persona-card">
+      <div class="persona-name">Rahul M.</div>
+      <div class="persona-role">THE STUCK PROFESSIONAL</div>
+      <div class="persona-row"><strong>Age:</strong> 27, 3 yrs experience, Delhi</div>
+      <div class="persona-row"><strong>Goal:</strong> Switch from IT services to a product management role</div>
+      <div class="persona-row"><strong>Frustration:</strong> Doesn't know which PM skills to prioritize; overwhelmed by advice online</div>
+      <div class="persona-row"><strong>Spends time on:</strong> LinkedIn, Glassdoor, Product School blog</div>
+      <div class="persona-row"><strong>WTP:</strong> ₹799/mo — already paying for Notion + LinkedIn Premium</div>
+      <div class="persona-row"><strong>Quote:</strong> <em>"I need a plan, not more content."</em></div>
+    </div>
+    <div class="persona-card">
+      <div class="persona-name">Anjali K.</div>
+      <div class="persona-role">THE CAREER SWITCHER</div>
+      <div class="persona-row"><strong>Age:</strong> 29, MBA, Bengaluru</div>
+      <div class="persona-row"><strong>Goal:</strong> Move from marketing into data analytics</div>
+      <div class="persona-row"><strong>Frustration:</strong> Can't afford a ₹2L bootcamp; online resources feel scattered</div>
+      <div class="persona-row"><strong>Spends time on:</strong> Coursera, Kaggle, Twitter/X career threads</div>
+      <div class="persona-row"><strong>WTP:</strong> ₹599/mo — price-sensitive but outcome-driven</div>
+      <div class="persona-row"><strong>Quote:</strong> <em>"I need someone to tell me exactly what to do, in order."</em></div>
+    </div>
+    <div class="persona-card">
+      <div class="persona-name">Prof. Suresh N.</div>
+      <div class="persona-role">THE B2B BUYER</div>
+      <div class="persona-row"><strong>Role:</strong> Placement Cell Head, Tier-2 Engineering College, Tamil Nadu</div>
+      <div class="persona-row"><strong>Goal:</strong> Improve campus placement rate from 54% to 75%+</div>
+      <div class="persona-row"><strong>Frustration:</strong> No tool to track student skill gaps or career readiness at scale</div>
+      <div class="persona-row"><strong>WTP:</strong> ₹800/student/yr on institutional license for 500+ students</div>
+      <div class="persona-row"><strong>Quote:</strong> <em>"I need data on which students are placement-ready."</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 10 PAIN POINTS ── -->
+<div class="section" id="s10">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <h2 class="section-title">Customer Pain Points — Ranked</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Rank</th><th>Pain Point</th><th>Severity</th><th>Frequency</th><th>Business Impact</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>No personalized career roadmap</strong></td><td>Critical</td><td>Chronic / Daily</td><td>Users churn from competing platforms; high willingness to pay for solution</td></tr>
+        <tr><td>2</td><td><strong>Skill identification confusion</strong></td><td>Critical</td><td>Weekly</td><td>Direct driver of platform stickiness — solving this = strong retention</td></tr>
+        <tr><td>3</td><td><strong>Unaffordable mentorship</strong></td><td>High</td><td>Chronic</td><td>Premium conversion opportunity; $0 competition at ₹299–599/mo price point</td></tr>
+        <tr><td>4</td><td><strong>Fragmented tools ecosystem</strong></td><td>High</td><td>Daily</td><td>Integration story reduces CAC — "one platform to replace five"</td></tr>
+        <tr><td>5</td><td><strong>Course/resource overload</strong></td><td>High</td><td>Daily</td><td>Curation layer is a high-value, low-cost feature to build</td></tr>
+        <tr><td>6</td><td><strong>Progress tracking gaps</strong></td><td>Medium</td><td>Weekly</td><td>Gamification/tracking features improve retention metrics</td></tr>
+        <tr><td>7</td><td><strong>Poor productivity habits</strong></td><td>Medium</td><td>Daily</td><td>High competition in productivity space; lower differentiation</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── 11 TRIGGERS & OBJECTIONS ── -->
+<div class="section" id="s11">
+  <div class="section-header">
+    <span class="section-num">11</span>
+    <h2 class="section-title">Buying Triggers &amp; Objections</h2>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:24px 0;">
+    <div class="callout callout-green">
+      <div class="callout-title">Why Customers Buy</div>
+      <ul style="list-style:none;padding:0;">
+        <li style="margin-bottom:8px;font-size:13px;">📌 <strong>Job rejection event</strong> — immediate pain triggers action</li>
+        <li style="margin-bottom:8px;font-size:13px;">🎓 <strong>Graduation approaching</strong> — urgency to figure out career</li>
+        <li style="margin-bottom:8px;font-size:13px;">💼 <strong>Promotion stall</strong> — desire to accelerate growth</li>
+        <li style="margin-bottom:8px;font-size:13px;">🔄 <strong>Industry disruption anxiety</strong> — AI replacing roles</li>
+        <li style="margin-bottom:8px;font-size:13px;">👥 <strong>Peer success stories</strong> — social proof from community</li>
+        <li style="margin-bottom:8px;font-size:13px;">📉 <strong>Wasted money on courses</strong> — looking for better ROI</li>
+      </ul>
+    </div>
+    <div class="callout callout-danger">
+      <div class="callout-title">Why Customers Reject</div>
+      <ul style="list-style:none;padding:0;">
+        <li style="margin-bottom:8px;font-size:13px;">💸 <strong>Price skepticism</strong> — "another subscription I won't use"</li>
+        <li style="margin-bottom:8px;font-size:13px;">🤖 <strong>AI trust gap</strong> — "can AI really give career advice?"</li>
+        <li style="margin-bottom:8px;font-size:13px;">🏁 <strong>Unknown brand</strong> — no social proof at launch</li>
+        <li style="margin-bottom:8px;font-size:13px;">🔧 <strong>Feature paralysis</strong> — too complex / too many features</li>
+        <li style="margin-bottom:8px;font-size:13px;">⏳ <strong>Time investment fear</strong> — "one more thing to set up"</li>
+        <li style="margin-bottom:8px;font-size:13px;">📱 <strong>Free alternatives</strong> — YouTube, Reddit, free tools exist</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ── 12 CUSTOMER JOURNEY ── -->
+<div class="section" id="s12">
+  <div class="section-header">
+    <span class="section-num">12</span>
+    <h2 class="section-title">Customer Journey Map</h2>
+  </div>
+
+  <div class="journey">
+    <div class="journey-step">
+      <div class="journey-stage">Awareness</div>
+      <div class="journey-action">Discovery</div>
+      <div class="journey-note">LinkedIn post, Instagram reel, peer recommendation, or Google search for "career roadmap India"</div>
+    </div>
+    <div class="journey-step">
+      <div class="journey-stage">Consideration</div>
+      <div class="journey-action">Evaluation</div>
+      <div class="journey-note">Visits site; reads reviews; compares vs LinkedIn Learning; tries free tier or waitlist</div>
+    </div>
+    <div class="journey-step">
+      <div class="journey-stage">Onboarding</div>
+      <div class="journey-action">First Value</div>
+      <div class="journey-note">Completes skill assessment; receives personalized career roadmap; "aha moment" within 10 mins</div>
+    </div>
+    <div class="journey-step">
+      <div class="journey-stage">Usage</div>
+      <div class="journey-action">Habit Loop</div>
+      <div class="journey-note">Daily/weekly check-ins; tracks progress; follows AI recommendations; attends community events</div>
+    </div>
+    <div class="journey-step">
+      <div class="journey-stage">Conversion</div>
+      <div class="journey-action">Upgrade</div>
+      <div class="journey-note">Hit free tier limit or sees premium feature; converts to paid after career win (interview, job)</div>
+    </div>
+    <div class="journey-step">
+      <div class="journey-stage">Retention</div>
+      <div class="journey-action">Advocacy</div>
+      <div class="journey-note">Shares success story; refers peers; becomes community contributor; renews annually</div>
+    </div>
+  </div>
+
+  <div class="callout callout-blue">
+    <div class="callout-title">Critical Design Insight</div>
+    The <strong>"aha moment"</strong> must occur within the first session — ideally the personalized career roadmap output. Any friction before that moment causes irreversible churn. Onboarding flow design is the highest-leverage engineering investment.
+  </div>
+</div>
+
+<!-- ── 13 BUSINESS MODEL ── -->
+<div class="section" id="s13">
+  <div class="section-header">
+    <span class="section-num">13</span>
+    <h2 class="section-title">Business Model Evaluation</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Revenue Stream</th><th>Model</th><th>Pricing</th><th>Scalability</th><th>Priority</th></tr></thead>
+      <tbody>
+        <tr><td><strong>B2C Freemium</strong></td><td>Monthly/annual subscription</td><td>₹299–999/mo; ₹2,499–7,999/yr</td><td>Very High — zero marginal cost per user</td><td>🔴 Primary (launch)</td></tr>
+        <tr><td><strong>B2B University License</strong></td><td>Per-seat annual contract</td><td>₹500–2,000/student/yr</td><td>High — large deal sizes; lower churn</td><td>🟡 Secondary (Month 6+)</td></tr>
+        <tr><td><strong>Corporate L&D</strong></td><td>Team license / API access</td><td>₹1,500–5,000/employee/yr</td><td>High — enterprise budgets; annual renewal</td><td>🟢 Future (Year 2)</td></tr>
+        <tr><td><strong>Affiliate / Course Curation</strong></td><td>Revenue share from recommended courses</td><td>8–20% commission</td><td>Medium — dependent on user trust</td><td>🟢 Supplementary</td></tr>
+        <tr><td><strong>Premium AI Mentorship Sessions</strong></td><td>Pay-per-session or session bundles</td><td>₹499–1,499/session</td><td>Medium — requires quality AI to compete</td><td>🟡 Test in Year 1</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-green">
+    <div class="callout-title">B2B Recommendation</div>
+    A single university contract at ₹1,000/student × 1,000 students = ₹10L (~$12K) ARR per deal. Securing 10 such contracts by Month 18 represents a significant revenue milestone that also validates product quality for investors.
+  </div>
+</div>
+
+<!-- ── 14 FINANCIAL MODEL ── -->
+<div class="section" id="s14">
+  <div class="section-header">
+    <span class="section-num">14</span>
+    <h2 class="section-title">Financial Model Analysis</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Metric</th><th>Assumption</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Average Revenue Per User (ARPU)</strong></td><td>Blended B2C; 30% on annual plan</td><td>₹5,400/yr (~$65)</td></tr>
+        <tr><td><strong>Customer Acquisition Cost (CAC)</strong></td><td>Organic-heavy early growth; paid mix from Month 6</td><td>₹1,800–3,600 (~$22–44)</td></tr>
+        <tr><td><strong>Lifetime Value (LTV)</strong></td><td>Avg 18-month retention (career-focused users); 40% annual churn</td><td>₹8,100 (~$98)</td></tr>
+        <tr><td><strong>LTV:CAC Ratio</strong></td><td>Target ≥3:1 for VC investment</td><td>2.3–4.5x (depending on channel)</td></tr>
+        <tr><td><strong>Gross Margin</strong></td><td>SaaS; cloud + AI API costs ~20% of revenue</td><td>~80%</td></tr>
+        <tr><td><strong>Monthly Burn (Pre-Revenue)</strong></td><td>Lean team of 4; cloud infra</td><td>₹3–6L/mo (~$3,600–7,200)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:15px;font-weight:600;margin:24px 0 12px;">3-Year Revenue Projection</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Year</th><th>B2C Paid Users</th><th>B2B Seats</th><th>Total Revenue</th><th>Gross Profit</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Year 1</strong></td><td>1,500</td><td>0</td><td>₹81L ($97K)</td><td>₹65L</td></tr>
+        <tr><td><strong>Year 2</strong></td><td>12,000</td><td>3,000</td><td>₹8.7Cr ($1.05M)</td><td>₹7.0Cr</td></tr>
+        <tr><td><strong>Year 3</strong></td><td>55,000</td><td>25,000</td><td>₹45Cr ($5.4M)</td><td>₹36Cr</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">Key Assumptions</div>
+    Year 1 conversion rate: 15% free-to-paid. Year 2 assumes B2B partnerships with 3 universities. Year 3 assumes Series A capital deployed into paid acquisition. All projections require 40%+ monthly retention. These are optimistic-base scenarios; downside assumes 50% lower conversion.
+  </div>
+</div>
+
+<!-- ── 15 RISK ASSESSMENT ── -->
+<div class="section" id="s15">
+  <div class="section-header">
+    <span class="section-num">15</span>
+    <h2 class="section-title">Risk Assessment Matrix</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Risk</th><th>Probability</th><th>Impact</th><th>Net Risk</th><th>Mitigation Strategy</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Competition from LinkedIn/Google</strong></td>
+          <td><span class="risk-pill risk-high">High</span></td>
+          <td><span class="risk-pill risk-high">High</span></td>
+          <td><span class="risk-pill risk-high">Critical</span></td>
+          <td>Focus on India-native context; vernacular; pricing; B2B institutional moat</td>
+        </tr>
+        <tr>
+          <td><strong>User retention failure (&lt;30% at 90 days)</strong></td>
+          <td><span class="risk-pill risk-high">High</span></td>
+          <td><span class="risk-pill risk-high">High</span></td>
+          <td><span class="risk-pill risk-high">Critical</span></td>
+          <td>Nail onboarding; deliver "aha" in session 1; weekly habit loop design</td>
+        </tr>
+        <tr>
+          <td><strong>AI quality / hallucination in career advice</strong></td>
+          <td><span class="risk-pill risk-med">Medium</span></td>
+          <td><span class="risk-pill risk-high">High</span></td>
+          <td><span class="risk-pill risk-high">High</span></td>
+          <td>Human review layer; confidence scoring; disclaimer UI; expert advisory board</td>
+        </tr>
+        <tr>
+          <td><strong>Slow B2B sales cycle</strong></td>
+          <td><span class="risk-pill risk-high">High</span></td>
+          <td><span class="risk-pill risk-med">Medium</span></td>
+          <td><span class="risk-pill risk-med">Medium</span></td>
+          <td>Prioritize B2C for 12 months; pilot B2B with 1 university as proof of concept</td>
+        </tr>
+        <tr>
+          <td><strong>No technical co-founder</strong></td>
+          <td><span class="risk-pill risk-high">High</span></td>
+          <td><span class="risk-pill risk-high">High</span></td>
+          <td><span class="risk-pill risk-high">Critical</span></td>
+          <td>Hire/partner AI/ML engineer immediately; consider technical co-founder search</td>
+        </tr>
+        <tr>
+          <td><strong>Freemium conversion below 10%</strong></td>
+          <td><span class="risk-pill risk-med">Medium</span></td>
+          <td><span class="risk-pill risk-med">Medium</span></td>
+          <td><span class="risk-pill risk-med">Medium</span></td>
+          <td>Test paid-first / trial model; ensure strong freemium-to-paid feature gate design</td>
+        </tr>
+        <tr>
+          <td><strong>India market price resistance</strong></td>
+          <td><span class="risk-pill risk-low">Low</span></td>
+          <td><span class="risk-pill risk-med">Medium</span></td>
+          <td><span class="risk-pill risk-low">Low</span></td>
+          <td>Annual plan at ₹2,499 (~$30) is highly accessible; benchmark vs Swiggy/Netflix India</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── 16 PIVOT OPPORTUNITIES ── -->
+<div class="section" id="s16">
+  <div class="section-header">
+    <span class="section-num">16</span>
+    <h2 class="section-title">Pivot Opportunities</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pivot</th><th>Trigger Condition</th><th>Description</th><th>Upside</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Pure B2B University SaaS</strong></td><td>B2C retention &lt;25% at 90 days</td><td>White-label platform sold to institutions; placement-as-a-service</td><td>Larger deal sizes; lower churn; clearer ROI</td></tr>
+        <tr><td><strong>Vertical-Specific Platform</strong></td><td>Data shows 70%+ users in one domain (tech, finance)</td><td>Become the "career OS for Indian tech professionals" — deep vs broad</td><td>Faster product-market fit; defensible niche</td></tr>
+        <tr><td><strong>AI Career Coaching API</strong></td><td>Competitors or companies want to embed guidance</td><td>Sell AI career intelligence as API/SDK to HR platforms, ATS systems</td><td>B2B infrastructure play; high margins; less competition</td></tr>
+        <tr><td><strong>Community + Cohort Model</strong></td><td>Low solo engagement but high community engagement</td><td>Cohort-based learning + peer accountability; pivot from solo tool to community</td><td>Network effects; viral word-of-mouth; higher NPS</td></tr>
+        <tr><td><strong>Hiring Intelligence Platform</strong></td><td>Strong employer demand signals</td><td>Flip the model: sell candidate career data/signals to employers as talent intelligence</td><td>Two-sided marketplace with employer revenue; massive scale</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── 17 SCORECARD ── -->
+<div class="section" id="s17">
+  <div class="section-header">
+    <span class="section-num">17</span>
+    <h2 class="section-title">Startup Scorecard</h2>
+  </div>
+
+  <div class="scorecard-grid">
+    <div class="scorecard-item">
+      <div class="scorecard-label">Problem</div>
+      <div class="scorecard-score sc-high">8<span class="scorecard-denom">/10</span></div>
+    </div>
+    <div class="scorecard-item">
+      <div class="scorecard-label">Market Size</div>
+      <div class="scorecard-score sc-high">8<span class="scorecard-denom">/10</span></div>
+    </div>
+    <div class="scorecard-item">
+      <div class="scorecard-label">Competition</div>
+      <div class="scorecard-score sc-low">5<span class="scorecard-denom">/10</span></div>
+    </div>
+    <div class="scorecard-item">
+      <div class="scorecard-label">Differentiation</div>
+      <div class="scorecard-score sc-mid">6<span class="scorecard-denom">/10</span></div>
+    </div>
+    <div class="scorecard-item">
+      <div class="scorecard-label">Scalability</div>
+      <div class="scorecard-score sc-high">9<span class="scorecard-denom">/10</span></div>
+    </div>
+    <div class="scorecard-item">
+      <div class="scorecard-label">Founder Fit</div>
+      <div class="scorecard-score sc-mid">6.5<span class="scorecard-denom">/10</span></div>
+    </div>
+    <div class="scorecard-item">
+      <div class="scorecard-label">Rev. Potential</div>
+      <div class="scorecard-score sc-high">8<span class="scorecard-denom">/10</span></div>
+    </div>
+  </div>
+
+  <!-- Radar SVG -->
+  <div class="chart-center">
+    <svg viewBox="0 0 420 380" width="420" height="380" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+      <defs>
+        <style>
+          .radar-label { font-size: 12px; fill: #3A3F4B; font-weight: 600; }
+          .radar-score { font-size: 11px; fill: #1B4FD8; font-weight: 700; }
+        </style>
+      </defs>
+      <!-- Grid rings -->
+      <g opacity="0.2" stroke="#0D0F14" fill="none" stroke-width="1">
+        <polygon points="210,80 290,120 320,210 290,300 210,340 130,300 100,210 130,120" />
+        <polygon points="210,115 272,145 295,210 272,275 210,305 148,275 125,210 148,145" />
+        <polygon points="210,150 254,170 270,210 254,250 210,270 166,250 150,210 166,170" />
+        <polygon points="210,185 236,195 245,210 236,225 210,235 184,225 175,210 184,195" />
+      </g>
+      <!-- Axes -->
+      <g stroke="#C8C5BC" stroke-width="1">
+        <line x1="210" y1="210" x2="210" y2="80"/>
+        <line x1="210" y1="210" x2="290" y2="120"/>
+        <line x1="210" y1="210" x2="320" y2="210"/>
+        <line x1="210" y1="210" x2="290" y2="300"/>
+        <line x1="210" y1="210" x2="210" y2="340"/>
+        <line x1="210" y1="210" x2="130" y2="300"/>
+        <line x1="210" y1="210" x2="100" y2="210"/>
+        <line x1="210" y1="210" x2="130" y2="120"/>
+      </g>
+      <!-- Data polygon (scores: P=8, M=8, C=5, D=6, S=9, F=6.5, R=8) -->
+      <!-- Normalized to 0-1: center=210,210; radius=130 -->
+      <!-- Angles: top=270°, then clockwise every 45° -->
+      <!-- Problem(8/10)=0.8: top angle → (210, 210-130*0.8) = (210,106) -->
+      <!-- Market(8/10)=0.8: 315° → (210+92*0.8, 210-92*0.8) ≈ (284,136) -->
+      <!-- Competition(5/10)=0.5: 0° → (210+130*0.5, 210) = (275,210) -->
+      <!-- Differentiation(6/10)=0.6: 45° → (210+92*0.6, 210+92*0.6) ≈ (265,265) -->
+      <!-- Scalability(9/10)=0.9: 90° → (210, 210+130*0.9) = (210,327) -->
+      <!-- FounderFit(6.5/10)=0.65: 135° → (210-92*0.65, 210+92*0.65) ≈ (150,270) -->
+      <!-- RevPotential(8/10)=0.8: 180° → (210-130*0.8, 210) = (106,210) -->
+      <!-- Placeholder for 8th axis (repeat back to top via 225°) -- actually 7 dimensions so angle=360/7≈51.4° -->
+      <polygon 
+        points="210,106 274,137 275,210 265,265 210,327 150,270 106,210 150,137"
+        fill="rgba(27,79,216,0.15)" stroke="#1B4FD8" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- Labels -->
+      <text class="radar-label" x="205" y="70" text-anchor="middle">Problem</text>
+      <text class="radar-score" x="205" y="84" text-anchor="middle">8/10</text>
+      <text class="radar-label" x="292" y="112" text-anchor="start">Market</text>
+      <text class="radar-score" x="292" y="126" text-anchor="start">8/10</text>
+      <text class="radar-label" x="328" y="207" text-anchor="start">Competition</text>
+      <text class="radar-score" x="328" y="221" text-anchor="start">5/10</text>
+      <text class="radar-label" x="278" y="288" text-anchor="start">Diff.</text>
+      <text class="radar-score" x="278" y="302" text-anchor="start">6/10</text>
+      <text class="radar-label" x="205" y="355" text-anchor="middle">Scalability</text>
+      <text class="radar-score" x="205" y="369" text-anchor="middle">9/10</text>
+      <text class="radar-label" x="68" y="288" text-anchor="end">Founder</text>
+      <text class="radar-score" x="68" y="302" text-anchor="end">6.5/10</text>
+      <text class="radar-label" x="92" y="207" text-anchor="end">Rev. Pot.</text>
+      <text class="radar-score" x="92" y="221" text-anchor="end">8/10</text>
+      <!-- Center label -->
+      <text x="210" y="205" text-anchor="middle" font-size="13" font-weight="700" fill="#0D0F14">6.7</text>
+      <text x="210" y="220" text-anchor="middle" font-size="10" fill="#6B7280">Overall</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ── 18 VC ANALYSIS ── -->
+<div class="section" id="s18">
+  <div class="section-header">
+    <span class="section-num">18</span>
+    <h2 class="section-title">VC Investment Analysis</h2>
+  </div>
+
+  <div class="callout callout-warn">
+    <div class="callout-title">VC Verdict — Not Yet, But Close</div>
+    Most institutional seed investors would <strong>pass at this stage</strong> but monitor closely. The opportunity is real; the readiness is not yet there. Angel investors or pre-seed funds with EdTech or India focus are the right audience right now.
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>VC Evaluation Criterion</th><th>Current Status</th><th>Required to Raise</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Traction</strong></td><td>Pre-launch; no users</td><td>1,000 active users; 40%+ 30-day retention</td></tr>
+        <tr><td><strong>Willingness to Pay</strong></td><td>Not validated</td><td>Paid sign-ups or clear conversion data from free trial</td></tr>
+        <tr><td><strong>Team</strong></td><td>Founder-only; no technical lead</td><td>Technical co-founder or experienced AI/ML engineer on board</td></tr>
+        <tr><td><strong>Product</strong></td><td>MVP in development</td><td>Working MVP with core AI roadmap feature shipped</td></tr>
+        <tr><td><strong>Market Proof</strong></td><td>Qualitative interviews only</td><td>Quantitative survey (n≥300); pilot B2B institution</td></tr>
+        <tr><td><strong>Moat</strong></td><td>Vision-stage</td><td>Proprietary dataset, fine-tuned model, or B2B contract</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:15px;font-weight:600;margin:24px 0 12px;">Valuation Drivers (Pre-Seed)</h3>
+  <p>At the right milestones, a pre-seed round of <strong>₹1–3Cr ($120K–360K)</strong> at a <strong>₹8–15Cr ($1–1.8M) post-money valuation</strong> is realistic from India-focused angel networks (LetsVenture, AngelList India, Klub, 100X.VC). Key valuation drivers:</p>
+  <ul style="padding-left:20px;color:var(--ink-light);margin-bottom:16px;">
+    <li style="margin-bottom:6px;">AI-native architecture (not a wrapper) with proprietary training data</li>
+    <li style="margin-bottom:6px;">At least one signed institutional (B2B) pilot</li>
+    <li style="margin-bottom:6px;">Retention data showing genuine product-market fit signal</li>
+    <li style="margin-bottom:6px;">Technical co-founder or named AI advisor with credibility</li>
+  </ul>
+</div>
+
+<!-- ── 19 FINAL RECOMMENDATION ── -->
+<div class="section" id="s19">
+  <div class="section-header">
+    <span class="section-num">19</span>
+    <h2 class="section-title">Final Recommendation</h2>
+  </div>
+
+  <div class="verdict-box">
+    <div class="verdict-stamp">VALIDATE FURTHER</div>
+    <div class="verdict-sub">Investment Committee Decision — June 2025</div>
+    <p class="verdict-text">
+      The committee finds this opportunity compelling in market size, problem severity, and long-term scalability. The AI career intelligence category is real, large, and early-innings in India. However, the startup is not yet investment-ready due to: (1) absence of traction data, (2) no demonstrated willingness-to-pay, (3) missing technical leadership, and (4) undefined AI differentiation beyond incumbents.<br><br>
+      <strong style="color:#fff;">Recommendation:</strong> The founder should focus the next 90 days entirely on shipping a minimal, exceptional version of the AI career roadmap feature, acquiring 500 free users through organic content, and converting 50–100 to paid. These three data points — activation rate, retention, and conversion — will determine whether this moves to GO or NO-GO in the next evaluation cycle.
+    </p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:24px 0;">
+    <div class="callout callout-green">
+      <div class="callout-title">✅ GO Conditions</div>
+      40%+ 30-day retention; 10%+ free-to-paid conversion; technical co-founder secured; B2B pilot signed
+    </div>
+    <div class="callout callout-warn">
+      <div class="callout-title">⚠️ VALIDATE FURTHER (Current)</div>
+      Ship MVP; acquire 500 users; validate WTP; hire technical lead; gather quantitative market data
+    </div>
+    <div class="callout callout-danger">
+      <div class="callout-title">🚫 NO-GO Triggers</div>
+      &lt;20% 30-day retention; no willingness-to-pay evidence after 500 users; no technical co-founder by Month 4
+    </div>
+  </div>
+</div>
+
+<!-- ── 20 ACTION PLAN ── -->
+<div class="section" id="s20">
+  <div class="section-header">
+    <span class="section-num">20</span>
+    <h2 class="section-title">30-Day Action Plan</h2>
+  </div>
+
+  <div class="week-grid">
+    <div class="week-card">
+      <div class="week-header"><div class="week-num">1</div>Foundation & Validation (Days 1–7)</div>
+      <div class="week-task">Define and freeze the single core feature: AI Career Roadmap Generator</div>
+      <div class="week-task">Conduct 20 structured user interviews with target ICP (college students + early professionals)</div>
+      <div class="week-task">Validate willingness-to-pay: ask interviewees for a ₹299 pilot commitment letter</div>
+      <div class="week-task">Map all competitor onboarding flows; identify UX gaps to exploit</div>
+      <div class="week-task">Identify and shortlist 3 potential technical co-founders or AI/ML engineers to approach</div>
+    </div>
+    <div class="week-card">
+      <div class="week-header"><div class="week-num">2</div>Build & Ship (Days 8–14)</div>
+      <div class="week-task">Ship v0.1 of AI Career Roadmap: user enters background → AI outputs 90-day skill roadmap</div>
+      <div class="week-task">Set up analytics: Mixpanel or PostHog to track activation, session depth, return visits</div>
+      <div class="week-task">Launch waitlist landing page with a clear value prop and social proof</div>
+      <div class="week-task">Begin publishing 3x/week content on LinkedIn (career roadmap insights; target audience problems)</div>
+      <div class="week-task">Send MVP access to 50 hand-curated beta users; gather feedback within 48 hrs</div>
+    </div>
+    <div class="week-card">
+      <div class="week-header"><div class="week-num">3</div>Learn & Iterate (Days 15–21)</div>
+      <div class="week-task">Analyze first-week retention data; identify and fix top 3 dropout points in onboarding</div>
+      <div class="week-task">Run a "Superhero User" session: 5 power users; capture quotes and success stories</div>
+      <div class="week-task">Cold email 10 Tier-2 engineering college placement officers with a free pilot offer</div>
+      <div class="week-task">A/B test two onboarding flows: "goal-first" vs "skill-assessment-first"</div>
+      <div class="week-task">Begin technical co-founder conversations; set hiring timeline</div>
+    </div>
+    <div class="week-card">
+      <div class="week-header"><div class="week-num">4</div>Grow & Decide (Days 22–30)</div>
+      <div class="week-task">Reach 200 beta users; track 7-day and 14-day retention rates — target 45%+</div>
+      <div class="week-task">Convert first 20 paid users at ₹299/mo using limited "Founding Member" offer</div>
+      <div class="week-task">Compile 30-day data report: activation rate, retention, NPS, qualitative feedback themes</div>
+      <div class="week-task">Present findings to 3 India angel investors / EdTech advisors for feedback</div>
+      <div class="week-task">Make GO / NO-GO decision: commit to seed fundraise roadmap or pivot based on data</div>
+    </div>
+  </div>
+
+  <div class="callout callout-blue">
+    <div class="callout-title">North Star Metric for Month 1</div>
+    <strong>Target:</strong> 200 active beta users → 45%+ 14-day retention → 20 paid conversions. These three numbers, if achieved, create the foundation for a credible pre-seed fundraising narrative.
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<!-- FOOTER -->
+<div class="report-footer">
+  <div>AI Career Intelligence Platform — Startup Validation Report · June 2025</div>
+  <div>CONFIDENTIAL — For internal and investor use only</div>
+  <div>Prepared in the style of VC Due Diligence analysis</div>
+</div>
+
+</body>
+</html>
