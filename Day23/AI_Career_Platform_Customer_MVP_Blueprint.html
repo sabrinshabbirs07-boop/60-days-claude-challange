@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer &amp; MVP Blueprint — AI Career Intelligence Platform</title>
+<style>
+  :root {
+    --ink: #0D0F14;
+    --blue: #1B4FD8;
+    --blue-lite: #EBF0FD;
+    --green: #0FA880;
+    --green-lt: #E6F7F3;
+    --amber: #D97706;
+    --amber-lt: #FEF3C7;
+    --red: #DC2626;
+    --red-lt: #FEE2E2;
+    --grey: #6B7280;
+    --border: #E2E1DC;
+    --white: #ffffff;
+    --bg-row: #FAFAF8;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: #F3F2EE;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    background: var(--white);
+    box-shadow: 0 0 40px rgba(0,0,0,0.06);
+  }
+
+  .content {
+    padding: 28px 36px 60px;
+  }
+
+  /* ---------- COVER ---------- */
+  .cover {
+    background: var(--ink);
+    color: var(--white);
+    padding: 60px 36px 44px;
+  }
+  .cover .eyebrow {
+    color: #6B9EFF;
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    margin-bottom: 14px;
+  }
+  .cover h1 {
+    font-size: 38px;
+    line-height: 1.15;
+    margin: 0 0 14px;
+    font-weight: 700;
+  }
+  .cover .sub {
+    color: #AAAACC;
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+  .cover .verdict-line {
+    color: #4DD9AC;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+  .cover .meta {
+    color: #9a9aab;
+    font-size: 12px;
+  }
+  .hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* ---------- SECTION HEADER ---------- */
+  .section {
+    margin-top: 34px;
+  }
+  .section-head {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 14px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .section-head .num {
+    background: var(--blue);
+    color: var(--white);
+    font-weight: bold;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    flex-shrink: 0;
+  }
+  .section-head .title {
+    background: var(--blue-lite);
+    color: var(--ink);
+    font-weight: bold;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    flex: 1;
+  }
+
+  h2.subhead {
+    color: var(--blue);
+    font-size: 14px;
+    font-weight: bold;
+    margin: 18px 0 8px;
+  }
+
+  p.body-text, li.body-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--grey);
+  }
+
+  /* ---------- CALLOUTS ---------- */
+  .callout {
+    border-left: 4px solid var(--blue);
+    background: var(--blue-lite);
+    padding: 12px 16px;
+    border-radius: 3px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--grey);
+    margin: 14px 0;
+  }
+  .callout .callout-title {
+    display: block;
+    font-weight: bold;
+    font-size: 11px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .callout.green { border-color: var(--green); background: var(--green-lt); }
+  .callout.green .callout-title { color: var(--green); }
+  .callout.blue .callout-title { color: var(--blue); }
+  .callout.amber { border-color: var(--amber); background: var(--amber-lt); }
+  .callout.amber .callout-title { color: var(--amber); }
+
+  /* ---------- TWO COL CALLOUT ---------- */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 14px 0;
+  }
+  .two-col .cell {
+    padding: 12px 14px;
+    border-radius: 3px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .two-col .cell.good { background: var(--green-lt); border-left: 3px solid var(--green); }
+  .two-col .cell.bad { background: var(--red-lt); border-left: 3px solid var(--red); }
+  .two-col .cell-title { font-weight: bold; font-size: 11px; margin-bottom: 7px; display: block; }
+  .two-col .cell.good .cell-title { color: var(--green); }
+  .two-col .cell.bad .cell-title { color: var(--red); }
+  .two-col ul { margin: 0; padding-left: 16px; color: var(--grey); }
+  .two-col li { margin-bottom: 5px; }
+
+  /* ---------- METRICS STRIP ---------- */
+  .metrics-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    border: 1px solid var(--border);
+    margin: 14px 0;
+  }
+  .metrics-strip .m {
+    background: var(--white);
+    text-align: center;
+    padding: 12px 6px;
+  }
+  .metrics-strip .m .lbl {
+    background: var(--ink);
+    color: var(--white);
+    font-weight: bold;
+    font-size: 10px;
+    padding: 7px 4px;
+    margin: -12px -6px 8px;
+  }
+  .metrics-strip .m .val {
+    color: var(--blue);
+    font-weight: bold;
+    font-size: 19px;
+  }
+  .metrics-strip .m .sub {
+    color: var(--grey);
+    font-size: 10px;
+    margin-top: 4px;
+  }
+
+  /* ---------- DATA TABLE ---------- */
+  table.data {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 12px;
+  }
+  table.data th {
+    background: var(--ink);
+    color: var(--white);
+    font-weight: bold;
+    text-align: left;
+    padding: 8px 9px;
+    font-size: 11px;
+  }
+  table.data td {
+    border: 1px solid var(--border);
+    padding: 8px 9px;
+    color: var(--grey);
+    vertical-align: top;
+    line-height: 1.45;
+  }
+  table.data tr:nth-child(even) td {
+    background: var(--bg-row);
+  }
+  table.data td.strong { color: var(--ink); font-weight: bold; }
+
+  /* ---------- PERSONA CARDS ---------- */
+  .personas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 14px 0;
+  }
+  .persona {
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 16px 18px;
+  }
+  .persona h3 {
+    margin: 0 0 2px;
+    font-size: 15px;
+  }
+  .persona .role {
+    font-weight: bold;
+    font-size: 10px;
+    letter-spacing: 0.03em;
+    margin-bottom: 10px;
+  }
+  .persona dl {
+    margin: 0 0 10px;
+    font-size: 11.5px;
+    color: var(--grey);
+    line-height: 1.5;
+  }
+  .persona dl div { margin-bottom: 3px; }
+  .persona dl b { color: var(--ink); }
+  .persona .quote {
+    font-style: italic;
+    font-size: 12px;
+    color: var(--grey);
+    border-top: none;
+  }
+  .persona.blue { border-bottom: 3px solid var(--blue); }
+  .persona.green { border-bottom: 3px solid var(--green); }
+  .persona.amber { border-bottom: 3px solid var(--amber); }
+  .persona.red { border-bottom: 3px solid var(--red); }
+  .persona.blue .role { color: var(--blue); }
+  .persona.green .role { color: var(--green); }
+  .persona.amber .role { color: var(--amber); }
+  .persona.red .role { color: var(--red); }
+
+  /* ---------- JOURNEY ---------- */
+  .journey {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 14px 0 8px;
+  }
+  .journey .stage {
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--blue);
+    padding: 10px 12px;
+    background: var(--white);
+  }
+  .journey .stage h4 {
+    margin: 0 0 6px;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+  }
+  .journey .stage p {
+    margin: 0;
+    font-size: 11px;
+    color: var(--grey);
+    line-height: 1.45;
+  }
+  .journey .stage.c-blue { border-top-color: var(--blue); }
+  .journey .stage.c-green { border-top-color: var(--green); }
+  .journey .stage.c-amber { border-top-color: var(--amber); }
+  .journey .stage.c-blue h4 { color: var(--blue); }
+  .journey .stage.c-green h4 { color: var(--green); }
+  .journey .stage.c-amber h4 { color: var(--amber); }
+
+  /* ---------- BUILD / DONT BUILD ---------- */
+  table.build {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 12.5px;
+  }
+  table.build th {
+    text-align: left;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  table.build th.go { background: var(--green-lt); color: var(--green); }
+  table.build th.nogo { background: var(--red-lt); color: var(--red); }
+  table.build td {
+    border: 1px solid var(--border);
+    padding: 7px 10px;
+    color: var(--grey);
+    vertical-align: top;
+    white-space: pre-line;
+    line-height: 1.5;
+  }
+
+  ul.metric-list { font-size: 13px; color: var(--grey); line-height: 1.6; margin: 6px 0 0 0; padding-left: 18px; }
+
+  /* ---------- MOSCOW ---------- */
+  .moscow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 14px 0;
+  }
+  .moscow .box {
+    border-left: 3px solid var(--red);
+    padding: 8px 12px;
+  }
+  .moscow .box h4 { margin: 0 0 6px; font-size: 12px; }
+  .moscow .box ul { margin: 0; padding-left: 16px; font-size: 11.5px; color: var(--grey); line-height: 1.55; }
+  .moscow .must { background: var(--red-lt); border-color: var(--red); }
+  .moscow .must h4 { color: var(--red); }
+  .moscow .should { background: var(--amber-lt); border-color: var(--amber); }
+  .moscow .should h4 { color: var(--amber); }
+  .moscow .could { background: var(--blue-lite); border-color: var(--blue); }
+  .moscow .could h4 { color: var(--blue); }
+  .moscow .wont { background: #F5F5F5; border-color: var(--grey); }
+  .moscow .wont h4 { color: var(--grey); }
+
+  /* ---------- RISK / WEEK BLOCKS ---------- */
+  .week {
+    background: #F8F8F8;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--blue);
+    padding: 10px 14px;
+    margin-bottom: 10px;
+  }
+  .week h4 { margin: 0 0 8px; font-size: 13px; }
+  .week ul { margin: 0; padding-left: 16px; font-size: 12px; color: var(--grey); line-height: 1.6; }
+  .week.c-blue { border-left-color: var(--blue); } .week.c-blue h4 { color: var(--blue); }
+  .week.c-green { border-left-color: var(--green); } .week.c-green h4 { color: var(--green); }
+  .week.c-amber { border-left-color: var(--amber); } .week.c-amber h4 { color: var(--amber); }
+  .week.c-red { border-left-color: var(--red); } .week.c-red h4 { color: var(--red); }
+
+  /* ---------- ACTION ROWS ---------- */
+  .action-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--blue);
+    padding: 9px 12px;
+    margin-bottom: 6px;
+    font-size: 12.5px;
+  }
+  .action-row .num { font-weight: bold; font-size: 16px; width: 22px; text-align: center; flex-shrink: 0; }
+  .action-row .pr { font-weight: bold; font-size: 10px; width: 60px; text-align: center; flex-shrink: 0; }
+  .action-row .txt { color: var(--grey); flex: 1; }
+  .action-row.red { background: var(--red-lt); border-left-color: var(--red); }
+  .action-row.red .num, .action-row.red .pr { color: var(--red); }
+  .action-row.amber { background: var(--amber-lt); border-left-color: var(--amber); }
+  .action-row.amber .num, .action-row.amber .pr { color: var(--amber); }
+  .action-row.blue { background: var(--blue-lite); border-left-color: var(--blue); }
+  .action-row.blue .num, .action-row.blue .pr { color: var(--blue); }
+
+  /* ---------- SCORE CARDS ---------- */
+  .score-cards {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin: 14px 0;
+  }
+  .score-cards .sc {
+    border: 1px solid var(--border);
+    text-align: center;
+    padding: 10px 4px 8px;
+  }
+  .score-cards .sc .lbl {
+    font-size: 9.5px;
+    color: var(--grey);
+    line-height: 1.3;
+    white-space: pre-line;
+    margin-bottom: 4px;
+  }
+  .score-cards .sc .val {
+    font-weight: bold;
+    font-size: 22px;
+  }
+  .score-cards .sc.green { border-bottom: 3px solid var(--green); } .score-cards .sc.green .val { color: var(--green); }
+  .score-cards .sc.blue { border-bottom: 3px solid var(--blue); } .score-cards .sc.blue .val { color: var(--blue); }
+  .score-cards .sc.amber { border-bottom: 3px solid var(--amber); } .score-cards .sc.amber .val { color: var(--amber); }
+
+  /* ---------- VERDICT ---------- */
+  .verdict-box {
+    background: var(--ink);
+    color: var(--white);
+    padding: 22px 26px;
+    border-top: 4px solid var(--green);
+    margin: 16px 0;
+  }
+  .verdict-box .vtitle {
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  .verdict-box .vsub {
+    color: #AAAACC;
+    font-size: 11px;
+    margin-bottom: 14px;
+  }
+  .verdict-box p {
+    font-size: 12.5px;
+    line-height: 1.6;
+    margin: 0 0 12px;
+  }
+  .verdict-box .vgoal {
+    color: #4DD9AC;
+    font-weight: bold;
+    font-size: 12.5px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .go-table {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border: 1px solid var(--border);
+    margin: 14px 0;
+  }
+  .go-table .col { border-right: 1px solid var(--border); }
+  .go-table .col:last-child { border-right: none; }
+  .go-table .head {
+    font-weight: bold;
+    font-size: 12px;
+    padding: 9px 10px;
+  }
+  .go-table .col.go .head { background: var(--green-lt); color: var(--green); }
+  .go-table .col.status .head { background: var(--amber-lt); color: var(--amber); }
+  .go-table .col.nogo .head { background: var(--red-lt); color: var(--red); }
+  .go-table .body {
+    padding: 10px;
+    font-size: 11.5px;
+    color: var(--grey);
+    line-height: 1.7;
+    white-space: pre-line;
+  }
+  .go-table .col.go .body { border-top: 2px solid var(--green); }
+  .go-table .col.status .body { border-top: 2px solid var(--amber); }
+  .go-table .col.nogo .body { border-top: 2px solid var(--red); }
+
+  @media (max-width: 700px) {
+    .content { padding: 20px 18px 40px; }
+    .cover { padding: 40px 18px 32px; }
+    .cover h1 { font-size: 28px; }
+    .personas, .two-col, .moscow, .journey { grid-template-columns: 1fr; }
+    .metrics-strip { grid-template-columns: repeat(2, 1fr); }
+    .score-cards { grid-template-columns: repeat(3, 1fr); }
+    .go-table { grid-template-columns: 1fr; }
+    .go-table .col { border-right: none; border-bottom: 1px solid var(--border); }
+    table.data { font-size: 11px; }
+  }
+
+  @media print {
+    body { background: var(--white); }
+    .page { box-shadow: none; max-width: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ===================== COVER ===================== -->
+  <div class="cover">
+    <div class="eyebrow">CUSTOMER &amp; MVP BLUEPRINT</div>
+    <h1>AI Career Intelligence<br>Platform</h1>
+    <div class="sub">Startup Validation → Product Blueprint · June 2025</div>
+    <div class="verdict-line">● VALIDATE FURTHER — STRONG MARKET SIGNAL</div>
+    <div class="meta">Market: India&nbsp; |&nbsp; Stage: Pre-Launch&nbsp; |&nbsp; Model: Freemium B2C + B2B SaaS</div>
+  </div>
+  <hr class="hr">
+
+  <div class="content">
+
+    <!-- ===================== 01 EXECUTIVE SUMMARY ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">01</div><div class="title">Executive Summary</div></div>
+
+      <div class="callout green">
+        <span class="callout-title">Investment Thesis</span>
+        AI-native platform to democratize career guidance for 600M+ career-confused individuals in India and emerging markets — combining mentorship, skill assessment, learning curation, and productivity tracking in one AI-powered OS.
+      </div>
+
+      <div class="metrics-strip">
+        <div class="m"><div class="lbl">Global TAM</div><div class="val">$366B</div><div class="sub">EdTech + HR Tech</div></div>
+        <div class="m"><div class="lbl">India SAM</div><div class="val">$4.2B</div><div class="sub">Career-dev segment</div></div>
+        <div class="m"><div class="lbl">3-Yr SOM</div><div class="val">$18M</div><div class="sub">Year 3 revenue target</div></div>
+        <div class="m"><div class="lbl">VC Readiness Score</div><div class="val">6.7 / 10</div><div class="sub">VALIDATE FURTHER</div></div>
+      </div>
+
+      <p class="body-text">The core thesis is sound: fragmentation of career development tools is a genuine, high-frequency pain point with measurable demand and a large addressable market. India alone is projected to reach $10B+ EdTech &amp; HR Tech by 2028 with no dominant "career OS" player. <b>Primary risk:</b> execution differentiation vs well-funded global incumbents.</p>
+    </div>
+
+    <!-- ===================== 02 ICP ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">02</div><div class="title">Ideal Customer Profile (ICP)</div></div>
+      <table class="data">
+        <tr><th>Segment</th><th>Description</th><th>Size</th><th>WTP / Mo</th><th>Priority</th></tr>
+        <tr><td class="strong">College Students (Yr 2–4)</td><td>Engineering/MBA students anxious about placements; seeking direction</td><td>~15M active</td><td>₹299</td><td>Primary</td></tr>
+        <tr><td class="strong">Fresh Graduates (0–2 yrs)</td><td>Job-seekers navigating first career moves; overwhelmed by options</td><td>~8M/yr</td><td>₹299–499</td><td>Primary</td></tr>
+        <tr><td class="strong">Early Professionals (2–5 yrs)</td><td>Ambitious employees seeking faster growth or career switch</td><td>~12M</td><td>₹499–799</td><td>High</td></tr>
+        <tr><td class="strong">Career Switchers</td><td>Professionals pivoting industries; need structured reskilling</td><td>~4M</td><td>₹599–999</td><td>High</td></tr>
+        <tr><td class="strong">B2B — Placement Officers</td><td>Tier-2 college TPO heads seeking placement rate improvement tools</td><td>~5,000 institutions</td><td>₹800/student/yr</td><td>Secondary</td></tr>
+      </table>
+      <div class="callout blue">
+        <span class="callout-title">Strategic Focus</span>
+        Focus the first 6 months on Segments 1 &amp; 2 (students + fresh graduates). They have acute pain, high intent, lower price sensitivity relative to income, and drive word-of-mouth at scale.
+      </div>
+    </div>
+
+    <!-- ===================== 03 PERSONAS ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">03</div><div class="title">Buyer Personas</div></div>
+      <div class="personas">
+        <div class="persona blue">
+          <h3>Rohan M.</h3>
+          <div class="role">THE AMBITIOUS STUDENT</div>
+          <dl>
+            <div><b>Age/Context:</b> 21, B.Tech CSE, Tier-2 college, Pune</div>
+            <div><b>Goal:</b> Land a product role at a top startup by graduation</div>
+            <div><b>Pain:</b> No mentor access; overwhelmed by conflicting online advice</div>
+            <div><b>Channels:</b> YouTube, LinkedIn, Twitter/X career threads</div>
+            <div><b>WTP:</b> ₹299/mo — willing if clear ROI shown</div>
+          </dl>
+          <div class="quote">"I know I need skills but nobody tells me which ones actually matter."</div>
+        </div>
+        <div class="persona green">
+          <h3>Anjali K.</h3>
+          <div class="role">THE CAREER SWITCHER</div>
+          <dl>
+            <div><b>Age/Context:</b> 29, MBA, Marketing background, Bengaluru</div>
+            <div><b>Goal:</b> Move into data analytics within 12 months</div>
+            <div><b>Pain:</b> Can't afford ₹2L bootcamp; scattered online resources</div>
+            <div><b>Channels:</b> Coursera, Kaggle, Twitter/X career threads</div>
+            <div><b>WTP:</b> ₹599/mo — price-sensitive but outcome-driven</div>
+          </dl>
+          <div class="quote">"I need someone to tell me exactly what to do, in order."</div>
+        </div>
+        <div class="persona amber">
+          <h3>Priya S.</h3>
+          <div class="role">THE EARLY PROFESSIONAL</div>
+          <dl>
+            <div><b>Age/Context:</b> 25, 2 yrs experience, software engineer, Hyderabad</div>
+            <div><b>Goal:</b> Accelerate to senior / managerial track in 18 months</div>
+            <div><b>Pain:</b> Knows she needs a plan but never has structured one</div>
+            <div><b>Channels:</b> LinkedIn, podcasts, peer WhatsApp groups</div>
+            <div><b>WTP:</b> ₹499/mo — sees it as career investment</div>
+          </dl>
+          <div class="quote">"I want to grow faster but I don't know what 'faster' even looks like."</div>
+        </div>
+        <div class="persona red">
+          <h3>Prof. Suresh N.</h3>
+          <div class="role">THE B2B BUYER</div>
+          <dl>
+            <div><b>Role:</b> Placement Cell Head, Tier-2 Engineering, Tamil Nadu</div>
+            <div><b>Goal:</b> Improve campus placement rate from 54% to 75%+</div>
+            <div><b>Pain:</b> No tool to track student skill gaps at scale</div>
+            <div><b>Budget:</b> ₹800/student/yr institutional license for 500+ students</div>
+            <div><b>Decision:</b> Needs demo + 1 semester pilot before commit</div>
+          </dl>
+          <div class="quote">"I need data on which students are placement-ready."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== 04 PAIN POINTS ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">04</div><div class="title">Top 10 Customer Pain Points</div></div>
+      <table class="data">
+        <tr><th>#</th><th>Pain Point</th><th>Severity</th><th>Business Impact</th></tr>
+        <tr><td>1</td><td>No personalized career roadmap — users drift without direction</td><td>Critical</td><td>Highest WTP; core retention driver</td></tr>
+        <tr><td>2</td><td>Skill identification confusion — "what should I learn?"</td><td>Critical</td><td>Platform stickiness anchor feature</td></tr>
+        <tr><td>3</td><td>Unaffordable human mentorship (₹2K–10K/hr)</td><td>High</td><td>Zero competition at ₹299–599/mo</td></tr>
+        <tr><td>4</td><td>Fragmented tool ecosystem (avg 9+ tools)</td><td>High</td><td>Integration story lowers CAC</td></tr>
+        <tr><td>5</td><td>Course/resource overload &amp; decision paralysis</td><td>High</td><td>Curation layer = high-value, low-cost feature</td></tr>
+        <tr><td>6</td><td>No career progress tracking or accountability</td><td>Medium</td><td>Gamification improves 30-day retention</td></tr>
+        <tr><td>7</td><td>Poor productivity &amp; study habits</td><td>Medium</td><td>High competition; lower differentiation</td></tr>
+        <tr><td>8</td><td>AI industry anxiety — "will my job exist?"</td><td>High</td><td>Strong emotional trigger for acquisition</td></tr>
+        <tr><td>9</td><td>Lack of peer community for accountability</td><td>Medium</td><td>Community = viral loop + lower churn</td></tr>
+        <tr><td>10</td><td>Resume &amp; interview preparation scattered</td><td>Medium</td><td>Complements career roadmap; upsell opportunity</td></tr>
+      </table>
+    </div>
+
+    <!-- ===================== 05 JOURNEY ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">05</div><div class="title">Customer Journey Map</div></div>
+      <div class="journey">
+        <div class="stage c-blue"><h4>AWARENESS</h4><p>LinkedIn post, Instagram reel, peer referral, Google "career roadmap India"</p></div>
+        <div class="stage c-green"><h4>CONSIDERATION</h4><p>Visits site; reads reviews; compares vs LinkedIn Learning; signs up for free tier</p></div>
+        <div class="stage c-amber"><h4>ONBOARDING</h4><p>Skill assessment + personalized AI roadmap — "aha moment" within 10 mins</p></div>
+      </div>
+      <div class="journey">
+        <div class="stage c-blue"><h4>HABIT LOOP</h4><p>Daily/weekly check-ins; follows AI recs; attends community events; tracks progress</p></div>
+        <div class="stage c-green"><h4>CONVERSION</h4><p>Hits free tier limit or sees premium feature; upgrades after career win</p></div>
+        <div class="stage c-amber"><h4>ADVOCACY</h4><p>Shares success story; refers peers; becomes community contributor; annual renewal</p></div>
+      </div>
+      <div class="callout amber">
+        <b>Critical Insight:</b> The "aha moment" must occur within Session 1 — the personalized AI career roadmap output. Any friction before this causes irreversible churn. Onboarding UX is the highest-leverage engineering investment.
+      </div>
+    </div>
+
+    <!-- ===================== 06 OBJECTIONS ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">06</div><div class="title">Key Objections &amp; Buying Triggers</div></div>
+      <div class="two-col">
+        <div class="cell good">
+          <span class="cell-title">WHY CUSTOMERS BUY</span>
+          <ul>
+            <li>Job rejection event — immediate pain triggers action</li>
+            <li>Graduation approaching — urgency to figure out career path</li>
+            <li>Promotion stall — desire to accelerate growth trajectory</li>
+            <li>AI disruption anxiety — fear of role being automated</li>
+            <li>Peer success stories — social proof from community</li>
+            <li>Wasted money on courses — seeking better ROI</li>
+          </ul>
+        </div>
+        <div class="cell bad">
+          <span class="cell-title">WHY CUSTOMERS REJECT</span>
+          <ul>
+            <li>"Another subscription I won't use" — price skepticism</li>
+            <li>"Can AI really give career advice?" — trust gap</li>
+            <li>Unknown brand — no social proof at launch</li>
+            <li>Feature paralysis — too complex at first impression</li>
+            <li>"One more thing to set up" — time investment fear</li>
+            <li>Free alternatives — YouTube, Reddit, free tools exist</li>
+          </ul>
+        </div>
+      </div>
+      <p class="body-text"><b>Counter-strategy:</b> Lead with a single high-value free output (AI career roadmap). Show value before asking for payment. Use success stories as primary social proof from Month 1.</p>
+    </div>
+
+    <!-- ===================== 07 MVP RECOMMENDATION ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">07</div><div class="title">MVP Recommendation</div></div>
+      <table class="build">
+        <tr><th class="go">BUILD FIRST (Core MVP)</th><th class="nogo">DO NOT BUILD YET</th></tr>
+        <tr><td>AI Career Roadmap Generator&#10;(user background → 90-day skill plan)</td><td>Productivity tracker / habit journal</td></tr>
+        <tr><td>Personalized skill gap assessment quiz</td><td>Job board / listings aggregator</td></tr>
+        <tr><td>Curated resource recommendations per goal</td><td>Community/social features</td></tr>
+        <tr><td>Progress tracking dashboard (simple)</td><td>Mobile app (web-first)</td></tr>
+        <tr><td>Freemium gate + payment flow (Razorpay)</td><td>Resume builder / CV tools</td></tr>
+        <tr><td>Onboarding flow (&lt;5 min to "aha moment")</td><td>Corporate L&amp;D / API integrations</td></tr>
+      </table>
+      <p class="body-text"><b>Success Metrics (Month 1):</b></p>
+      <ul class="metric-list">
+        <li>200 active beta users within 30 days</li>
+        <li>45%+ 14-day retention rate</li>
+        <li>20 paid conversions at ₹299/mo ("Founding Member" pricing)</li>
+        <li>Avg onboarding-to-roadmap time under 8 minutes</li>
+        <li>NPS &gt; 40 from first 50 users</li>
+      </ul>
+    </div>
+
+    <!-- ===================== 08 MOSCOW ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">08</div><div class="title">MoSCoW Prioritization</div></div>
+      <div class="moscow">
+        <div class="box must">
+          <h4>MUST HAVE</h4>
+          <ul>
+            <li>AI career roadmap generator (LLM-powered)</li>
+            <li>Skill gap assessment on signup</li>
+            <li>Curated resource recommendations per path</li>
+            <li>Progress tracker (milestone-based)</li>
+            <li>Freemium gate + Razorpay payment integration</li>
+            <li>Fast onboarding (&lt;5 min to value)</li>
+          </ul>
+        </div>
+        <div class="box should">
+          <h4>SHOULD HAVE</h4>
+          <ul>
+            <li>A/B tested onboarding flows (goal-first vs skill-first)</li>
+            <li>Email drip re-engagement sequences</li>
+            <li>Waitlist referral loop for growth</li>
+            <li>Basic analytics dashboard for users</li>
+            <li>B2B pilot portal for 1 university</li>
+          </ul>
+        </div>
+        <div class="box could">
+          <h4>COULD HAVE</h4>
+          <ul>
+            <li>Community/peer accountability groups</li>
+            <li>Cohort-based learning tracks</li>
+            <li>Vernacular language support (Hindi)</li>
+            <li>AI chat mentor (always-on Q&amp;A)</li>
+            <li>Employer/recruiter-facing profiles</li>
+          </ul>
+        </div>
+        <div class="box wont">
+          <h4>WON'T HAVE (NOW)</h4>
+          <ul>
+            <li>Mobile app (build web-first)</li>
+            <li>Job board / ATS integration</li>
+            <li>Resume/CV builder</li>
+            <li>Corporate L&amp;D API</li>
+            <li>Full productivity suite (Notion-replacement)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== 09 PRICING ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">09</div><div class="title">Pricing Hypothesis</div></div>
+      <table class="data">
+        <tr><th>Tier</th><th>Price</th><th>Features</th><th>Target User</th><th>Conversion Goal</th></tr>
+        <tr><td class="strong">Free</td><td>₹0</td><td>1 career roadmap; 5 skill assessments; limited resources</td><td>Acquisition &amp; trial</td><td>Upsell within 30 days</td></tr>
+        <tr><td class="strong">Pro (Monthly)</td><td>₹499/mo</td><td>Unlimited roadmaps; full resource library; progress tracking; AI chat</td><td>Individual power users</td><td>10–15% free-to-paid</td></tr>
+        <tr><td class="strong">Pro (Annual)</td><td>₹2,999/yr</td><td>All Pro features + priority support; 50% saving vs monthly</td><td>Committed learners</td><td>30% of paid on annual</td></tr>
+        <tr><td class="strong">B2B University</td><td>₹800/student/yr</td><td>Admin dashboard; cohort tracking; placement analytics; bulk onboarding</td><td>Institutions (500+ seats)</td><td>1 pilot by Month 6</td></tr>
+      </table>
+      <div class="callout green">
+        <b>Launch Strategy:</b> Start with a "Founding Member" offer at ₹299/mo for the first 100 paid users. This lowers the conversion barrier, creates urgency, and generates testimonials. Move to standard ₹499/mo after achieving product-market fit signals.
+      </div>
+    </div>
+
+    <!-- ===================== 10 RISKS ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">10</div><div class="title">Top 5 Risks</div></div>
+      <table class="data">
+        <tr><th>Risk</th><th>Probability</th><th>Impact</th><th>Mitigation Strategy</th></tr>
+        <tr><td>Competition from LinkedIn / Google building India-first features</td><td>HIGH</td><td>HIGH</td><td>Build India-native moat: vernacular, local pricing, B2B institutional contracts, community</td></tr>
+        <tr><td>User retention failure (&lt;30% at 90 days)</td><td>HIGH</td><td>CRITICAL</td><td>Nail onboarding; deliver "aha" in session 1; design weekly habit loop; use push/email re-engagement</td></tr>
+        <tr><td>AI hallucination in career advice eroding trust</td><td>MEDIUM</td><td>HIGH</td><td>Human review layer for outputs; confidence scoring; expert advisory board; clear disclaimers</td></tr>
+        <tr><td>No technical co-founder — product quality risk</td><td>HIGH</td><td>CRITICAL</td><td>Prioritise hiring AI/ML engineer before MVP launch; consider technical co-founder search now</td></tr>
+        <tr><td>Freemium-to-paid conversion below 10%</td><td>MEDIUM</td><td>MEDIUM</td><td>Redesign paywall with stronger value gate; test 7-day free trial model; optimize free tier limits</td></tr>
+      </table>
+    </div>
+
+    <!-- ===================== 11 30-DAY PLAN ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">11</div><div class="title">30-Day MVP Plan</div></div>
+
+      <div class="week c-blue">
+        <h4>Week 1: Foundation &amp; Validation (Days 1–7)</h4>
+        <ul>
+          <li>Freeze single core feature: AI Career Roadmap Generator</li>
+          <li>Conduct 20 structured user interviews with ICP (students + early professionals)</li>
+          <li>Validate willingness-to-pay: ask interviewees for ₹299 pilot commitment letter</li>
+          <li>Map all competitor onboarding flows; identify UX gaps to exploit</li>
+          <li>Shortlist 3 potential technical co-founders / AI/ML engineers to approach</li>
+        </ul>
+      </div>
+
+      <div class="week c-green">
+        <h4>Week 2: Build &amp; Ship (Days 8–14)</h4>
+        <ul>
+          <li>Ship v0.1: user enters background → AI outputs personalized 90-day skill roadmap</li>
+          <li>Set up analytics (Mixpanel / PostHog): activation, session depth, return visits</li>
+          <li>Launch waitlist landing page with clear value prop and social proof</li>
+          <li>Begin publishing 3x/week on LinkedIn (career insights targeting ICP problems)</li>
+          <li>Send MVP access to 50 hand-curated beta users; gather feedback within 48 hrs</li>
+        </ul>
+      </div>
+
+      <div class="week c-amber">
+        <h4>Week 3: Learn &amp; Iterate (Days 15–21)</h4>
+        <ul>
+          <li>Analyse first-week retention; identify and fix top 3 onboarding dropout points</li>
+          <li>Run "Superhero User" session with 5 power users; capture success story quotes</li>
+          <li>Cold email 10 Tier-2 engineering college placement officers with free pilot offer</li>
+          <li>A/B test two onboarding flows: "goal-first" vs "skill-assessment-first"</li>
+          <li>Begin technical co-founder conversations; set hiring timeline</li>
+        </ul>
+      </div>
+
+      <div class="week c-red">
+        <h4>Week 4: Grow &amp; Decide (Days 22–30)</h4>
+        <ul>
+          <li>Reach 200 beta users; track 7-day and 14-day retention — target 45%+</li>
+          <li>Convert first 20 paid users at ₹299/mo using "Founding Member" limited offer</li>
+          <li>Compile 30-day report: activation rate, retention, NPS, qualitative feedback themes</li>
+          <li>Present findings to 3 India angel investors / EdTech advisors for feedback</li>
+          <li>Make GO / NO-GO decision: commit to seed fundraise or pivot based on data</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===================== 12 ACTION SHEET ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">12</div><div class="title">Founder Action Sheet — Top 10 Next Actions</div></div>
+
+      <div class="action-row red"><div class="num">1</div><div class="pr">URGENT</div><div class="txt">Start technical co-founder search today via IIT/NIT alumni networks, AngelList, LinkedIn</div></div>
+      <div class="action-row red"><div class="num">2</div><div class="pr">URGENT</div><div class="txt">Freeze MVP scope to ONE feature: AI Career Roadmap Generator only</div></div>
+      <div class="action-row red"><div class="num">3</div><div class="pr">URGENT</div><div class="txt">Book 20 user interviews this week with target ICP (college students + early professionals)</div></div>
+      <div class="action-row amber"><div class="num">4</div><div class="pr">HIGH</div><div class="txt">Set up product analytics (Mixpanel free tier) before any code ships</div></div>
+      <div class="action-row amber"><div class="num">5</div><div class="pr">HIGH</div><div class="txt">Validate willingness-to-pay: collect 10 ₹299 commitment letters before building</div></div>
+      <div class="action-row amber"><div class="num">6</div><div class="pr">HIGH</div><div class="txt">Publish 3x/week LinkedIn content targeting ICP problems — start building audience now</div></div>
+      <div class="action-row amber"><div class="num">7</div><div class="pr">HIGH</div><div class="txt">Register on LetsVenture and AngelList India; begin warm investor intro outreach</div></div>
+      <div class="action-row blue"><div class="num">8</div><div class="pr">MEDIUM</div><div class="txt">Cold email 5 Tier-2 college placement officers offering a free 1-semester pilot</div></div>
+      <div class="action-row blue"><div class="num">9</div><div class="pr">MEDIUM</div><div class="txt">Design onboarding flow wireframe targeting &lt;5 min to "aha moment"</div></div>
+      <div class="action-row blue"><div class="num">10</div><div class="pr">MEDIUM</div><div class="txt">Identify 1 EdTech advisor or domain expert for advisory board credibility</div></div>
+    </div>
+
+    <!-- ===================== 13 SCORES ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">13</div><div class="title">Validation Scores (0–100)</div></div>
+
+      <div class="score-cards">
+        <div class="sc green"><div class="lbl">Customer&#10;Clarity</div><div class="val">78</div></div>
+        <div class="sc green"><div class="lbl">Problem&#10;Severity</div><div class="val">85</div></div>
+        <div class="sc blue"><div class="lbl">PMF&#10;Potential</div><div class="val">67</div></div>
+        <div class="sc amber"><div class="lbl">MVP&#10;Readiness</div><div class="val">55</div></div>
+        <div class="sc amber"><div class="lbl">VC&#10;Readiness</div><div class="val">52</div></div>
+        <div class="sc green"><div class="lbl">Market&#10;Opportunity</div><div class="val">82</div></div>
+      </div>
+
+      <table class="data">
+        <tr><th>Dimension</th><th>Score</th><th>Rationale</th></tr>
+        <tr><td class="strong">Customer Clarity</td><td class="strong" style="color:var(--blue)">78 / 100</td><td>ICP is well-defined; 4 distinct personas with clear WTP signals from qualitative interviews</td></tr>
+        <tr><td class="strong">Problem Severity</td><td class="strong" style="color:var(--blue)">85 / 100</td><td>India has 1 career counselor per 30,000+ students; 68% graduates unemployable in stated field (NASSCOM)</td></tr>
+        <tr><td class="strong">PMF Potential</td><td class="strong" style="color:var(--blue)">67 / 100</td><td>Strong problem-solution fit hypothesis; not yet validated with quantitative retention or conversion data</td></tr>
+        <tr><td class="strong">MVP Readiness</td><td class="strong" style="color:var(--blue)">55 / 100</td><td>Scope is clear but no technical co-founder; no working product; no analytics setup yet</td></tr>
+        <tr><td class="strong">VC Readiness</td><td class="strong" style="color:var(--blue)">52 / 100</td><td>Pre-revenue, pre-traction, founder-only team — needs 90-day milestones before seed conversation</td></tr>
+        <tr><td class="strong">Market Opportunity</td><td class="strong" style="color:var(--blue)">82 / 100</td><td>$366B global TAM; $4.2B India SAM; NEP 2020 tailwind; no dominant "career OS" player</td></tr>
+      </table>
+    </div>
+
+    <!-- ===================== 14 FINAL VERDICT ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">14</div><div class="title">Final Verdict</div></div>
+
+      <div class="verdict-box">
+        <div class="vtitle">🏆 PROMISING BUT PARTIALLY VALIDATED</div>
+        <div class="vsub">Verdict: VALIDATE FURTHER — Investment Committee Decision · June 2025</div>
+        <p>The opportunity is real, sizeable, and early-innings in India. The AI career intelligence category has strong demand signals and no dominant player. However, the startup is not yet investment-ready due to: (1) absence of traction data, (2) no demonstrated willingness-to-pay at scale, (3) missing technical leadership, and (4) undefined AI differentiation beyond incumbents.</p>
+        <p class="vgoal"><b>Next 90-Day Target:</b> Ship MVP → 500 free users → 50 paid conversions → 40%+ retention → hire technical co-founder. These four milestones transform this from "validate further" to "GO."</p>
+      </div>
+
+      <div class="go-table">
+        <div class="col go">
+          <div class="head">GO Conditions</div>
+          <div class="body">40%+ 30-day retention
+10%+ free-to-paid conversion
+Technical co-founder secured
+B2B pilot signed</div>
+        </div>
+        <div class="col status">
+          <div class="head">Current Status</div>
+          <div class="body">VALIDATE FURTHER
+Ship MVP; acquire 500 users
+Validate WTP; hire tech lead
+Gather quantitative data</div>
+        </div>
+        <div class="col nogo">
+          <div class="head">NO-GO Triggers</div>
+          <div class="body">&lt;30-day retention &lt; 20%
+No WTP evidence after 500 users
+No technical co-founder by Month 4
+NPS &lt; 30 after beta</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
