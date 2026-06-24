@@ -358,4 +358,6 @@ However, long-term sustainability depends on proving customer willingness to pay
 ## AI-powered Business Strategy and Startup Validation Analysis:
 
  [pdf file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day24/AI_Career_Platform_Sustainability_Investment_Report.pdf)
+
+
  [html file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day24/AI_Career_Platform_Sustainability_Investment_Report.html)
