@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sustainability &amp; Investment Analysis — AI Career Intelligence Platform</title>
+<style>
+  :root {
+    --ink: #0D0F14;
+    --blue: #1B4FD8;
+    --blue-lite: #EBF0FD;
+    --green: #0FA880;
+    --green-lt: #E6F7F3;
+    --amber: #D97706;
+    --amber-lt: #FEF3C7;
+    --red: #DC2626;
+    --red-lt: #FEE2E2;
+    --purple: #7C3AED;
+    --purple-lt: #F1E9FE;
+    --grey: #6B7280;
+    --border: #E2E1DC;
+    --white: #ffffff;
+    --bg-row: #FAFAF8;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: #F3F2EE;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--white);
+    box-shadow: 0 0 40px rgba(0,0,0,0.06);
+  }
+
+  .content { padding: 28px 38px 60px; }
+
+  /* ---------- COVER ---------- */
+  .cover {
+    background: var(--ink);
+    color: var(--white);
+    padding: 64px 38px 46px;
+  }
+  .cover .eyebrow {
+    color: #9B7FF2;
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    margin-bottom: 14px;
+  }
+  .cover h1 {
+    font-size: 38px;
+    line-height: 1.15;
+    margin: 0 0 14px;
+    font-weight: 700;
+  }
+  .cover .sub { color: #AAAACC; font-size: 14px; margin-bottom: 30px; }
+  .cover .verdict-line { color: #FBBF24; font-weight: bold; font-size: 14px; margin-bottom: 14px; }
+  .cover .meta { color: #9a9aab; font-size: 12px; }
+  .hr { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* ---------- TOC ---------- */
+  .toc-title { font-size: 26px; font-weight: bold; margin: 30px 0 18px; }
+  .toc-list { margin: 0; padding: 0; }
+  .toc-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .toc-row .tnum { color: var(--blue); font-weight: bold; width: 22px; flex-shrink: 0; }
+  .toc-row .ttitle { flex: 1; color: var(--ink); }
+  .toc-row .tpage { color: var(--grey); }
+
+  /* ---------- SECTION HEADER ---------- */
+  .section { margin-top: 38px; page-break-inside: auto; }
+  .section-head {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .section-head .num {
+    background: var(--blue);
+    color: var(--white);
+    font-weight: bold;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    flex-shrink: 0;
+  }
+  .section-head .title {
+    background: var(--blue-lite);
+    color: var(--ink);
+    font-weight: bold;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    flex: 1;
+  }
+  .section-head.purple .num { background: var(--purple); }
+  .section-head.purple .title { background: var(--purple-lt); }
+
+  h3.subhead {
+    color: var(--blue);
+    font-size: 14px;
+    font-weight: bold;
+    margin: 18px 0 8px;
+  }
+  h3.subhead.green { color: var(--green); }
+  h3.subhead.amber { color: var(--amber); }
+  h3.subhead.red { color: var(--red); }
+
+  p.body-text, li.body-text { font-size: 13px; line-height: 1.65; color: var(--grey); }
+  p.body-ink { font-size: 13px; line-height: 1.65; color: var(--ink); }
+  .note-small { font-size: 11px; color: var(--grey); font-style: italic; }
+
+  ul.bullets { margin: 8px 0; padding-left: 18px; font-size: 13px; line-height: 1.7; color: var(--grey); }
+  ul.bullets li { margin-bottom: 6px; }
+
+  /* ---------- CALLOUTS ---------- */
+  .callout {
+    border-left: 4px solid var(--blue);
+    background: var(--blue-lite);
+    padding: 13px 16px;
+    border-radius: 3px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--grey);
+    margin: 14px 0;
+  }
+  .callout .callout-title {
+    display: block;
+    font-weight: bold;
+    font-size: 11px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .callout.green { border-color: var(--green); background: var(--green-lt); }
+  .callout.green .callout-title { color: var(--green); }
+  .callout.blue .callout-title { color: var(--blue); }
+  .callout.amber { border-color: var(--amber); background: var(--amber-lt); }
+  .callout.amber .callout-title { color: var(--amber); }
+  .callout.red { border-color: var(--red); background: var(--red-lt); }
+  .callout.red .callout-title { color: var(--red); }
+  .callout.purple { border-color: var(--purple); background: var(--purple-lt); }
+  .callout.purple .callout-title { color: var(--purple); }
+
+  /* ---------- TWO COL CALLOUT ---------- */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+  .two-col .cell { padding: 12px 14px; border-radius: 3px; font-size: 12.5px; line-height: 1.55; }
+  .two-col .cell.amber { background: var(--amber-lt); border-left: 3px solid var(--amber); }
+  .two-col .cell.red { background: var(--red-lt); border-left: 3px solid var(--red); }
+  .two-col .cell-title { font-weight: bold; font-size: 11px; margin-bottom: 7px; display: block; }
+  .two-col .cell.amber .cell-title { color: var(--amber); }
+  .two-col .cell.red .cell-title { color: var(--red); }
+  .two-col ul { margin: 0; padding-left: 16px; color: var(--grey); }
+  .two-col li { margin-bottom: 5px; }
+
+  /* ---------- DATA TABLE ---------- */
+  table.data { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 12px; }
+  table.data th {
+    background: var(--ink); color: var(--white); font-weight: bold;
+    text-align: left; padding: 8px 9px; font-size: 11px;
+  }
+  table.data td {
+    border: 1px solid var(--border); padding: 8px 9px; color: var(--grey);
+    vertical-align: top; line-height: 1.5;
+  }
+  table.data tr:nth-child(even) td { background: var(--bg-row); }
+  table.data td.strong { color: var(--ink); font-weight: bold; }
+
+  /* ---------- VERDICT BADGE ---------- */
+  .verdict-badge {
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 12px;
+    border-radius: 3px;
+    margin: 14px 0;
+  }
+  .verdict-badge.amber { background: var(--amber-lt); color: var(--amber); border: 1px solid var(--amber); }
+
+  /* ---------- ACTION ROWS ---------- */
+  .action-row {
+    display: flex; align-items: center; gap: 14px;
+    border: 1px solid var(--border); border-left: 3px solid var(--blue);
+    padding: 10px 14px; margin-bottom: 7px; font-size: 12.5px;
+  }
+  .action-row .num { font-weight: bold; font-size: 17px; width: 22px; text-align: center; flex-shrink: 0; }
+  .action-row .pr { font-weight: bold; font-size: 10px; width: 64px; text-align: center; flex-shrink: 0; }
+  .action-row .txt { color: var(--grey); flex: 1; line-height: 1.5; }
+  .action-row.red { background: var(--red-lt); border-left-color: var(--red); }
+  .action-row.red .num, .action-row.red .pr { color: var(--red); }
+  .action-row.amber { background: var(--amber-lt); border-left-color: var(--amber); }
+  .action-row.amber .num, .action-row.amber .pr { color: var(--amber); }
+  .action-row.blue { background: var(--blue-lite); border-left-color: var(--blue); }
+  .action-row.blue .num, .action-row.blue .pr { color: var(--blue); }
+
+  /* ---------- SCORE CARDS ---------- */
+  .score-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 16px 0; }
+  .score-cards .sc { border: 1px solid var(--border); text-align: center; padding: 12px 6px 10px; border-radius: 3px; }
+  .score-cards .sc .lbl { font-size: 10px; color: var(--grey); margin-bottom: 6px; }
+  .score-cards .sc .val { font-weight: bold; font-size: 24px; }
+  .score-cards .sc.amber { border-bottom: 3px solid var(--amber); } .score-cards .sc.amber .val { color: var(--amber); }
+  .score-cards .sc.red { border-bottom: 3px solid var(--red); } .score-cards .sc.red .val { color: var(--red); }
+
+  .ring-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 16px 0; }
+  .ring-card { border: 1px solid var(--border); border-radius: 3px; text-align: center; padding: 14px 6px 10px; }
+  .ring-card svg { display: block; margin: 0 auto 6px; }
+  .ring-card .rlabel { font-size: 9.5px; color: var(--grey); }
+  .ring-card.amber { border-top: 3px solid var(--amber); }
+  .ring-card.red { border-top: 3px solid var(--red); }
+
+  /* ---------- DASHBOARD GRID ---------- */
+  .dash-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .dash-box {
+    border-radius: 3px; padding: 14px 16px; font-size: 11.5px; line-height: 1.55;
+  }
+  .dash-box h4 { margin: 0 0 8px; font-size: 12px; }
+  .dash-box ul { margin: 0; padding-left: 16px; color: var(--grey); }
+  .dash-box ul li { margin-bottom: 4px; }
+  .dash-box.blue { background: var(--blue-lite); border-top: 3px solid var(--blue); }
+  .dash-box.blue h4 { color: var(--blue); }
+  .dash-box.green { background: var(--green-lt); border-top: 3px solid var(--green); }
+  .dash-box.green h4 { color: var(--green); }
+  .dash-box.amber { background: var(--amber-lt); border-top: 3px solid var(--amber); }
+  .dash-box.amber h4 { color: var(--amber); }
+  .dash-box.red { background: var(--red-lt); border-top: 3px solid var(--red); }
+  .dash-box.red h4 { color: var(--red); }
+
+  .gtm-flow { display: flex; align-items: center; gap: 6px; margin: 14px 0; overflow-x: auto; }
+  .gtm-stage {
+    flex: 1; min-width: 110px; border-radius: 3px; padding: 10px 10px; text-align: left;
+    border-top: 3px solid; font-size: 10.5px;
+  }
+  .gtm-stage h5 { margin: 0 0 5px; font-size: 9.5px; letter-spacing: 0.02em; }
+  .gtm-stage p { margin: 0; color: var(--grey); line-height: 1.4; font-size: 9.5px; }
+  .gtm-arrow { color: var(--grey); font-size: 16px; flex-shrink: 0; }
+  .gtm-stage.c-blue { border-color: var(--blue); background: rgba(27,79,216,0.06); } .gtm-stage.c-blue h5 { color: var(--blue); }
+  .gtm-stage.c-green { border-color: var(--green); background: rgba(15,168,128,0.06); } .gtm-stage.c-green h5 { color: var(--green); }
+  .gtm-stage.c-amber { border-color: var(--amber); background: rgba(217,119,6,0.06); } .gtm-stage.c-amber h5 { color: var(--amber); }
+  .gtm-stage.c-purple { border-color: var(--purple); background: rgba(124,58,237,0.06); } .gtm-stage.c-purple h5 { color: var(--purple); }
+  .gtm-stage.c-red { border-color: var(--red); background: rgba(220,38,38,0.06); } .gtm-stage.c-red h5 { color: var(--red); }
+
+  .risk-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0; }
+  .risk-card { border-left: 3px solid; padding: 10px 12px; border-radius: 2px; font-size: 10.5px; }
+  .risk-card h5 { margin: 0 0 5px; font-size: 10px; }
+  .risk-card p { margin: 0; color: var(--grey); line-height: 1.4; }
+  .risk-card.red { border-color: var(--red); background: rgba(220,38,38,0.06); } .risk-card.red h5 { color: var(--red); }
+  .risk-card.amber { border-color: var(--amber); background: rgba(217,119,6,0.06); } .risk-card.amber h5 { color: var(--amber); }
+
+  /* ---------- VERDICT BOX (final) ---------- */
+  .verdict-box {
+    background: var(--ink); color: var(--white); padding: 24px 28px;
+    border-top: 4px solid var(--amber); margin: 16px 0;
+  }
+  .verdict-box .vtitle { font-size: 17px; font-weight: bold; margin-bottom: 14px; text-align: center; }
+  .verdict-box p { font-size: 13px; line-height: 1.65; margin: 0; }
+
+  blockquote {
+    font-size: 13px; line-height: 1.6; color: var(--grey); font-style: italic;
+    border-left: 3px solid var(--border); margin: 10px 0; padding: 8px 14px;
+  }
+
+  @media (max-width: 700px) {
+    .content { padding: 20px 18px 40px; }
+    .cover { padding: 40px 18px 32px; }
+    .cover h1 { font-size: 28px; }
+    .two-col, .dash-row2, .risk-row { grid-template-columns: 1fr; }
+    .score-cards, .ring-cards { grid-template-columns: repeat(2, 1fr); }
+    .gtm-flow { flex-direction: column; }
+    .gtm-arrow { transform: rotate(90deg); align-self: center; }
+    table.data { font-size: 11px; }
+  }
+
+  @media print {
+    body { background: var(--white); }
+    .page { box-shadow: none; max-width: none; }
+    .section { page-break-before: always; }
+    .section:first-of-type { page-break-before: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ===================== COVER ===================== -->
+  <div class="cover">
+    <div class="eyebrow">SUSTAINABILITY &amp; INVESTMENT ANALYSIS</div>
+    <h1>AI Career Intelligence<br>Platform</h1>
+    <div class="sub">Independent Business Viability Report — Day-23 Blueprint Reviewed · June 2025</div>
+    <div class="verdict-line">● VERDICT: VALIDATE — REVENUE AND MOAT UNPROVEN</div>
+    <div class="meta">Prepared as: AI Co-Founder / Growth Strategist / YC-style Advisory Review</div>
+  </div>
+  <hr class="hr">
+
+  <div class="content">
+
+    <!-- ===================== TOC ===================== -->
+    <div class="toc-title">Table of Contents</div>
+    <div class="toc-list">
+      <div class="toc-row"><div class="tnum">01</div><div class="ttitle">Startup Summary &amp; Extracted Assumptions</div><div class="tpage">3</div></div>
+      <div class="toc-row"><div class="tnum">02</div><div class="ttitle">Business Reality Check</div><div class="tpage">4</div></div>
+      <div class="toc-row"><div class="tnum">03</div><div class="ttitle">Executive Summary</div><div class="tpage">5</div></div>
+      <div class="toc-row"><div class="tnum">04</div><div class="ttitle">Business Model Canvas</div><div class="tpage">6</div></div>
+      <div class="toc-row"><div class="tnum">05</div><div class="ttitle">Revenue &amp; Pricing Strategy</div><div class="tpage">7</div></div>
+      <div class="toc-row"><div class="tnum">06</div><div class="ttitle">Go-To-Market Strategy</div><div class="tpage">8</div></div>
+      <div class="toc-row"><div class="tnum">07</div><div class="ttitle">Customer Acquisition Strategy</div><div class="tpage">9</div></div>
+      <div class="toc-row"><div class="tnum">08</div><div class="ttitle">First 100 Users Plan</div><div class="tpage">9</div></div>
+      <div class="toc-row"><div class="tnum">09</div><div class="ttitle">Competitive Position &amp; Moat</div><div class="tpage">10</div></div>
+      <div class="toc-row"><div class="tnum">10</div><div class="ttitle">Reverse SWOT Analysis</div><div class="tpage">11</div></div>
+      <div class="toc-row"><div class="tnum">11</div><div class="ttitle">Investor One-Liner &amp; 30-Second Pitch</div><div class="tpage">12</div></div>
+      <div class="toc-row"><div class="tnum">12</div><div class="ttitle">Investment Scorecard (0–100)</div><div class="tpage">12</div></div>
+      <div class="toc-row"><div class="tnum">13</div><div class="ttitle">Visual Dashboard</div><div class="tpage">13</div></div>
+      <div class="toc-row"><div class="tnum">14</div><div class="ttitle">Founder Action Sheet — Top 10 Actions</div><div class="tpage">14</div></div>
+      <div class="toc-row"><div class="tnum">15</div><div class="ttitle">Sustainability Verdict</div><div class="tpage">15</div></div>
+    </div>
+
+    <!-- ===================== 01 STARTUP SUMMARY ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">01</div><div class="title">Startup Summary &amp; Extracted Assumptions</div></div>
+
+      <h3 class="subhead">What This Startup Is, In 8 Bullets</h3>
+      <ul class="bullets">
+        <li>AI-native career guidance platform targeting India's 600M+ "career-confused" population, positioned as a freemium B2C product with a parallel B2B institutional offering.</li>
+        <li>Core deliverable: an LLM-generated personalized 90-day skill roadmap, produced from a short user background/skill-gap assessment.</li>
+        <li>Five customer segments defined: college students, fresh graduates, early professionals, career switchers, and B2B placement officers — with students and graduates flagged as the initial focus.</li>
+        <li>Monetization plan is a 3-tier B2C subscription (Free / ₹499 monthly / ₹2,999 annual) plus a B2B institutional license at ₹800/student/year.</li>
+        <li>No working product, no paying customers, and no technical co-founder exist yet — this is a pre-build, pre-revenue concept.</li>
+        <li>Go-to-market plan relies almost entirely on organic LinkedIn content, a waitlist, and word-of-mouth; no paid acquisition or platform-distribution channel is specified.</li>
+        <li>The blueprint's own validation scores rate MVP Readiness at 55/100 and VC Readiness at 52/100 — the source document itself flags this as unproven.</li>
+        <li>The 30-day plan is sequenced sensibly (interviews before code, WTP commitment letters before building) but no evidence yet exists that any step has been executed.</li>
+      </ul>
+
+      <h3 class="subhead">Assumptions Extracted From the Blueprint</h3>
+      <table class="data">
+        <tr><th>Dimension</th><th>Stated Assumption</th><th>Evidence Level</th></tr>
+        <tr><td class="strong">Customer</td><td>Students/grads/professionals will pay ₹299–999/mo for a career roadmap</td><td>Hypothesis only — no transactions</td></tr>
+        <tr><td class="strong">MVP</td><td>A single AI roadmap generator is sufficient to retain users past Week 1</td><td>Untested — no working product</td></tr>
+        <tr><td class="strong">Value Prop</td><td>"Aha moment" in one session creates lasting habit and loyalty</td><td>Plausible but unvalidated</td></tr>
+        <tr><td class="strong">Pricing</td><td>₹299 "Founding Member" price anchors future ₹499 standard price</td><td>Common SaaS tactic; not yet tested with this audience</td></tr>
+        <tr><td class="strong">Revenue</td><td>10–15% free-to-paid conversion is achievable</td><td>Optimistic for a commodity-feeling AI output; freemium norms are often 2–5%</td></tr>
+        <tr><td class="strong">GTM</td><td>Organic LinkedIn content (3x/week) will generate sufficient top-of-funnel</td><td>High execution risk; saturated channel, slow compounding</td></tr>
+      </table>
+    </div>
+
+    <!-- ===================== 02 BUSINESS REALITY CHECK ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">02</div><div class="title">Business Reality Check</div></div>
+
+      <h3 class="subhead">Who Pays?</h3>
+      <p class="body-text">Realistically, the <b>only segment with demonstrated, budgeted willingness to pay today is the B2B institutional buyer</b> (placement cell heads). They control real budget tied to a measurable KPI (placement rate) and are accustomed to paying for tools. The B2C personas (students, switchers, early professionals) have <i>stated</i> willingness-to-pay in interviews, which is a weak signal — stated WTP in surveys routinely overstates real conversion by 3–5x in price-sensitive Indian consumer markets.</p>
+
+      <h3 class="subhead green">Why Do They Pay?</h3>
+      <p class="body-text">B2B buyers pay to solve an institutional, measurable problem (placement %) that affects their own performance review and the college's reputation/enrollment. B2C users would be paying to reduce anxiety and decision-fatigue around career direction — a real pain, but one with abundant free substitutes (ChatGPT, YouTube, Reddit, peer WhatsApp groups) that the blueprint itself lists as a top rejection reason.</p>
+
+      <h3 class="subhead amber">How Will They Discover the Product?</h3>
+      <p class="body-text">The plan leans on organic LinkedIn posting and a waitlist. This is low-cost but slow and indirect — it depends on consistent content execution and an unproven hook, with no described viral mechanic, referral incentive baked into the product, or distribution partnership. There is no plan to ride an existing platform's audience (e.g., embedding inside a college LMS, partnering with placement cells for direct funnel access) even though the B2B motion is sitting right there as a potential acquisition channel for B2C users.</p>
+
+      <div class="two-col">
+        <div class="cell amber">
+          <span class="cell-title">BIGGEST GROWTH RISKS</span>
+          <ul>
+            <li>Organic content alone rarely produces enough volume fast enough to hit 200 users in 30 days without an existing audience</li>
+            <li>No referral loop or network effect is built into the product itself</li>
+            <li>B2B sales cycles (pilot + 1 semester) are long and will not show GTM proof within the 30-day window</li>
+            <li>Founder-only team limits content + outreach + product work happening in parallel</li>
+          </ul>
+        </div>
+        <div class="cell red">
+          <span class="cell-title">BIGGEST MONETIZATION RISKS</span>
+          <ul>
+            <li>Core output (LLM roadmap) is replicable for free by ChatGPT/Claude today — weak willingness to pay for a commodity</li>
+            <li>10–15% conversion assumption is likely optimistic versus realistic freemium benchmarks</li>
+            <li>B2B contract value (₹800/student/yr) requires large seat counts to matter, and procurement cycles are slow</li>
+            <li>No anchor "must-renew" mechanic (e.g., outcome tracking tied to placement results) to justify annual renewal</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="subhead red">Weakest Assumptions to Validate First</h3>
+      <ul class="bullets">
+        <li><b>Will any B2C user actually pay ₹299, in cash, this month</b> — not in an interview, but with a real transaction? (Current plan: 10 commitment letters — letters are not payments.)</li>
+        <li><b>Does the roadmap output feel differentiated enough from a free ChatGPT prompt</b> to justify a subscription, or is the willingness-to-pay actually for something else (accountability, community, human review) not yet built?</li>
+        <li><b>Can one founder, alone, execute interviews + product + content + outreach</b> inside 30 days without a technical co-founder, or does the plan implicitly assume hiring happens faster than is realistic?</li>
+      </ul>
+    </div>
+
+    <!-- ===================== 03 EXECUTIVE SUMMARY ===================== -->
+    <div class="section">
+      <div class="section-head purple"><div class="num">03</div><div class="title">Executive Summary</div></div>
+
+      <div class="callout purple">
+        <span class="callout-title">Core Finding</span>
+        The underlying problem — career direction confusion among 600M+ Indians — is real, large, and underserved by any dominant "career OS." But the current plan monetizes the <b>least defensible part</b> of the value chain (an LLM-generated roadmap, which is becoming a commodity) while underinvesting in the <b>most defensible and most fundable part</b> (the B2B institutional motion, which has a real budget, a real buyer KPI, and a natural acquisition funnel into B2C).
+      </div>
+
+      <p class="body-text">This is not a "kill it" verdict. The market signal is genuinely strong and the founder's own 30-day plan already contains the right instinct (validate WTP before building). The recommendation is to <b>re-sequence around revenue evidence, not feature completeness</b>: run the institutional pilot in parallel with B2C validation, treat the AI roadmap as a lead-generation hook rather than the product, and prove that someone — anyone — will pay real money before writing more code.</p>
+
+      <div class="verdict-badge amber">● VALIDATE — NOT YET INVESTABLE, NOT A REJECT</div>
+
+      <p class="body-text"><b>Path to upgrade this verdict to Investable:</b> (1) 20 real B2C transactions at full price within 60 days, (2) 1 signed (even if discounted) institutional pilot contract, (3) a technical co-founder or contractor in place, (4) a defensible differentiator beyond the roadmap output identified and prototyped.</p>
+    </div>
+
+    <!-- ===================== 04 BUSINESS MODEL CANVAS ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">04</div><div class="title">Business Model Canvas</div></div>
+      <table class="data">
+        <tr><th>Block</th><th>Content</th></tr>
+        <tr><td class="strong">Customer Segments</td><td>B2C: students, fresh grads, career switchers, early professionals. B2B: Tier-2/3 college placement offices.</td></tr>
+        <tr><td class="strong">Value Propositions</td><td>B2C: removes decision-paralysis with a personalized AI roadmap in one session. B2B: improves measurable placement rate via skill-gap visibility at scale.</td></tr>
+        <tr><td class="strong">Channels</td><td>Organic LinkedIn/Instagram content, SEO landing pages, waitlist referrals, direct outreach to placement officers (B2B).</td></tr>
+        <tr><td class="strong">Customer Relationships</td><td>Self-serve for B2C (low-touch, automated onboarding); high-touch sales + pilot for B2B (demo, semester trial).</td></tr>
+        <tr><td class="strong">Revenue Streams</td><td>Free tier (acquisition) → Pro monthly/annual subscription (B2C) → institutional per-seat license (B2B).</td></tr>
+        <tr><td class="strong">Key Resources</td><td>LLM/AI roadmap engine, content/brand presence, founder's network for early interviews and pilots.</td></tr>
+        <tr><td class="strong">Key Activities</td><td>Prompt/model iteration, onboarding UX design, content publishing, B2B outreach, retention-loop design.</td></tr>
+        <tr><td class="strong">Key Partnerships</td><td>None currently identified — a gap. Candidates: course platforms for resource curation, placement cells for B2B distribution, AI/ML technical co-founder.</td></tr>
+        <tr><td class="strong">Cost Structure</td><td>LLM API costs (usage-scaling), payment gateway fees (Razorpay), founder time, eventual engineering hire/contractor.</td></tr>
+      </table>
+    </div>
+
+    <!-- ===================== 05 REVENUE & PRICING ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">05</div><div class="title">Revenue &amp; Pricing Strategy</div></div>
+      <table class="data">
+        <tr><th>Tier</th><th>Price</th><th>Reality Check</th></tr>
+        <tr><td class="strong">Free</td><td>₹0</td><td>Correct acquisition gate. Risk: if the free roadmap is "good enough," there is little reason to upgrade.</td></tr>
+        <tr><td class="strong">Pro (Monthly)</td><td>₹499/mo</td><td>Reasonable price point for the segment, but conversion rate assumption (10–15%) needs to be tested, not assumed.</td></tr>
+        <tr><td class="strong">Pro (Annual)</td><td>₹2,999/yr</td><td>Annual commitment from an unproven product is a hard sell before any retention data exists — sequence this after Month 3, not Day 1.</td></tr>
+        <tr><td class="strong">B2B University</td><td>₹800/student/yr</td><td>The most credible number on this list — institutional per-seat pricing is a known, comparable model. Should be the lead motion, not "secondary."</td></tr>
+      </table>
+
+      <div class="callout green">
+        <span class="callout-title">Pricing Recommendation</span>
+        Reverse the launch sequence implied by the blueprint: pursue 1–2 B2B pilot conversations <b>in Week 1</b>, not Week 3. A single signed pilot (even unpaid or heavily discounted) is more investor-credible evidence than 200 free B2C signups, and it de-risks the revenue thesis fastest.
+      </div>
+
+      <h3 class="subhead">Revenue Model Math (Illustrative, Not a Forecast)</h3>
+      <table class="data">
+        <tr><th>Scenario</th><th>Assumptions</th><th>Monthly Revenue (Illustrative)</th></tr>
+        <tr><td>Conservative B2C</td><td>500 free users, 5% convert at ₹499/mo</td><td>~₹12,475/mo (~$150)</td></tr>
+        <tr><td>Blueprint-stated B2C</td><td>500 free users, 12% convert at ₹499/mo</td><td>~₹29,940/mo (~$360)</td></tr>
+        <tr><td>B2B anchor (1 pilot)</td><td>500 students at ₹800/student/yr</td><td>~₹33,333/mo (~$400), but annual/upfront</td></tr>
+      </table>
+      <p class="note-small">Note: figures are illustrative sensitivity checks on the blueprint's own assumptions, not a financial projection. They show that even the "optimistic" B2C case produces sub-survival revenue at low user counts — the model only works at scale, which makes distribution the central risk, not product polish.</p>
+    </div>
+
+    <!-- ===================== 06 GTM STRATEGY ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">06</div><div class="title">Go-To-Market Strategy</div></div>
+
+      <h3 class="subhead">Two Parallel Motions, Not One Sequential Plan</h3>
+      <p class="body-text">The blueprint treats GTM as a single B2C funnel with B2B added later. A sustainable version runs <b>both motions from Week 1</b>, because they de-risk different things: B2C tests willingness-to-pay and product engagement; B2B tests whether there is a fundable, defensible revenue anchor.</p>
+
+      <table class="data">
+        <tr><th>Stage</th><th>B2C Motion</th><th>B2B Motion</th></tr>
+        <tr><td class="strong">Awareness</td><td>LinkedIn/Instagram content, SEO "career roadmap India" pages</td><td>Direct cold outreach to Tier-2/3 placement officers</td></tr>
+        <tr><td class="strong">Consideration</td><td>Free roadmap as the lead magnet; no signup friction</td><td>Live demo + comparison to manual placement tracking</td></tr>
+        <tr><td class="strong">Conversion</td><td>Hits free-tier limit; "Founding Member" pricing nudge</td><td>One-semester pilot agreement (paid or heavily discounted)</td></tr>
+        <tr><td class="strong">Retention</td><td>Weekly progress nudges, milestone tracking</td><td>End-of-semester placement-rate report tied back to the tool</td></tr>
+        <tr><td class="strong">Expansion</td><td>Referral incentive to peers (not yet designed — should be)</td><td>Multi-cohort renewal, then expansion to sister institutions</td></tr>
+      </table>
+
+      <div class="callout blue">
+        <span class="callout-title">Distribution Insight</span>
+        The B2B motion is also the cheapest B2C acquisition channel the founder isn't using: every placement-cell pilot puts the product in front of hundreds of students at near-zero CAC. This should be framed explicitly as a growth channel, not just a revenue line.
+      </div>
+    </div>
+
+    <!-- ===================== 07 CUSTOMER ACQUISITION ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">07</div><div class="title">Customer Acquisition Strategy</div></div>
+      <table class="data">
+        <tr><th>Channel</th><th>Cost</th><th>Speed</th><th>Verdict</th></tr>
+        <tr><td>Organic LinkedIn content</td><td>Low (time only)</td><td>Slow, compounds over months</td><td>Keep, but don't rely on it alone for 30-day targets</td></tr>
+        <tr><td>Waitlist + referral</td><td>Low</td><td>Medium</td><td>Add an explicit incentive (e.g., free month) — none currently exists</td></tr>
+        <tr><td>B2B placement-office outreach</td><td>Low (founder time)</td><td>Slow sales cycle, high value</td><td>Prioritize — best ROI per hour of founder effort</td></tr>
+        <tr><td>Paid ads (not in plan)</td><td>Medium–High</td><td>Fast</td><td>Premature before organic message-market fit is proven</td></tr>
+        <tr><td>Campus ambassador / peer network</td><td>Low</td><td>Medium–Fast</td><td>Strong fit for student ICP — currently missing from the plan</td></tr>
+      </table>
+    </div>
+
+    <!-- ===================== 08 FIRST 100 USERS ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">08</div><div class="title">First 100 Users Plan</div></div>
+      <p class="body-ink"><b>Users 1–20:</b> Founder's direct network (college seniors, ex-colleagues, alumni groups). Goal: collect real WTP signal — ask for actual payment, not just a commitment letter.</p>
+      <p class="body-ink"><b>Users 21–50:</b> Hand-curated beta invites sourced from the Week-1 interview pool. 48-hour feedback turnaround on every session to find the true "aha" or lack thereof.</p>
+      <p class="body-ink"><b>Users 51–80:</b> LinkedIn content + a referral nudge (e.g., "skip the waitlist" for sharing). Track which content angle actually converts, not just impressions.</p>
+      <p class="body-ink"><b>Users 81–100:</b> Route through the first B2B pilot conversation — even a single classroom of 30–50 students gets most of the way there at near-zero CAC.</p>
+    </div>
+
+    <!-- ===================== 09 COMPETITIVE POSITION & MOAT ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">09</div><div class="title">Competitive Position &amp; Moat</div></div>
+      <p class="body-text">The blueprint's stated primary risk is "competition from LinkedIn/Google." That's real but secondary. The sharper risk is that <b>the core product is not differentiated from a free prompt</b> typed directly into any general-purpose AI assistant. A defensible position needs to be built on something incumbents and free tools cannot trivially replicate.</p>
+
+      <table class="data">
+        <tr><th>Candidate Moat</th><th>Strength Today</th><th>What Would Make It Real</th></tr>
+        <tr><td class="strong">AI roadmap output</td><td>Weak — replicable for free</td><td>Not a moat on its own; treat as a lead-gen hook</td></tr>
+        <tr><td class="strong">Outcome data feedback loop</td><td>None yet — unbuilt</td><td>Track real placement/promotion outcomes per user; use that data to improve recommendations over time</td></tr>
+        <tr><td class="strong">B2B institutional relationships</td><td>None yet — unbuilt</td><td>Signed multi-year contracts and embedded workflows are slow for competitors to replicate</td></tr>
+        <tr><td class="strong">Community / peer accountability</td><td>None yet — listed as "Could Have"</td><td>Network effects from peer cohorts are genuinely hard to copy once established</td></tr>
+        <tr><td class="strong">Brand trust in career advice</td><td>None yet — pre-launch</td><td>Takes years and consistent outcomes; not available at this stage</td></tr>
+      </table>
+
+      <div class="callout red">
+        <span class="callout-title">Strategic Gap</span>
+        None of the real moat candidates are in the "Must Have" MVP scope today. That is the single biggest strategic gap in the current plan — it optimizes for shipping speed over defensibility.
+      </div>
+    </div>
+
+    <!-- ===================== 10 REVERSE SWOT ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">10</div><div class="title">Reverse SWOT Analysis</div></div>
+      <p class="body-text">A standard SWOT lists strengths first. A reverse SWOT starts with what could kill the business, forcing the weaknesses and threats to be addressed before the strengths are allowed to matter.</p>
+      <table class="data">
+        <tr><th>Quadrant</th><th>Reverse-Ordered Findings</th></tr>
+        <tr><td class="strong">Threats (address first)</td><td>Free AI tools commoditizing the core output; well-funded incumbents (LinkedIn, Google) entering India-first; long B2B sales cycles outlasting runway</td></tr>
+        <tr><td class="strong">Weaknesses (address second)</td><td>No technical co-founder; no working product; no real transactions yet; founder-only bandwidth across product, content, and sales</td></tr>
+        <tr><td class="strong">Opportunities (only matter if above are fixed)</td><td>No dominant India "career OS" player; large underserved market; B2B placement-rate KPI is a natural budget hook; NEP 2020 policy tailwind</td></tr>
+        <tr><td class="strong">Strengths (only matter if above are fixed)</td><td>Clear ICP definition; sensible 30-day validation instinct; low-cost AI delivery model; multiple monetizable segments already mapped</td></tr>
+      </table>
+    </div>
+
+    <!-- ===================== 11 INVESTOR ONE-LINER & PITCH ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">11</div><div class="title">Investor One-Liner &amp; 30-Second Pitch</div></div>
+
+      <h3 class="subhead">Investor One-Liner</h3>
+      <div class="callout blue">We help India's 600M career-confused students and professionals get a personalized AI career roadmap in 10 minutes — and we sell placement-rate accountability tools to the colleges that need them to prove it works.</div>
+
+      <h3 class="subhead">30-Second Founder Pitch</h3>
+      <blockquote>"India has one career counselor for every 30,000+ students, and most graduates don't know what skills actually matter for the job they want. We built an AI tool that turns a 10-minute assessment into a personalized 90-day roadmap — for individuals, it's a free-to-try guide; for colleges, it's a way to prove and improve their placement rate. We're validating real willingness-to-pay on both sides right now, starting with a pilot at a Tier-2 engineering college, before we scale."</blockquote>
+      <p class="note-small">Honest framing note: this pitch is calibrated to where the startup actually is (pre-revenue, validating) — not oversold as having traction it doesn't yet have.</p>
+    </div>
+
+    <!-- ===================== 12 INVESTMENT SCORECARD ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">12</div><div class="title">Investment Scorecard (0–100)</div></div>
+
+      <div class="score-cards">
+        <div class="sc amber"><div class="lbl">Business Viability</div><div class="val">58</div></div>
+        <div class="sc amber"><div class="lbl">Revenue Potential</div><div class="val">50</div></div>
+        <div class="sc red"><div class="lbl">GTM Strength</div><div class="val">45</div></div>
+        <div class="sc red"><div class="lbl">Competitive Strength</div><div class="val">40</div></div>
+        <div class="sc red"><div class="lbl">Investor Readiness</div><div class="val">42</div></div>
+      </div>
+
+      <table class="data">
+        <tr><th>Dimension</th><th>Score</th><th>Reasoning</th></tr>
+        <tr><td class="strong">Business Viability</td><td class="strong" style="color:var(--amber)">58/100</td><td>Real problem, plausible model, but unproven revenue mechanics and a commodity core product pull this down from the blueprint's self-rated 6.7/10.</td></tr>
+        <tr><td class="strong">Revenue Potential</td><td class="strong" style="color:var(--amber)">50/100</td><td>B2B per-seat pricing is credible; B2C subscription economics are optimistic and untested. Blended potential is moderate, not strong, until WTP is proven.</td></tr>
+        <tr><td class="strong">GTM Strength</td><td class="strong" style="color:var(--red)">45/100</td><td>Plan is logical but the primary channel (organic content) is slow and unproven for this founder; no zero-CAC or platform-riding mechanic exists yet.</td></tr>
+        <tr><td class="strong">Competitive Strength</td><td class="strong" style="color:var(--red)">40/100</td><td>No durable moat is in the current MVP scope; the core deliverable is replicable by free general-purpose AI tools today.</td></tr>
+        <tr><td class="strong">Investor Readiness</td><td class="strong" style="color:var(--red)">42/100</td><td>Pre-revenue, pre-product, founder-only team. Matches the blueprint's own VC Readiness score of 52/100, scored slightly more conservatively here given the moat gap.</td></tr>
+      </table>
+    </div>
+
+    <!-- ===================== 13 VISUAL DASHBOARD ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">13</div><div class="title">Visual Dashboard</div></div>
+      <p class="body-text">One-page visual summary of the business model, GTM flow, first-100-users plan, moat candidates, and key risks.</p>
+
+      <div class="dash-row2">
+        <div class="dash-box blue">
+          <h4>BUSINESS MODEL</h4>
+          <ul>
+            <li>Freemium B2C (roadmap + assessment) layered with B2B SaaS (institutional placement tools)</li>
+            <li>Free tier = acquisition funnel</li>
+            <li>Paid tier = individual upgrade</li>
+            <li>B2B = anchor contract revenue</li>
+          </ul>
+        </div>
+        <div class="dash-box green">
+          <h4>REVENUE STREAMS</h4>
+          <ul>
+            <li>B2C subscription (₹299–999/mo) — <b>UNPROVEN</b>, no observed WTP</li>
+            <li>B2C annual (₹2,999/yr) — depends on #1 converting</li>
+            <li>B2B institutional license (₹800/student/yr) — <b>STRONGEST</b>, real budget line</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="subhead" style="color:var(--ink)">Go-To-Market Flow</h3>
+      <div class="gtm-flow">
+        <div class="gtm-stage c-blue"><h5>CONTENT</h5><p>LinkedIn 3x/wk, SEO roadmap pages</p></div>
+        <div class="gtm-arrow">→</div>
+        <div class="gtm-stage c-green"><h5>FREE TIER</h5><p>AI roadmap, zero-friction entry</p></div>
+        <div class="gtm-arrow">→</div>
+        <div class="gtm-stage c-amber"><h5>AHA MOMENT</h5><p>Personalized plan in &lt;10 minutes</p></div>
+        <div class="gtm-arrow">→</div>
+        <div class="gtm-stage c-purple"><h5>HABIT LOOP</h5><p>Weekly check-ins, progress tracking</p></div>
+        <div class="gtm-arrow">→</div>
+        <div class="gtm-stage c-red"><h5>PAID CONVERT</h5><p>Hits free limit, Founding Member offer</p></div>
+      </div>
+
+      <div class="dash-row2">
+        <div class="dash-box amber">
+          <h4>FIRST 100 USERS PLAN</h4>
+          <ul>
+            <li>1–20: Founder network + WTP-validation interviews</li>
+            <li>21–50: Hand-curated beta invites, 48hr feedback loop</li>
+            <li>51–80: LinkedIn organic content + referral nudges</li>
+            <li>81–100: 1 institutional pilot batch (TPO-sourced students)</li>
+          </ul>
+        </div>
+        <div class="dash-box red">
+          <h4>COMPETITIVE MOAT (HONEST)</h4>
+          <ul>
+            <li>Roadmap output = commodity; ChatGPT replicates it free today</li>
+            <li>Real moat candidates (unbuilt): outcome data loop, B2B lock-in, community/peer accountability</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="subhead" style="color:var(--ink)">Key Risks</h3>
+      <div class="risk-row">
+        <div class="risk-card red"><h5>Commodity core</h5><p>LLM roadmap has no defensible technical moat</p></div>
+        <div class="risk-card amber"><h5>Unproven WTP</h5><p>No real transactions yet; all pricing is hypothesis</p></div>
+        <div class="risk-card amber"><h5>Distribution cost</h5><p>LinkedIn organic is slow; no zero-CAC channel</p></div>
+        <div class="risk-card red"><h5>No tech co-founder</h5><p>Execution risk on the only real differentiator</p></div>
+      </div>
+
+      <h3 class="subhead" style="color:var(--ink)">Score Cards</h3>
+      <div class="ring-cards">
+        <div class="ring-card amber">
+          <svg width="70" height="70" viewBox="0 0 70 70">
+            <circle cx="35" cy="35" r="28" fill="none" stroke="#E2E1DC" stroke-width="6"/>
+            <circle cx="35" cy="35" r="28" fill="none" stroke="#D97706" stroke-width="6"
+                    stroke-dasharray="175.9" stroke-dashoffset="74" transform="rotate(-90 35 35)" stroke-linecap="round"/>
+            <text x="35" y="40" text-anchor="middle" font-family="Helvetica" font-weight="bold" font-size="17" fill="#D97706">58</text>
+          </svg>
+          <div class="rlabel">Viability</div>
+        </div>
+        <div class="ring-card amber">
+          <svg width="70" height="70" viewBox="0 0 70 70">
+            <circle cx="35" cy="35" r="28" fill="none" stroke="#E2E1DC" stroke-width="6"/>
+            <circle cx="35" cy="35" r="28" fill="none" stroke="#D97706" stroke-width="6"
+                    stroke-dasharray="175.9" stroke-dashoffset="87.9" transform="rotate(-90 35 35)" stroke-linecap="round"/>
+            <text x="35" y="40" text-anchor="middle" font-family="Helvetica" font-weight="bold" font-size="17" fill="#D97706">50</text>
+          </svg>
+          <div class="rlabel">Revenue</div>
+        </div>
+        <div class="ring-card red">
+          <svg width="70" height="70" viewBox="0 0 70 70">
+            <circle cx="35" cy="35" r="28" fill="none" stroke="#E2E1DC" stroke-width="6"/>
+            <circle cx="35" cy="35" r="28" fill="none" stroke="#DC2626" stroke-width="6"
+                    stroke-dasharray="175.9" stroke-dashoffset="96.7" transform="rotate(-90 35 35)" stroke-linecap="round"/>
+            <text x="35" y="40" text-anchor="middle" font-family="Helvetica" font-weight="bold" font-size="17" fill="#DC2626">45</text>
+          </svg>
+          <div class="rlabel">GTM</div>
+        </div>
+        <div class="ring-card red">
+          <svg width="70" height="70" viewBox="0 0 70 70">
+            <circle cx="35" cy="35" r="28" fill="none" stroke="#E2E1DC" stroke-width="6"/>
+            <circle cx="35" cy="35" r="28" fill="none" stroke="#DC2626" stroke-width="6"
+                    stroke-dasharray="175.9" stroke-dashoffset="105.5" transform="rotate(-90 35 35)" stroke-linecap="round"/>
+            <text x="35" y="40" text-anchor="middle" font-family="Helvetica" font-weight="bold" font-size="17" fill="#DC2626">40</text>
+          </svg>
+          <div class="rlabel">Competitive</div>
+        </div>
+        <div class="ring-card red">
+          <svg width="70" height="70" viewBox="0 0 70 70">
+            <circle cx="35" cy="35" r="28" fill="none" stroke="#E2E1DC" stroke-width="6"/>
+            <circle cx="35" cy="35" r="28" fill="none" stroke="#DC2626" stroke-width="6"
+                    stroke-dasharray="175.9" stroke-dashoffset="101.9" transform="rotate(-90 35 35)" stroke-linecap="round"/>
+            <text x="35" y="40" text-anchor="middle" font-family="Helvetica" font-weight="bold" font-size="17" fill="#DC2626">42</text>
+          </svg>
+          <div class="rlabel">Investor Rdy</div>
+        </div>
+      </div>
+
+      <div class="verdict-badge amber">● FINAL VERDICT: VALIDATE</div>
+    </div>
+
+    <!-- ===================== 14 FOUNDER ACTION SHEET ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">14</div><div class="title">Founder Action Sheet — Top 10 Actions</div></div>
+
+      <div class="action-row red"><div class="num">1</div><div class="pr">URGENT</div><div class="txt">Get 10 real B2C payments (not commitment letters) at ₹299 within 2 weeks — this is the single highest-value validation step</div></div>
+      <div class="action-row red"><div class="num">2</div><div class="pr">URGENT</div><div class="txt">Start 1 institutional pilot conversation this week — treat B2B as the lead motion, not a Month-6 afterthought</div></div>
+      <div class="action-row red"><div class="num">3</div><div class="pr">URGENT</div><div class="txt">Begin technical co-founder/contractor search in parallel — do not let product velocity depend on the founder alone</div></div>
+      <div class="action-row amber"><div class="num">4</div><div class="pr">HIGH</div><div class="txt">Redefine the MVP to include one moat-building feature (e.g., outcome tracking) alongside the roadmap generator, not after it</div></div>
+      <div class="action-row amber"><div class="num">5</div><div class="pr">HIGH</div><div class="txt">Design an explicit referral incentive into the product (e.g., free month per referral) instead of relying on organic sharing</div></div>
+      <div class="action-row amber"><div class="num">6</div><div class="pr">HIGH</div><div class="txt">Track real conversion rate from Week 1 — validate the 10-15% assumption against actual beta data, not benchmarks</div></div>
+      <div class="action-row amber"><div class="num">7</div><div class="pr">HIGH</div><div class="txt">Build one campus-ambassador relationship as a low-cost, high-trust acquisition test alongside LinkedIn content</div></div>
+      <div class="action-row blue"><div class="num">8</div><div class="pr">MEDIUM</div><div class="txt">Defer the ₹2,999 annual plan until at least 60 days of retention data exist</div></div>
+      <div class="action-row blue"><div class="num">9</div><div class="pr">MEDIUM</div><div class="txt">Document every "why I won't pay" objection from beta users verbatim — this is the most underused data source in the current plan</div></div>
+      <div class="action-row blue"><div class="num">10</div><div class="pr">MEDIUM</div><div class="txt">Set a hard 60-day GO/NO-GO checkpoint tied to real revenue and one signed pilot, not just user counts or NPS</div></div>
+    </div>
+
+    <!-- ===================== 15 SUSTAINABILITY VERDICT ===================== -->
+    <div class="section">
+      <div class="section-head"><div class="num">15</div><div class="title">Sustainability Verdict</div></div>
+      <div class="verdict-box">
+        <div class="vtitle">VALIDATE — Real Problem, Unproven Revenue, Missing Moat</div>
+        <p>This startup addresses a genuine, large, underserved problem and has a founder who is already thinking in the right sequence (validate before building). It is not sustainable as currently scoped, because its only differentiated deliverable — the AI roadmap — is a commodity that free tools already replicate, and its most credible revenue line (B2B institutional licensing) is treated as secondary rather than the lead motion. Sustainability depends on proving real B2C payment behavior, signing at least one institutional pilot, and building a genuine data or relationship moat within the next 60–90 days — not on shipping more product features.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
