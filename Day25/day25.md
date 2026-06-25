@@ -90,3 +90,4 @@ Completed as part of:
 60 Days Claude Challenge — Day 25
 
 ## html file:
+[file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day25/shark-tank-simulator.html)
