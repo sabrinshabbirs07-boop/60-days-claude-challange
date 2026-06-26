@@ -124,4 +124,4 @@ The entire application runs from one HTML file.
 ---
 
 ## Project :
-[html file}(https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day26/prior-auth-simulator.html)
+[html file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day26/prior-auth-simulator.html)
