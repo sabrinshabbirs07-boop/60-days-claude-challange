@@ -148,8 +148,7 @@ Every conversation bubble is created dynamically using:
 
 createElement + appendChild
 
-[PROJEC HTML FILE]()
+[PROJEC HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day27/pa-story-simulator.html)
 
----
 
-## Project Structure
+
