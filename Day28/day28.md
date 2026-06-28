@@ -51,3 +51,5 @@ The **Hospital Admission Readiness Simulator** provides a centralized interface 
 This project is part of my **60 Days Claude AI Challenge**, where I build one AI-assisted project every day to strengthen my frontend development, UI/UX design, and AI-assisted development skills.
 
 **Day:** 28 / 60
+
+[HTML](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day28/hospital-admission-readiness-simulator.html)
