@@ -52,4 +52,4 @@ This project is part of my **60 Days Claude AI Challenge**, where I build one AI
 
 **Day:** 28 / 60
 
-[HTML](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day28/hospital-admission-readiness-simulator.html)
+[HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day28/hospital-admission-readiness-simulator.html)
