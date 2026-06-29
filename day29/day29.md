@@ -234,4 +234,4 @@ Possible improvements:
 * Advanced crisis scenarios
 
   # Operation Lifeline: Supply Chain Crisis Lab
-  [html file]()
+  [html file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/day29/operation-lifeline.html)
