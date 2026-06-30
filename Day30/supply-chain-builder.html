@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supply Chain Builder</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  :root{
+    --bg: #0b0d14;
+    --bg2: #11131c;
+    --card: #161924;
+    --card-hover: #1d2030;
+    --border: #262b3b;
+    --text: #e9ebf3;
+    --muted: #9aa0b4;
+    --accent: #6c5ce7;
+    --accent2: #00d2b4;
+    --warn: #ff9f43;
+    --danger: #ff5e5e;
+    --good: #2ecc71;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: radial-gradient(circle at 20% 0%, #161a2b 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height:100vh;
+  }
+  #root{min-height:100vh;}
+  .app-shell{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom: 24px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:700;
+    font-size: 18px;
+    letter-spacing: 0.3px;
+  }
+  .brand .dot{
+    width:12px;height:12px;border-radius:50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .pill{
+    font-size:12px;
+    color: var(--muted);
+    background: var(--card);
+    border:1px solid var(--border);
+    padding:6px 12px;
+    border-radius: 999px;
+  }
+  .card{
+    background: var(--card);
+    border:1px solid var(--border);
+    border-radius: 18px;
+    padding: 26px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  }
+  .card:hover{
+    transform: translateY(-2px);
+  }
+  h1{font-size: 30px; margin: 0 0 12px;}
+  h2{font-size: 22px; margin: 0 0 10px;}
+  h3{font-size: 17px; margin: 0 0 6px;}
+  p{line-height:1.55; color: var(--text);}
+  .muted{color: var(--muted);}
+  .fade-in{
+    animation: fadeIn 0.5s ease;
+  }
+  @keyframes fadeIn{
+    from{opacity:0; transform: translateY(10px);}
+    to{opacity:1; transform: translateY(0);}
+  }
+  .btn{
+    background: linear-gradient(135deg, var(--accent), #8e7bff);
+    color: white;
+    border:none;
+    padding: 13px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight:600;
+    cursor:pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    box-shadow: 0 6px 18px rgba(108,92,231,0.35);
+  }
+  .btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(108,92,231,0.5);
+  }
+  .btn:active{ transform: translateY(0); }
+  .btn.secondary{
+    background: var(--card-hover);
+    border: 1px solid var(--border);
+    box-shadow:none;
+  }
+  .btn.secondary:hover{
+    background: #242838;
+  }
+  .btn.ghost{
+    background: transparent;
+    border: 1px solid var(--border);
+    box-shadow:none;
+    color: var(--muted);
+  }
+  .option-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+  }
+  .option-card{
+    background: var(--bg2);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    cursor:pointer;
+    transition: all 0.2s ease;
+    position:relative;
+  }
+  .option-card:hover{
+    border-color: var(--accent);
+    background: #1a1e2e;
+    transform: translateY(-3px);
+  }
+  .option-card.selected{
+    border-color: var(--accent2);
+    box-shadow: 0 0 0 2px rgba(0,210,180,0.3);
+  }
+  .option-title{
+    font-weight:700;
+    font-size: 16px;
+    margin-bottom: 6px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .option-desc{
+    font-size: 13px;
+    color: var(--muted);
+    line-height:1.5;
+  }
+  .badge{
+    display:inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(108,92,231,0.15);
+    color: #b4a8ff;
+    margin-right:6px;
+    margin-top:8px;
+  }
+  .explain-box{
+    background: rgba(108,92,231,0.08);
+    border:1px solid rgba(108,92,231,0.25);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+  }
+  .explain-box .label{
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent2);
+    font-weight:700;
+    margin-bottom: 8px;
+  }
+  .tradeoff-box{
+    background: rgba(0,210,180,0.07);
+    border: 1px solid rgba(0,210,180,0.25);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-top: 18px;
+    animation: fadeIn 0.4s ease;
+  }
+  .tradeoff-box .label{
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--good);
+    font-weight:700;
+    margin-bottom:6px;
+    letter-spacing:0.06em;
+  }
+  .metrics-panel{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 14px;
+    margin: 22px 0;
+  }
+  .metric{
+    background: var(--bg2);
+    border:1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+  .metric-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size: 13px;
+    margin-bottom:8px;
+    color: var(--muted);
+  }
+  .metric-value{
+    font-weight:700;
+    color: var(--text);
+  }
+  .progress-track{
+    width:100%;
+    height: 8px;
+    background: #262b3b;
+    border-radius: 999px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    border-radius:999px;
+    transition: width 0.8s cubic-bezier(.2,.8,.2,1);
+  }
+  .footer-nav{
+    display:flex;
+    justify-content:space-between;
+    margin-top: 26px;
+  }
+  .step-track{
+    display:flex;
+    gap:8px;
+    margin-bottom: 22px;
+  }
+  .step-dot{
+    flex:1;
+    height:6px;
+    border-radius: 999px;
+    background: var(--border);
+    transition: background 0.3s ease;
+  }
+  .step-dot.done{ background: var(--accent2); }
+  .step-dot.active{ background: var(--accent); }
+  .company-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .company-stat{
+    background: var(--bg2);
+    border:1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+  .company-stat .k{
+    font-size:12px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+  .company-stat .v{
+    font-size:16px;
+    font-weight:700;
+    margin-top:4px;
+  }
+  .score-ring-wrap{
+    display:flex;
+    align-items:center;
+    gap: 28px;
+    flex-wrap:wrap;
+  }
+  .score-big{
+    font-size: 56px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color: transparent;
+  }
+  .two-col{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 20px;
+  }
+  @media (max-width: 720px){
+    .two-col{ grid-template-columns: 1fr; }
+    .score-ring-wrap{ flex-direction:column; align-items:flex-start; }
+  }
+  ul.clean{
+    margin: 0;
+    padding-left: 18px;
+  }
+  ul.clean li{
+    margin-bottom: 8px;
+    line-height:1.5;
+    color: var(--text);
+  }
+  .tag-good{ color: var(--good); font-weight:700; }
+  .tag-bad{ color: var(--danger); font-weight:700; }
+  .tag-warn{ color: var(--warn); font-weight:700; }
+  .center-col{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+/* ---------------------------------------------------
+   DATA: random company generator
+--------------------------------------------------- */
+const INDUSTRIES = [
+  { name: "Consumer Electronics", products: ["wireless earbuds", "smartwatches", "portable chargers"] },
+  { name: "Apparel & Footwear", products: ["running shoes", "denim jackets", "athletic wear"] },
+  { name: "Specialty Coffee", products: ["roasted coffee beans", "cold brew kits", "espresso pods"] },
+  { name: "Furniture", products: ["modular sofas", "office desks", "flat-pack shelving"] },
+  { name: "Organic Skincare", products: ["face serums", "herbal soaps", "sunscreen lotions"] },
+  { name: "Toys & Games", products: ["building blocks", "board games", "remote control cars"] },
+  { name: "Pet Supplies", products: ["dog food", "cat litter", "pet grooming kits"] },
+  { name: "Outdoor Gear", products: ["camping tents", "hiking backpacks", "insulated bottles"] },
+];
+
+const COUNTRY_SETS = [
+  ["USA", "Canada", "Mexico"],
+  ["Germany", "France", "Italy", "Spain"],
+  ["India", "Bangladesh", "Vietnam"],
+  ["UK", "Ireland", "Netherlands"],
+  ["Brazil", "Argentina", "Chile"],
+  ["Japan", "South Korea", "Australia"],
+];
+
+const DEMAND_LEVELS = [
+  { label: "Low & Steady", desc: "Demand is predictable but modest. There's little urgency, but also little room for waste." },
+  { label: "Moderate & Seasonal", desc: "Demand swings with seasons or holidays, requiring flexible planning." },
+  { label: "High & Growing", desc: "Demand is strong and rising fast — the supply chain must scale quickly without breaking." },
+  { label: "High & Volatile", desc: "Demand spikes unpredictably, making forecasting and buffer stock critical." },
+];
+
+function randomFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function generateCompany(){
+  const industry = randomFrom(INDUSTRIES);
+  const countries = randomFrom(COUNTRY_SETS);
+  const demand = randomFrom(DEMAND_LEVELS);
+  const namePrefixes = ["Nova", "Atlas", "Kestrel", "Bright", "Summit", "Coral", "Ember", "Vertex", "North", "Lumen"];
+  const nameSuffixes = ["Goods", "Works", "Collective", "Supply Co.", "Labs", "& Co.", "Industries", "Trading"];
+  const companyName = `${randomFrom(namePrefixes)} ${randomFrom(nameSuffixes)}`;
+  return {
+    name: companyName,
+    industry: industry.name,
+    products: industry.products,
+    countries,
+    demand,
+  };
+}
+
+/* ---------------------------------------------------
+   DATA: decisions, options, and their metric effects
+   Metrics are 0-100. For "cost" and "risk", HIGHER = WORSE.
+   For "speed", "satisfaction", "sustainability", HIGHER = BETTER.
+--------------------------------------------------- */
+const DECISIONS = [
+  {
+    id: "suppliers",
+    title: "Choose Your Supplier Strategy",
+    concept: "A supplier is the company that provides the raw materials or parts you need to make your product. You can rely on just one supplier, or spread your orders across several.",
+    why: "Suppliers are the very first link in your supply chain. If they fail to deliver, everything downstream — factories, warehouses, customers — gets delayed too.",
+    business: "This choice shapes how cheap, how safe, and how flexible your sourcing is for the rest of the game.",
+    options: [
+      {
+        key: "single",
+        title: "Single Supplier",
+        desc: "Work with one trusted supplier for all materials. Often cheaper due to bulk discounts and a simpler relationship to manage.",
+        tradeoff: "Cheaper and simpler to manage, but if that one supplier has a problem (strike, shortage, bankruptcy), your entire production line can stop. This is a classic 'single point of failure' risk.",
+        effects: { cost: -15, speed: 5, risk: 25, satisfaction: -5, sustainability: 0 },
+      },
+      {
+        key: "multiple",
+        title: "Multiple Suppliers",
+        desc: "Spread orders across two or more suppliers, sometimes in different regions.",
+        tradeoff: "Slightly more expensive and more complex to coordinate, but far more resilient — if one supplier fails, others can fill the gap. This is called 'supplier diversification.'",
+        effects: { cost: 10, speed: 5, risk: -20, satisfaction: 5, sustainability: 5 },
+      },
+    ],
+  },
+  {
+    id: "factory",
+    title: "Choose Your Factory Location",
+    concept: "The factory is where your raw materials are turned into finished products. Its location determines labor cost, shipping distance, and quality control.",
+    why: "Where you manufacture affects almost every other metric: how much things cost, how fast you can deliver, and how easy it is to oversee quality.",
+    business: "Companies often manufacture far from home to cut costs, but that adds shipping time and risk. This is the classic 'offshoring vs. local production' trade-off.",
+    options: [
+      {
+        key: "domestic",
+        title: "Domestic Factory",
+        desc: "Build products in your home country, close to customers and easy to inspect.",
+        tradeoff: "Higher labor costs make this expensive, but you get fast delivery, easier quality control, and lower environmental impact from shorter shipping distances.",
+        effects: { cost: 20, speed: 25, risk: -10, satisfaction: 10, sustainability: 15 },
+      },
+      {
+        key: "nearshore",
+        title: "Nearshore Factory",
+        desc: "Manufacture in a nearby country with moderate labor costs and shorter shipping routes.",
+        tradeoff: "A balanced middle ground — moderate savings on labor, reasonably fast shipping, and manageable oversight.",
+        effects: { cost: 5, speed: 10, risk: -5, satisfaction: 5, sustainability: 5 },
+      },
+      {
+        key: "offshore",
+        title: "Offshore Factory",
+        desc: "Manufacture overseas where labor is cheap, even if it's far from your customers.",
+        tradeoff: "Big cost savings on labor, but long shipping distances slow delivery, make quality control harder, and increase environmental impact and political/customs risk.",
+        effects: { cost: -25, speed: -15, risk: 15, satisfaction: -5, sustainability: -15 },
+      },
+    ],
+  },
+  {
+    id: "warehouse",
+    title: "Choose Your Warehouse Strategy",
+    concept: "A warehouse stores finished goods until they're shipped to customers or stores. You can use one big central warehouse, a few regional hubs, or many small local ones.",
+    why: "Warehouse placement determines how close your inventory is to customers, which affects delivery speed and shipping cost.",
+    business: "More warehouses mean faster local delivery but higher costs to build, staff, and stock each one. It's a classic centralization vs. decentralization trade-off.",
+    options: [
+      {
+        key: "centralized",
+        title: "Centralized (One Hub)",
+        desc: "Store everything in a single large warehouse and ship from there nationwide or worldwide.",
+        tradeoff: "Cheapest to run since you only manage one facility, but every order has to travel further, slowing delivery — especially to distant customers.",
+        effects: { cost: -15, speed: -15, risk: 5, satisfaction: -5, sustainability: 5 },
+      },
+      {
+        key: "regional",
+        title: "Regional Hubs",
+        desc: "Operate a handful of warehouses spread across major regions.",
+        tradeoff: "A balanced approach: moderately higher cost than one hub, but noticeably faster delivery and happier customers.",
+        effects: { cost: 5, speed: 10, risk: 0, satisfaction: 10, sustainability: 0 },
+      },
+      {
+        key: "decentralized",
+        title: "Decentralized (Many Local Hubs)",
+        desc: "Use many small warehouses close to customers in every market you serve.",
+        tradeoff: "Delivers extremely fast and delights customers, but is expensive to staff and stock, and the extra buildings increase your environmental footprint.",
+        effects: { cost: 20, speed: 20, risk: -5, satisfaction: 15, sustainability: -10 },
+      },
+    ],
+  },
+  {
+    id: "transport",
+    title: "Choose Your Transportation Method",
+    concept: "Transportation is how goods physically move between suppliers, factories, warehouses, and customers — by road, rail, sea, or air.",
+    why: "Each mode has a very different balance of speed, cost, and environmental impact. This is often the single biggest lever for delivery speed.",
+    business: "Fast shipping (air) wins customers but eats your profit margin. Slow shipping (sea) protects margin but risks losing impatient customers.",
+    options: [
+      {
+        key: "road",
+        title: "Road (Trucking)",
+        desc: "Move goods by truck — flexible and widely available for short-to-medium distances.",
+        tradeoff: "Reasonably fast and moderately priced, but trucks emit meaningful carbon and get stuck in traffic or border delays.",
+        effects: { cost: 5, speed: 5, risk: 0, satisfaction: 5, sustainability: -5 },
+      },
+      {
+        key: "rail",
+        title: "Rail",
+        desc: "Move large volumes of goods over long land distances by train.",
+        tradeoff: "Cheaper and more eco-friendly than trucking for long distances, but slower and limited to wherever rail lines exist.",
+        effects: { cost: -5, speed: -5, risk: -5, satisfaction: 0, sustainability: 15 },
+      },
+      {
+        key: "sea",
+        title: "Sea (Container Ship)",
+        desc: "Ship large volumes across oceans in containers — the backbone of global trade.",
+        tradeoff: "By far the cheapest way to move large quantities, but also by far the slowest, and vulnerable to port delays, storms, and canal blockages.",
+        effects: { cost: -20, speed: -25, risk: 10, satisfaction: -10, sustainability: 10 },
+      },
+      {
+        key: "air",
+        title: "Air Freight",
+        desc: "Fly goods to their destination — used for urgent or high-value items.",
+        tradeoff: "Extremely fast and reliable, which thrills customers, but it's the most expensive option by far and has the largest carbon footprint.",
+        effects: { cost: 25, speed: 30, risk: -10, satisfaction: 15, sustainability: -25 },
+      },
+    ],
+  },
+  {
+    id: "inventory",
+    title: "Choose Your Inventory Strategy",
+    concept: "Inventory strategy is how much extra stock you keep on hand 'just in case' versus producing only what you need right now.",
+    why: "Too little inventory and you risk running out of stock (a 'stockout') when demand rises. Too much and you tie up cash in unsold goods sitting in a warehouse.",
+    business: "This is the famous 'Just-In-Time vs. Just-In-Case' debate that determines how resilient your business is to surprises.",
+    options: [
+      {
+        key: "low",
+        title: "Low Inventory (Just-In-Time)",
+        desc: "Keep minimal stock and order materials only as needed, right before they're used.",
+        tradeoff: "Frees up cash and reduces waste, which is great for cost and sustainability, but leaves you exposed if demand spikes or a shipment is delayed.",
+        effects: { cost: -20, speed: -5, risk: 15, satisfaction: -5, sustainability: 10 },
+      },
+      {
+        key: "balanced",
+        title: "Balanced Inventory",
+        desc: "Keep a moderate safety buffer of stock — enough to absorb small surprises without overspending.",
+        tradeoff: "A sensible middle ground with no extreme strengths or weaknesses — steady and predictable.",
+        effects: { cost: 0, speed: 0, risk: 0, satisfaction: 0, sustainability: 0 },
+      },
+      {
+        key: "high",
+        title: "High Inventory (Just-In-Case)",
+        desc: "Stockpile generous buffers of materials and finished goods well ahead of demand.",
+        tradeoff: "Greatly reduces the risk of running out of stock and speeds up order fulfillment, but ties up cash and increases waste from unsold or expired goods.",
+        effects: { cost: 20, speed: 10, risk: -15, satisfaction: 10, sustainability: -10 },
+      },
+    ],
+  },
+];
+
+const BASE_METRICS = { cost: 50, speed: 50, risk: 50, satisfaction: 50, sustainability: 50 };
+
+function clamp(n){ return Math.max(0, Math.min(100, n)); }
+
+function applyEffects(metrics, effects){
+  const next = { ...metrics };
+  Object.keys(effects).forEach(k => {
+    next[k] = clamp(next[k] + effects[k]);
+  });
+  return next;
+}
+
+/* ---------------------------------------------------
+   Small reusable UI pieces
+--------------------------------------------------- */
+function MetricBar({ label, value, invert, colorOverride }){
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const t = setTimeout(() => setWidth(value), 50);
+    return () => clearTimeout(t);
+  }, [value]);
+
+  let color = colorOverride;
+  if(!color){
+    const goodness = invert ? 100 - value : value;
+    if(goodness >= 66) color = "var(--good)";
+    else if(goodness >= 40) color = "var(--warn)";
+    else color = "var(--danger)";
+  }
+
+  return (
+    <div className="metric">
+      <div className="metric-top">
+        <span>{label}</span>
+        <span className="metric-value">{Math.round(value)}</span>
+      </div>
+      <div className="progress-track">
+        <div className="progress-fill" style={{ width: width + "%", background: color }}></div>
+      </div>
+    </div>
+  );
+}
+
+function MetricsPanel({ metrics }){
+  return (
+    <div className="metrics-panel">
+      <MetricBar label="Cost (lower = cheaper)" value={metrics.cost} invert={true} />
+      <MetricBar label="Delivery Speed" value={metrics.speed} invert={false} />
+      <MetricBar label="Risk (lower = safer)" value={metrics.risk} invert={true} />
+      <MetricBar label="Customer Satisfaction" value={metrics.satisfaction} invert={false} />
+      <MetricBar label="Sustainability" value={metrics.sustainability} invert={false} />
+    </div>
+  );
+}
+
+function StepTrack({ total, current }){
+  return (
+    <div className="step-track">
+      {Array.from({ length: total }).map((_, i) => (
+        <div
+          key={i}
+          className={"step-dot " + (i < current ? "done" : i === current ? "active" : "")}
+        ></div>
+      ))}
+    </div>
+  );
+}
+
+/* ---------------------------------------------------
+   Screens
+--------------------------------------------------- */
+function Welcome({ onStart }){
+  return (
+    <div className="card fade-in">
+      <h1>🔗 Supply Chain Builder</h1>
+      <p>
+        A <strong>supply chain</strong> is the entire journey a product takes — from raw
+        materials, to factories, to warehouses, to trucks, ships, or planes, and finally
+        into a customer's hands. Every step along the way costs money, takes time, and
+        carries some risk.
+      </p>
+      <p>
+        In this simulation, you'll run a brand-new company and make five real-world
+        supply chain decisions. Before each one, we'll explain <em>what the concept means</em>,
+        <em> why it matters</em>, and <em>how it affects your business</em> — no prior
+        knowledge required.
+      </p>
+      <p className="muted">
+        At the end, you'll get a full dashboard with your Overall Supply Chain Score,
+        your strengths and weaknesses, your biggest risk, and three practical improvements.
+      </p>
+      <button className="btn" onClick={onStart}>Start Building My Supply Chain →</button>
+    </div>
+  );
+}
+
+function CompanyReveal({ company, onContinue }){
+  return (
+    <div className="card fade-in">
+      <h2>🏢 Meet Your Company</h2>
+      <p className="muted">We've randomly generated a company for you to run.</p>
+      <div className="company-grid">
+        <div className="company-stat">
+          <div className="k">Company Name</div>
+          <div className="v">{company.name}</div>
+        </div>
+        <div className="company-stat">
+          <div className="k">Industry</div>
+          <div className="v">{company.industry}</div>
+        </div>
+        <div className="company-stat">
+          <div className="k">Products</div>
+          <div className="v">{company.products.join(", ")}</div>
+        </div>
+        <div className="company-stat">
+          <div className="k">Countries Served</div>
+          <div className="v">{company.countries.join(", ")}</div>
+        </div>
+        <div className="company-stat">
+          <div className="k">Demand Level</div>
+          <div className="v">{company.demand.label}</div>
+        </div>
+      </div>
+      <div className="explain-box" style={{ marginTop: "20px" }}>
+        <div className="label">What this means for you</div>
+        <p style={{ margin: 0 }}>{company.demand.desc} Your job is to design a supply chain
+        that fits this company's products and the markets it serves — keeping cost, speed,
+        risk, customer happiness, and sustainability all in mind.</p>
+      </div>
+      <button className="btn" onClick={onContinue}>Begin Making Decisions →</button>
+    </div>
+  );
+}
+
+function DecisionScreen({ decision, stepIndex, totalSteps, onChoose, metrics }){
+  const [selectedKey, setSelectedKey] = useState(null);
+  const selectedOption = decision.options.find(o => o.key === selectedKey);
+
+  useEffect(() => {
+    setSelectedKey(null);
+  }, [decision]);
+
+  return (
+    <div className="card fade-in">
+      <StepTrack total={totalSteps} current={stepIndex} />
+      <h2>{decision.title}</h2>
+
+      <div className="explain-box">
+        <div className="label">What this is</div>
+        <p style={{ marginTop: 0 }}>{decision.concept}</p>
+        <div className="label" style={{ marginTop: "14px" }}>Why it matters</div>
+        <p style={{ marginTop: 0 }}>{decision.why}</p>
+        <div className="label" style={{ marginTop: "14px" }}>How it affects your business</div>
+        <p style={{ marginBottom: 0 }}>{decision.business}</p>
+      </div>
+
+      <h3 style={{ marginTop: "22px" }}>Make your choice:</h3>
+      <div className="option-grid">
+        {decision.options.map(opt => (
+          <div
+            key={opt.key}
+            className={"option-card" + (selectedKey === opt.key ? " selected" : "")}
+            onClick={() => setSelectedKey(opt.key)}
+          >
+            <div className="option-title">{opt.title}</div>
+            <div className="option-desc">{opt.desc}</div>
+          </div>
+        ))}
+      </div>
+
+      {selectedOption && (
+        <div className="tradeoff-box">
+          <div className="label">Trade-off explained</div>
+          <p style={{ margin: 0 }}>{selectedOption.tradeoff}</p>
+        </div>
+      )}
+
+      <h3 style={{ marginTop: "26px" }}>Current Business Metrics</h3>
+      <MetricsPanel metrics={metrics} />
+
+      <div className="footer-nav">
+        <span className="muted" style={{ alignSelf: "center" }}>
+          Step {stepIndex + 1} of {totalSteps}
+        </span>
+        <button
+          className="btn"
+          disabled={!selectedOption}
+          style={{ opacity: selectedOption ? 1 : 0.4, cursor: selectedOption ? "pointer" : "not-allowed" }}
+          onClick={() => selectedOption && onChoose(selectedOption)}
+        >
+          {stepIndex === totalSteps - 1 ? "Finish & See Dashboard →" : "Confirm & Continue →"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------
+   Dashboard / final results
+--------------------------------------------------- */
+const METRIC_LABELS = {
+  cost: "Cost Efficiency",
+  speed: "Delivery Speed",
+  risk: "Risk Management",
+  satisfaction: "Customer Satisfaction",
+  sustainability: "Sustainability",
+};
+
+const IMPROVEMENT_TEXT = {
+  cost: "Renegotiate supplier contracts or shift a portion of production nearshore to reduce costs without abandoning your current setup.",
+  speed: "Open a regional warehouse closer to your largest customer base, or shift a portion of shipments to a faster transport mode for urgent orders.",
+  risk: "Add a backup supplier in a different region and increase your safety stock slightly to cushion against unexpected disruptions.",
+  satisfaction: "Offer faster shipping options at checkout and increase visibility into order tracking to improve the customer experience.",
+  sustainability: "Shift a portion of long-haul shipments from air or road to rail or sea, and consolidate orders to reduce the number of trips.",
+};
+
+function computeScore(metrics){
+  const costGood = 100 - metrics.cost;
+  const riskGood = 100 - metrics.risk;
+  const avg = (costGood + metrics.speed + riskGood + metrics.satisfaction + metrics.sustainability) / 5;
+  return Math.round(avg);
+}
+
+function Dashboard({ company, metrics, choices, onReplay }){
+  const score = computeScore(metrics);
+
+  const goodnessMap = {
+    cost: 100 - metrics.cost,
+    speed: metrics.speed,
+    risk: 100 - metrics.risk,
+    satisfaction: metrics.satisfaction,
+    sustainability: metrics.sustainability,
+  };
+
+  const sorted = Object.entries(goodnessMap).sort((a, b) => b[1] - a[1]);
+  const strengths = sorted.slice(0, 2).map(([k]) => k);
+  const weaknesses = sorted.slice(-2).map(([k]) => k);
+  const biggestRiskKey = sorted[sorted.length - 1][0];
+
+  let scoreColor = "var(--danger)";
+  let scoreVerdict = "This supply chain needs significant rework before it can scale safely.";
+  if(score >= 75){
+    scoreColor = "var(--good)";
+    scoreVerdict = "This is a well-balanced, resilient supply chain. Great work!";
+  } else if(score >= 55){
+    scoreColor = "var(--warn)";
+    scoreVerdict = "A solid foundation with room for improvement in a few key areas.";
+  }
+
+  return (
+    <div className="card fade-in">
+      <h2>📊 Final Supply Chain Dashboard</h2>
+      <p className="muted">{company.name} — {company.industry}</p>
+
+      <div className="score-ring-wrap">
+        <div className="center-col">
+          <div className="score-big">{score}</div>
+          <div className="muted">/ 100 Overall Score</div>
+        </div>
+        <div style={{ flex: 1, minWidth: "220px" }}>
+          <div className="progress-track" style={{ height: "12px" }}>
+            <div className="progress-fill" style={{ width: score + "%", background: scoreColor, height: "12px" }}></div>
+          </div>
+          <p style={{ marginTop: "12px" }}>{scoreVerdict}</p>
+        </div>
+      </div>
+
+      <h3 style={{ marginTop: "28px" }}>Final Metrics</h3>
+      <MetricsPanel metrics={metrics} />
+
+      <div className="two-col">
+        <div className="card" style={{ padding: "20px" }}>
+          <h3>✅ Strengths</h3>
+          <ul className="clean">
+            {strengths.map(k => (
+              <li key={k}><span className="tag-good">{METRIC_LABELS[k]}</span> is performing well, giving your supply chain a real competitive edge here.</li>
+            ))}
+          </ul>
+        </div>
+        <div className="card" style={{ padding: "20px" }}>
+          <h3>⚠️ Weaknesses</h3>
+          <ul className="clean">
+            {weaknesses.map(k => (
+              <li key={k}><span className="tag-bad">{METRIC_LABELS[k]}</span> is currently a soft spot that could hurt the business if left unaddressed.</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div className="card" style={{ padding: "20px", marginTop: "18px", borderColor: "rgba(255,94,94,0.4)" }}>
+        <h3>🚨 Biggest Risk</h3>
+        <p style={{ margin: 0 }}>
+          Your <span className="tag-warn">{METRIC_LABELS[biggestRiskKey]}</span> score is the
+          weakest link in your chain. If unaddressed, this is the area most likely to cause
+          delays, lost customers, or unnecessary costs down the line.
+        </p>
+      </div>
+
+      <div className="card" style={{ padding: "20px", marginTop: "18px" }}>
+        <h3>🛠️ Three Practical Improvements</h3>
+        <ul className="clean">
+          {[...new Set([biggestRiskKey, ...weaknesses])].slice(0, 3).map(k => (
+            <li key={k}>{IMPROVEMENT_TEXT[k]}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="card" style={{ padding: "20px", marginTop: "18px" }}>
+        <h3>📝 Your Decisions Recap</h3>
+        <ul className="clean">
+          {choices.map((c, i) => (
+            <li key={i}><strong>{DECISIONS[i].title.replace("Choose Your ", "")}:</strong> {c.title}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="footer-nav">
+        <span></span>
+        <button className="btn" onClick={onReplay}>🔁 Replay with a New Company</button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------
+   Root App
+--------------------------------------------------- */
+function App(){
+  const [stage, setStage] = useState("welcome"); // welcome | company | decision | dashboard
+  const [company, setCompany] = useState(() => generateCompany());
+  const [stepIndex, setStepIndex] = useState(0);
+  const [metrics, setMetrics] = useState(BASE_METRICS);
+  const [choices, setChoices] = useState([]);
+
+  function startGame(){
+    setStage("company");
+  }
+
+  function beginDecisions(){
+    setStage("decision");
+  }
+
+  function handleChoose(option){
+    const newMetrics = applyEffects(metrics, option.effects);
+    const newChoices = [...choices, option];
+    setMetrics(newMetrics);
+    setChoices(newChoices);
+
+    if(stepIndex + 1 >= DECISIONS.length){
+      setStage("dashboard");
+    } else {
+      setStepIndex(stepIndex + 1);
+    }
+  }
+
+  function replay(){
+    setCompany(generateCompany());
+    setStepIndex(0);
+    setMetrics(BASE_METRICS);
+    setChoices([]);
+    setStage("welcome");
+  }
+
+  return (
+    <div className="app-shell">
+      <div className="topbar">
+        <div className="brand">
+          <span className="dot"></span>
+          Supply Chain Builder
+        </div>
+        <span className="pill">
+          {stage === "welcome" && "Welcome"}
+          {stage === "company" && "Company Brief"}
+          {stage === "decision" && `Decision ${stepIndex + 1} / ${DECISIONS.length}`}
+          {stage === "dashboard" && "Final Report"}
+        </span>
+      </div>
+
+      {stage === "welcome" && <Welcome onStart={startGame} />}
+
+      {stage === "company" && (
+        <CompanyReveal company={company} onContinue={beginDecisions} />
+      )}
+
+      {stage === "decision" && (
+        <DecisionScreen
+          decision={DECISIONS[stepIndex]}
+          stepIndex={stepIndex}
+          totalSteps={DECISIONS.length}
+          onChoose={handleChoose}
+          metrics={metrics}
+        />
+      )}
+
+      {stage === "dashboard" && (
+        <Dashboard
+          company={company}
+          metrics={metrics}
+          choices={choices}
+          onReplay={replay}
+        />
+      )}
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+</body>
+</html>
