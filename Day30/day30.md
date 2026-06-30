@@ -107,5 +107,5 @@ Frontend:
 
 # Supply Chain Builder
 
-[HTML FILE]()
+[HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day30/supply-chain-builder.html)
 
