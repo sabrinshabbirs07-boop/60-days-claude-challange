@@ -30,7 +30,7 @@ Learning. Building. Improving. 🚀
 
 # SCREENSHOTS:
 
-[AI Supply Chain Control Tower1](AI_Supply_Chain_Control_Tower1)
+[AI Supply Chain Control Tower1](AI_Supply_Chain_Control_Tower1.png)
 
 [AI Supply Chain Control Tower2](AI_Supply_Chain_Control_Tower2.png)
 
