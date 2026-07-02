@@ -223,4 +223,4 @@ This project helps users understand:
 * AI-powered strategy recommendations
   
 #  Marketing Strategist html file
-[HTML FILE]()
+[HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day%2032/marketing_strategist.html)
