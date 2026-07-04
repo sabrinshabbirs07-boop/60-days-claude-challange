@@ -11,45 +11,28 @@ Users explore campaign evidence, analyze customer feedback, review marketing met
 # 📸 Application Screenshots
 
 ## 1. Welcome Screen
-*Landing page introducing the detective mission.*
 
-> Insert Screenshot: `welcome.png`
-
----
+![WELCOME](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day-34/welcome.png)
 
 ## 2. Case File
-*Overview of the campaign, business objective, and target audience before the investigation begins.*
 
-> Insert Screenshot: `case-file.png`
-
----
+![case file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day-34/case-file.png)
 
 ## 3. Investigation Board
-*Interactive evidence board containing campaign metrics, customer comments, marketing channels, and budget allocation.*
 
-> Insert Screenshot: `evidence.png`
-
----
+![Evidence](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day-34/evidence.png)
 
 ## 4. Solving the Case
-*Selecting the primary marketing mistake and supporting clues.*
 
-> Insert Screenshot: `solve.jpeg`
-
----
+![solve](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day-34/solve.jpeg)
 
 ## 5. Final Investigation Report
-*AI-generated explanation of the marketing failure along with actionable recommendations.*
 
-> Insert Screenshot: `report-34.png`
-
----
+![Verdict](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day-34/report-34.png)
 
 # 💻 Generated HTML File
 
-```
-Marketing-Detective.html
-```
+[HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day-34/marketing-detective%20(2).html)
 
 Single-file offline web application built using:
 
