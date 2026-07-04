@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Detective</title>
+<style>
+  :root{
+    --bg:#0a0a0b;
+    --bg2:#141414;
+    --board:#2b2018;
+    --board2:#241a12;
+    --paper:#efe6d0;
+    --paper2:#e6dabc;
+    --ink:#211d16;
+    --red:#8f1d1d;
+    --red-bright:#d64545;
+    --gold:#c9a227;
+    --text:#eae7e0;
+    --muted:#a9a49a;
+    --line:#3a3a3a;
+    --shadow: rgba(0,0,0,0.6);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at 20% -10%, #1a1a1a 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 110%, #150c0c 0%, transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family: 'Courier New', Courier, monospace;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  #app{min-height:100vh; display:flex; flex-direction:column;}
+  h1,h2,h3{ font-family: Georgia, 'Times New Roman', serif; letter-spacing:0.5px; margin:0;}
+  ::selection{ background: var(--red-bright); color:#fff;}
+  .noir-title{
+    font-family: Georgia, serif;
+    color: var(--text);
+    text-shadow: 0 0 18px rgba(214,69,69,0.35);
+  }
+  .accent{color:var(--red-bright);}
+  .gold{color:var(--gold);}
+  button{
+    font-family:inherit;
+    cursor:pointer;
+    border:none;
+    outline:none;
+  }
+  .btn{
+    background: linear-gradient(180deg,#2a2a2a,#151515);
+    color:var(--text);
+    border:1px solid var(--line);
+    padding:12px 22px;
+    font-size:14px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    border-radius:3px;
+    transition: transform .15s ease, box-shadow .15s ease, background .2s ease, border-color .2s ease;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.4), 0 6px 14px rgba(0,0,0,0.4);
+  }
+  .btn:hover:not(:disabled){
+    transform: translateY(-2px);
+    border-color: var(--red-bright);
+    box-shadow: 0 6px 0 rgba(0,0,0,0.4), 0 10px 20px rgba(214,69,69,0.25);
+  }
+  .btn:active:not(:disabled){ transform: translateY(1px); box-shadow:0 2px 0 rgba(0,0,0,.4);}
+  .btn:disabled{ opacity:.35; cursor:not-allowed;}
+  .btn-primary{
+    background: linear-gradient(180deg, var(--red-bright), var(--red));
+    border-color: #5a1414;
+    color:#fff;
+  }
+  .btn-primary:hover:not(:disabled){ box-shadow:0 6px 0 rgba(0,0,0,.4), 0 10px 24px rgba(214,69,69,0.5);}
+
+  /* ---------- top bar / progress ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 26px;
+    background: linear-gradient(180deg, #101010, #0a0a0a);
+    border-bottom:1px solid var(--line);
+    position:sticky; top:0; z-index:50;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:Georgia,serif; font-size:18px;}
+  .brand .badge{
+    width:28px;height:28px;border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--red-bright), var(--red) 60%, #400 100%);
+    box-shadow: 0 0 10px rgba(214,69,69,.6), inset 0 0 6px rgba(0,0,0,.5);
+    display:flex;align-items:center;justify-content:center;font-size:14px;
+  }
+  .progress{ display:flex; gap:6px; align-items:center;}
+  .progress .dot{
+    width:10px;height:10px;border-radius:50%;
+    background:#333; border:1px solid var(--line);
+    transition: all .3s ease;
+    position:relative;
+  }
+  .progress .dot.active{ background:var(--red-bright); box-shadow:0 0 8px var(--red-bright);}
+  .progress .dot.done{ background:var(--gold); }
+  .progress-label{ font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; display:none;}
+  @media(min-width:720px){ .progress-label{display:inline;} }
+
+  .screen{ flex:1; display:flex; flex-direction:column; align-items:center; padding:30px 16px 60px; animation:fadeIn .5s ease;}
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- title screen ---------- */
+  .title-screen{ text-align:center; max-width:720px; margin-top:6vh;}
+  .title-screen .badge-lg{
+    width:110px;height:110px;border-radius:50%; margin:0 auto 22px;
+    background: radial-gradient(circle at 35% 30%, var(--red-bright), var(--red) 55%, #300 100%);
+    box-shadow: 0 0 40px rgba(214,69,69,.55), inset 0 0 20px rgba(0,0,0,.6);
+    display:flex;align-items:center;justify-content:center;font-size:52px;
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{ 0%,100%{box-shadow:0 0 40px rgba(214,69,69,.5);} 50%{box-shadow:0 0 60px rgba(214,69,69,.85);} }
+  .title-screen h1{ font-size:44px; margin-bottom:10px;}
+  .title-screen p.sub{ color:var(--muted); font-size:15px; line-height:1.7; margin-bottom:30px;}
+  .stamp-line{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:10px; color:var(--muted); font-size:12px; letter-spacing:1px; text-transform:uppercase;}
+
+  /* ---------- case folder (assignment) ---------- */
+  .folder-wrap{ perspective:1200px; margin-top:10px;}
+  .folder{
+    width:min(560px,90vw);
+    background: linear-gradient(160deg, var(--paper), var(--paper2));
+    color: var(--ink);
+    border-radius:4px 10px 10px 10px;
+    box-shadow: 0 20px 50px var(--shadow), 0 2px 0 rgba(0,0,0,.2);
+    position:relative;
+    padding:34px 30px 26px;
+    animation: folderOpen .6s ease;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 1px, transparent 1px, transparent 3px);
+  }
+  @keyframes folderOpen{ from{ transform: rotateX(25deg) translateY(-20px); opacity:0;} to{ transform: rotateX(0) translateY(0); opacity:1;} }
+  .folder:before{
+    content:"CASE FILE";
+    position:absolute; top:-18px; left:26px;
+    background:var(--red); color:#fff; font-size:11px; letter-spacing:2px;
+    padding:5px 14px; border-radius:2px; box-shadow:0 4px 10px rgba(0,0,0,.5);
+  }
+  .folder .stamp{
+    position:absolute; top:16px; right:20px;
+    border:3px solid var(--red); color:var(--red);
+    font-family:Georgia,serif; font-weight:bold; font-size:13px;
+    padding:5px 10px; border-radius:6px; transform:rotate(-12deg);
+    opacity:.85; letter-spacing:1px;
+  }
+  .folder h2{ font-size:26px; margin-bottom:4px; color:var(--ink);}
+  .folder .industry{ color:var(--red); font-size:13px; text-transform:uppercase; letter-spacing:1px; margin-bottom:18px; font-weight:bold;}
+  .folder .field{ margin-bottom:14px;}
+  .folder .field label{ display:block; font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:#7a6f4d; margin-bottom:3px;}
+  .folder .field div{ font-size:14.5px; line-height:1.5;}
+  .folder hr{ border:none; border-top:1px dashed #b9ac86; margin:18px 0;}
+  .folder-actions{ display:flex; justify-content:center; margin-top:26px;}
+
+  /* ---------- board layout ---------- */
+  .board-layout{ width:100%; max-width:1180px; display:flex; flex-direction:column; gap:20px;}
+  .hint-banner{
+    text-align:center; color:var(--muted); font-size:13px; letter-spacing:.5px;
+    background:rgba(255,255,255,0.03); border:1px dashed var(--line); border-radius:6px; padding:10px 16px;
+  }
+  .corkboard{
+    width:100%; min-height:420px; border-radius:8px; position:relative;
+    background-color: var(--board);
+    background-image:
+      radial-gradient(rgba(0,0,0,0.35) 1px, transparent 1.4px),
+      radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1.4px);
+    background-size: 7px 7px, 11px 11px;
+    background-position: 0 0, 4px 5px;
+    border:10px solid #1c140d;
+    box-shadow: inset 0 0 60px rgba(0,0,0,.6), 0 20px 40px var(--shadow);
+    padding:22px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(180px,1fr));
+    gap:22px;
+    align-content:start;
+  }
+  .corkboard.dragover{ box-shadow: inset 0 0 60px rgba(214,69,69,.35), 0 0 30px rgba(214,69,69,.4);}
+  .tray{
+    display:flex; gap:16px; flex-wrap:wrap; justify-content:center;
+    padding:18px; background:rgba(255,255,255,0.02); border:1px solid var(--line); border-radius:8px;
+  }
+
+  .note{
+    position:relative;
+    background: var(--paper);
+    color:var(--ink);
+    width:170px; min-height:150px;
+    padding:16px 12px 12px;
+    border-radius:2px;
+    box-shadow: 0 10px 18px rgba(0,0,0,.5);
+    font-size:12.5px; line-height:1.45;
+    transform:rotate(var(--rot,0deg));
+    transition: transform .25s ease, box-shadow .25s ease;
+    cursor:grab;
+    user-select:none;
+  }
+  .note:hover{ transform:rotate(0deg) scale(1.04); box-shadow:0 16px 26px rgba(0,0,0,.6); z-index:5;}
+  .note .pin{
+    position:absolute; top:-9px; left:50%; transform:translateX(-50%);
+    width:16px;height:16px;border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #ff6b6b, var(--red) 60%, #500 100%);
+    box-shadow: 0 3px 5px rgba(0,0,0,.6), inset 0 0 3px rgba(0,0,0,.4);
+  }
+  .note .title{ font-weight:bold; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--red); margin-bottom:8px;}
+  .note.locked{ filter:grayscale(.2);}
+  .note.locked .redacted{
+    display:block; height:10px; margin:5px 0; border-radius:2px;
+    background: repeating-linear-gradient(90deg,#222 0,#222 6px,#2c2c2c 6px,#2c2c2c 12px);
+    width:100%;
+  }
+  .note.locked .redacted:nth-child(3){width:70%;}
+  .note.locked .redacted:nth-child(4){width:85%;}
+  .note .stamp-classified{
+    position:absolute; bottom:8px; right:8px; font-size:9px; letter-spacing:1px;
+    color:var(--red); border:1px solid var(--red); padding:2px 6px; border-radius:3px; opacity:.8;
+    transform:rotate(-8deg);
+  }
+  .note.flipping{ animation: flipReveal .5s ease;}
+  @keyframes flipReveal{
+    0%{ transform: rotateY(0deg) rotate(var(--rot,0deg));}
+    50%{ transform: rotateY(90deg) rotate(0deg);}
+    100%{ transform: rotateY(0deg) rotate(0deg);}
+  }
+  .note .body-content{ display:none; }
+  .note.revealed .body-content{ display:block; animation: contentIn .4s ease .1s both;}
+  .note.revealed .redacted, .note.revealed .stamp-classified{ display:none;}
+  @keyframes contentIn{ from{opacity:0;} to{opacity:1;} }
+
+  .bar-row{ display:flex; align-items:center; gap:6px; margin-bottom:6px; font-size:11px;}
+  .bar-row .lbl{ width:40px; color:#5c5238; flex-shrink:0;}
+  .bar-track{ flex:1; height:8px; background:#d8cba4; border-radius:4px; overflow:hidden;}
+  .bar-fill{ height:100%; background: linear-gradient(90deg,var(--red),var(--red-bright)); width:0%; border-radius:4px; transition: width 1.1s cubic-bezier(.2,.9,.3,1);}
+  .bar-val{ width:44px; text-align:right; font-size:10.5px; color:#4a4225; flex-shrink:0;}
+
+  .quote{ font-style:italic; margin-bottom:6px; padding-left:6px; border-left:2px solid var(--red); font-size:11.5px;}
+
+  .board-footer{ display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:6px;}
+  .reveal-progress{ width:min(420px,90vw); height:10px; background:#222; border-radius:6px; overflow:hidden; border:1px solid var(--line);}
+  .reveal-progress-fill{ height:100%; background:linear-gradient(90deg,var(--gold),#e9c65a); width:0%; transition:width .4s ease;}
+
+  /* ---------- solve screen ---------- */
+  .solve-wrap{ width:100%; max-width:820px; display:flex; flex-direction:column; gap:26px;}
+  .solve-card{
+    background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:8px; padding:22px 22px 26px;
+  }
+  .solve-card h3{ font-size:15px; text-transform:uppercase; letter-spacing:1px; color:var(--gold); margin-bottom:14px;}
+  .option{
+    display:flex; align-items:flex-start; gap:10px;
+    background:var(--paper); color:var(--ink); border-radius:4px; padding:12px 14px; margin-bottom:10px;
+    cursor:pointer; font-size:13.5px; line-height:1.5; border:2px solid transparent;
+    transition: all .2s ease;
+  }
+  .option:hover{ transform:translateX(4px); box-shadow:0 6px 14px rgba(0,0,0,.4);}
+  .option.selected{ border-color:var(--red-bright); box-shadow:0 0 0 3px rgba(214,69,69,.25);}
+  .option .marker{ width:18px;height:18px;flex-shrink:0; border:2px solid var(--red); border-radius:50%; margin-top:2px; position:relative;}
+  .option.selected .marker:after{ content:""; position:absolute; inset:3px; background:var(--red); border-radius:50%;}
+  .option.chk .marker{ border-radius:4px;}
+  .clue-counter{ text-align:center; font-size:12px; color:var(--muted); margin-top:8px;}
+  .solve-submit{ display:flex; justify-content:center; margin-top:6px;}
+
+  /* ---------- case closed ---------- */
+  .closed-screen{ flex:1; display:flex; align-items:center; justify-content:center; position:relative; min-height:60vh;}
+  .stamp-final{
+    font-family:Georgia,serif; font-weight:bold; color:var(--red-bright);
+    font-size:min(15vw,90px); border:8px solid var(--red-bright); border-radius:14px;
+    padding:14px 34px; transform:scale(3) rotate(-10deg); opacity:0; letter-spacing:4px;
+    text-shadow:0 0 20px rgba(214,69,69,.7);
+    animation: stampDown .6s cubic-bezier(.2,.9,.25,1.2) forwards;
+    box-shadow:0 0 60px rgba(214,69,69,.4);
+  }
+  @keyframes stampDown{ 0%{ transform:scale(3) rotate(-10deg); opacity:0;} 60%{ transform:scale(0.92) rotate(-8deg); opacity:1;} 80%{transform:scale(1.05) rotate(-8deg);} 100%{ transform:scale(1) rotate(-8deg); opacity:1;} }
+  .score-tag{ position:absolute; bottom:8vh; text-align:center; color:var(--muted); font-size:14px; animation: fadeIn 1s ease 1s both;}
+  .score-tag .num{ font-size:34px; color:var(--gold); font-family:Georgia,serif; display:block;}
+  .paper-fall{ position:fixed; top:-20px; width:10px;height:14px; background:var(--paper); opacity:.9; z-index:5; animation: fall linear forwards;}
+  @keyframes fall{ to{ transform:translateY(110vh) rotate(400deg); opacity:0;} }
+
+  /* ---------- report ---------- */
+  .report-wrap{ width:100%; max-width:820px; display:flex; flex-direction:column; gap:20px;}
+  .report-card{ background:var(--paper); color:var(--ink); border-radius:6px; padding:24px 26px; box-shadow:0 16px 30px var(--shadow); position:relative;}
+  .report-card:before{ content:"DEBRIEF"; position:absolute; top:-14px; left:22px; background:var(--gold); color:#221; font-size:11px; letter-spacing:2px; padding:4px 12px; border-radius:2px; font-weight:bold;}
+  .report-card h3{ color:var(--red); font-size:15px; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;}
+  .report-card p{ font-size:14px; line-height:1.6; margin:0 0 14px;}
+  .report-card ul{ margin:0; padding-left:20px; font-size:13.5px; line-height:1.7;}
+  .stat-row{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center;}
+  .stat-box{ background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:8px; padding:16px 22px; text-align:center; min-width:120px;}
+  .stat-box .n{ font-size:26px; color:var(--gold); font-family:Georgia,serif;}
+  .stat-box .l{ font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-top:4px;}
+  .report-actions{ display:flex; justify-content:center; gap:14px; flex-wrap:wrap;}
+
+  @media(max-width:600px){
+    .corkboard{ grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:14px; padding:14px;}
+    .note{ width:100%;}
+    .folder{ padding:26px 18px 20px;}
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================= DATA ============================= */
+const CASES = [
+{
+  company:"Lumina Skincare Co.", industry:"Beauty & Cosmetics",
+  objective:"Drive online sales of a new vitamin-C serum among Gen Z shoppers.",
+  audience:"Women 18–24, urban, high social media usage, skincare-curious but not yet loyal to a brand.",
+  channels:["Instagram Ads","TikTok Influencers","Email Newsletter","Google Search Ads"],
+  budget:[{name:"Instagram",pct:40},{name:"TikTok Infl.",pct:35},{name:"Email",pct:15},{name:"Search",pct:10}],
+  metrics:{reach:"2.4M",ctr:"0.4%",engagement:"1.8%",conversions:"320",sales:"$9,600"},
+  comments:[
+    `"Saw this everywhere on my feed but couldn't tell you what it actually does."`,
+    `"The influencer videos were fun but never showed the price or where to buy it."`,
+    `"Clicked three different links before I found the real store page."`
+  ],
+  social:"1.2M TikTok video views, but most comments ask 'wait what does this even do?'; only 900 saves across all platforms despite huge view count.",
+  mistake:"The campaign optimized purely for reach and virality but never clearly stated the product's benefit or a direct call-to-action, so huge visibility never converted into sales.",
+  clues:[
+    "CTR is extremely low (0.4%) despite reaching 2.4M people — viewers scroll past without clicking.",
+    "Customer comments repeatedly say they were confused about what the product does.",
+    "Conversions (320) are tiny compared to reach and video views, showing a broken bottom-of-funnel."
+  ],
+  distractorClues:[
+    "Budget allocation is skewed toward Instagram over other channels.",
+    "The email newsletter has a below-average open rate.",
+    "Google Search keywords are broad and untargeted."
+  ],
+  distractorMistakes:[
+    "Budget was split too evenly across too many channels, diluting the impact of each.",
+    "The target audience was defined too broadly, including people who cannot afford the product.",
+    "The brand relied on a single influencer whose audience had already moved on."
+  ],
+  explanation:"Lumina's creative prioritized aesthetics and viral hooks over explaining the product's actual benefit. Influencer videos looked great and drove views, but never stated what the serum does, why it matters, or where/how much to buy — so massive reach never moved people down the funnel.",
+  improvements:[
+    "Add a clear benefit statement and CTA in the first 3 seconds of every video.",
+    "Overlay 'what it does + price' text on all influencer content.",
+    "Retarget engaged-but-not-converted viewers with a short explainer ad.",
+    "Track click-to-product-page rate as a mid-funnel KPI, not just views."
+  ]
+},
+{
+  company:"NovaFit", industry:"Fitness & Wellness App",
+  objective:"Acquire new paid subscribers for an at-home strength training app.",
+  audience:"Marketing targeted 'elite young athletes 18-24' with high-intensity, competitive messaging.",
+  channels:["YouTube Pre-roll","Instagram Ads","Affiliate Fitness Influencers","App Store Ads"],
+  budget:[{name:"YouTube",pct:30},{name:"Instagram",pct:30},{name:"Affiliates",pct:25},{name:"App Store",pct:15}],
+  metrics:{reach:"1.1M",ctr:"1.6%",engagement:"3.1%",conversions:"410",sales:"$6,150 MRR"},
+  comments:[
+    `"I'm 42 and just want to get back in shape — this ad made me feel like it's not for me."`,
+    `"Looks intense. I want something beginner-friendly, not a bootcamp."`,
+    `"Downloaded it, but churned after week one, the workouts assumed I already knew what I was doing."`
+  ],
+  social:"Actual paying subscribers skew 35-50 years old and beginner level, but 90% of ad spend targets competitive athletes 18-24 who rarely convert to paid plans.",
+  mistake:"The campaign's targeting and messaging were aimed at elite young athletes, while the app's actual best-fit and highest-retention customers are older beginners — a fundamental audience mismatch.",
+  clues:[
+    "Customer comments show real users are older and want beginner-friendly content, not elite training.",
+    "Engagement (3.1%) is decent but conversions and retention lag badly for the 18-24 segment reached.",
+    "Actual paying subscriber data (35-50, beginner) contradicts the targeted persona (18-24, elite)."
+  ],
+  distractorClues:[
+    "YouTube pre-roll ads have a lower completion rate than Instagram ads.",
+    "The affiliate program pays a flat fee instead of performance-based commission.",
+    "App Store ad creative hasn't been updated in two months."
+  ],
+  distractorMistakes:[
+    "The app's onboarding flow has too many steps before the paywall.",
+    "Affiliate influencers were paid flat fees instead of commission, misaligning incentives.",
+    "The pricing page doesn't clearly show a free trial option."
+  ],
+  explanation:"NovaFit built its media plan around an aspirational 'elite athlete' persona because that content performs well on social media. But the churn and subscriber data reveal the real audience is older beginners who need reassurance and simplicity, not intensity — the ads were attracting the wrong people who never stick around.",
+  improvements:[
+    "Rebuild personas from actual paying/retained users, not aspirational targets.",
+    "Create a distinct 'beginner' creative track and test it against the athlete track.",
+    "Adjust onboarding to branch by fitness level shown in the ad they clicked.",
+    "Shift budget toward channels/audiences matching the 35-50 beginner segment."
+  ]
+},
+{
+  company:"QuickBite", industry:"Food Delivery",
+  objective:"Grow weekly active users in three metro markets via a discount-driven acquisition push.",
+  audience:"Urban professionals aged 25-40 who order lunch and dinner delivery 3+ times per week.",
+  channels:["Paid Social","Push Notifications","Out-of-Home Ads","Referral Program"],
+  budget:[{name:"Paid Social",pct:45},{name:"Push",pct:10},{name:"OOH",pct:30},{name:"Referral",pct:15}],
+  metrics:{reach:"3.8M",ctr:"1.1%",engagement:"2.0%",conversions:"22,000 signups",sales:"$310,000 (month 1)"},
+  comments:[
+    `"Got 40% off my first order, but delivery was an hour late and cold."`,
+    `"Every ad I see is a new-user discount — nothing for people who already order weekly."`,
+    `"Support never responded when my order arrived missing items."`
+  ],
+  social:"Signups surged 60% during the push, but app-store rating dropped from 4.3 to 3.4 in the same period, driven by complaints about late/cold deliveries and unresponsive support.",
+  mistake:"The campaign poured budget into acquiring new users with steep discounts while ignoring rising complaints about delivery reliability and support — growth outpaced operational capacity, damaging retention and reputation.",
+  clues:[
+    "App-store rating fell sharply (4.3 to 3.4) during the very period signups surged.",
+    "Customer comments focus overwhelmingly on late/cold deliveries and poor support, not on marketing.",
+    "All campaign messaging targets brand-new users; nothing rewards or reassures existing weekly customers."
+  ],
+  distractorClues:[
+    "Out-of-home ad spend was concentrated in only three neighborhoods.",
+    "The referral program offers a smaller reward than competitors.",
+    "Push notification frequency was capped at twice per day."
+  ],
+  distractorMistakes:[
+    "The referral incentive was too small to motivate sharing.",
+    "Out-of-home ads were placed in low-foot-traffic locations.",
+    "Push notifications were sent at the wrong times of day."
+  ],
+  explanation:"QuickBite's acquisition machine worked exactly as designed — new signups and short-term sales spiked. But the campaign ignored operational signals (delivery times, order accuracy, support backlog) that couldn't keep pace with new demand, so the very growth it drove created a wave of bad experiences that tanked ratings and long-term trust.",
+  improvements:[
+    "Pause acquisition scaling until delivery-time and support SLAs are back within target.",
+    "Add a retention/loyalty track for existing weekly customers, not just new-user discounts.",
+    "Feed operational health metrics into marketing's go/no-go decisions for future pushes.",
+    "Publicly address the service issues before running more acquisition ads in the same markets."
+  ]
+},
+{
+  company:"DriveSure Insurance", industry:"Auto Insurance",
+  objective:"Generate quote requests for a new low-cost auto insurance plan.",
+  audience:"Cost-conscious drivers aged 25-55 shopping for cheaper premiums.",
+  channels:["TV Ads","Search Ads","Comparison Sites","Direct Mail"],
+  budget:[{name:"TV",pct:35},{name:"Search",pct:30},{name:"Comparison Sites",pct:25},{name:"Direct Mail",pct:10}],
+  metrics:{reach:"5.2M",ctr:"3.4%",engagement:"n/a (offline heavy)",conversions:"14,500 quotes",sales:"1,900 policies sold"},
+  comments:[
+    `"Ad said 'save 50%' but my actual quote was only 8% less than my current plan."`,
+    `"Felt like a bait and switch once I saw the real numbers."`,
+    `"High click rate but I didn't buy — the quote didn't match what was advertised."`
+  ],
+  social:"Comparison-site reviews mention the '50% savings' claim specifically, with many users noting their real quote fell far short, calling the ads misleading.",
+  mistake:"The ad copy advertised an aggressive, unqualified savings figure ('save 50%') that most customers did not actually receive once quoted, creating a trust gap between the ad promise and the real offer that killed conversion from quote to purchase.",
+  clues:[
+    "CTR is strong (3.4%) — the '50% savings' hook clearly gets clicks.",
+    "Quote-to-policy conversion is very low (14,500 quotes but only 1,900 policies) despite high initial interest.",
+    "Customer comments specifically call out the gap between the advertised discount and their real quote."
+  ],
+  distractorClues:[
+    "TV ads ran mostly during daytime slots with smaller audiences.",
+    "Direct mail response rates were below the industry benchmark.",
+    "The quote form has more fields than competitor sites."
+  ],
+  distractorMistakes:[
+    "The quote form is too long, causing drop-off before submission.",
+    "TV ad scheduling missed the highest-viewership time slots.",
+    "Direct mail creative uses an outdated design template."
+  ],
+  explanation:"The '50% savings' claim was based on a best-case scenario that applied to very few actual drivers. It succeeded brilliantly at generating clicks and quote requests, but once real, personalized quotes came in far higher than promised, prospects felt misled and abandoned the purchase — a classic promise-to-delivery mismatch that erodes trust right at the conversion moment.",
+  improvements:[
+    "Replace the blanket '50% savings' claim with a realistic, segmented range or 'as much as' framing with clear qualifiers.",
+    "Show a personalized estimated range earlier in the funnel to set accurate expectations.",
+    "A/B test honest-but-still-compelling headlines against the current claim.",
+    "Track quote-to-purchase conversion by ad claim to catch expectation mismatches early."
+  ]
+},
+{
+  company:"Wanderly Travel", industry:"Travel & Tourism",
+  objective:"Sell beach vacation packages to a key regional market during a seasonal push.",
+  audience:"Families and couples looking to book a getaway in the next 60 days.",
+  channels:["Facebook Ads","Email Blast","Radio","Travel Blogs"],
+  budget:[{name:"Facebook",pct:40},{name:"Email",pct:20},{name:"Radio",pct:25},{name:"Blogs",pct:15}],
+  metrics:{reach:"960K",ctr:"0.9%",engagement:"1.4%",conversions:"210 bookings",sales:"$189,000"},
+  comments:[
+    `"Beautiful beach ads, but it's the middle of our rainy season down there right now."`,
+    `"Would love this in three months, but I'm not booking a rainy beach trip."`,
+    `"Ad felt out of touch with the actual weather this time of year."`
+  ],
+  social:"Regional weather forecasts show the destination is in its peak rainy season during the entire campaign window; several comments and shares reference the mismatch.",
+  mistake:"The campaign launched a sunny beach getaway push during the destination's rainy season, undermining the core promise of the trip and suppressing bookings despite decent visibility.",
+  clues:[
+    "Reach is solid (960K) but CTR and bookings are both well below typical seasonal campaigns.",
+    "Multiple customer comments explicitly mention the destination's rainy season timing.",
+    "The campaign's creative (sunny beach imagery) directly contradicts the actual regional forecast during the flight window."
+  ],
+  distractorClues:[
+    "Radio ads ran on stations with an older-skewing audience.",
+    "The email blast was sent on a Monday morning.",
+    "Travel blog partners have smaller followings than expected."
+  ],
+  distractorMistakes:[
+    "Radio spend was too high relative to its historically low conversion rate.",
+    "The email send time conflicted with subscribers' typical inbox habits.",
+    "Blog partnerships were with sites outside the target region."
+  ],
+  explanation:"Wanderly built a strong-looking sunny-beach campaign but didn't check the destination's seasonal weather calendar against the travel window being sold. Prospects who did their own research (or remembered from experience) recognized the mismatch and hesitated, since the core appeal of a 'beach getaway' fell apart against a rainy forecast.",
+  improvements:[
+    "Cross-check destination seasonality against travel-window dates before launching any push.",
+    "For off-season promotions, reframe the pitch (e.g., 'quiet season, lower prices') instead of pure sunny-beach imagery.",
+    "Segment creative by destination climate calendar rather than reusing one asset library.",
+    "Add a seasonality checklist to the campaign approval process."
+  ]
+},
+{
+  company:"PixelForge Games", industry:"Gaming",
+  objective:"Drive installs and early spending for a new mobile strategy game launch.",
+  audience:"Mobile gamers aged 18-34 interested in strategy and city-building games.",
+  channels:["Rewarded Video Ads","Instagram Ads","Twitch Sponsorships","App Store Ads"],
+  budget:[{name:"Rewarded Video",pct:45},{name:"Instagram",pct:20},{name:"Twitch",pct:20},{name:"App Store",pct:15}],
+  metrics:{reach:"4.6M impressions",ctr:"2.8% (week 1) to 0.5% (week 6)",engagement:"declining weekly",conversions:"180,000 installs",sales:"$41,000 in-app (week 6, down from $210,000 week 1)"},
+  comments:[
+    `"I've seen the exact same ad like fifty times now, I'm so tired of it."`,
+    `"Same 15-second clip every single game I open — muted it out completely."`,
+    `"Installed because of the ad, but the actual game barely resembles what was shown."`
+  ],
+  social:"CTR chart shows a steep decline from 2.8% in week 1 to 0.5% by week 6, with no new creative introduced during that period; frequency reports show average 40+ impressions per user by week 6.",
+  mistake:"The single hero ad creative was run at high frequency for six straight weeks without rotation, causing severe ad fatigue that collapsed CTR and in-app spend even though overall impressions stayed high.",
+  clues:[
+    "CTR dropped from 2.8% to 0.5% over six weeks while spend and impressions stayed constant.",
+    "Customer comments repeatedly mention seeing 'the exact same ad' too many times.",
+    "Average frequency reached 40+ impressions per user with zero creative rotation in that window."
+  ],
+  distractorClues:[
+    "Twitch sponsorship streams ran during off-peak viewing hours.",
+    "The App Store screenshots weren't updated at launch.",
+    "Instagram ad copy used a font mismatched to the brand style guide."
+  ],
+  distractorMistakes:[
+    "The game's tutorial is too long, causing early drop-off.",
+    "Twitch sponsorships were booked with streamers outside the core audience.",
+    "In-app purchase prices were set higher than competing titles."
+  ],
+  explanation:"PixelForge's single ad performed so well in week one that the team kept running it unchanged to save creative budget. But without frequency capping or rotation, the same audience saw it dozens of times, causing fatigue: attention, clicks, and eventually revenue collapsed even though raw impression counts looked healthy on the dashboard.",
+  improvements:[
+    "Set frequency caps per user and rotate creative on a fixed schedule (e.g., every 10-14 days).",
+    "Build 3-4 creative variants at launch instead of relying on a single hero ad.",
+    "Monitor CTR-by-frequency-bucket to catch fatigue before it fully erodes performance.",
+    "Reserve a 'refresh' creative budget specifically for mid-flight campaign fatigue."
+  ]
+},
+{
+  company:"CoinWise", industry:"Fintech / Personal Finance App",
+  objective:"Acquire new users for a retirement-planning and investing app.",
+  audience:"Working professionals aged 35-55 planning for retirement, higher income bracket.",
+  channels:["Instagram Reels","TikTok","Podcast Ads","LinkedIn Ads"],
+  budget:[{name:"Instagram Reels",pct:35},{name:"TikTok",pct:30},{name:"Podcast",pct:20},{name:"LinkedIn",pct:15}],
+  metrics:{reach:"2.1M",ctr:"0.6%",engagement:"2.4%",conversions:"640 signups",sales:"$38,000 in assets onboarded"},
+  comments:[
+    `"I don't even use TikTok, my kids showed me this ad."`,
+    `"Would expect to find something like this on LinkedIn, not scrolling short videos."`,
+    `"Feels like it's made for a younger crowd than someone thinking about retirement."`
+  ],
+  social:"Platform analytics show 70% of ad spend went to TikTok and Instagram Reels, but the actual signup audience is disproportionately reached via the smaller LinkedIn and podcast budget lines.",
+  mistake:"The majority of the media budget was placed on short-form video platforms popular with much younger users, while the target audience of professionals aged 35-55 is far better reached through LinkedIn and podcasts — a channel-audience mismatch.",
+  clues:[
+    "65% of budget sits in TikTok/Reels, platforms with a much younger core user base than the 35-55 target.",
+    "Customer comments explicitly note discomfort with finding a retirement product on short-video platforms.",
+    "Despite smaller budgets, LinkedIn and podcast channels show disproportionately strong signup contribution per dollar."
+  ],
+  distractorClues:[
+    "Podcast ad reads were recorded by a host unfamiliar with financial terms.",
+    "LinkedIn ad creative uses a stock photo rather than custom design.",
+    "TikTok ad captions were not localized for different regions."
+  ],
+  distractorMistakes:[
+    "Podcast ads were too long at 90 seconds, losing listener attention.",
+    "LinkedIn targeting excluded users without a listed job title.",
+    "TikTok ad captions lacked closed captions for accessibility."
+  ],
+  explanation:"CoinWise chased the platforms with the biggest reach and cheapest impressions (TikTok, Reels) without checking whether its actual target demographic spends meaningful time there. The result: a lot of cheap, mismatched attention and comparatively little qualified signup, while the smaller, better-matched channels quietly outperformed on a per-dollar basis.",
+  improvements:[
+    "Reallocate budget toward LinkedIn and podcast channels proportional to their signup efficiency.",
+    "If continuing short-form video, adjust creative and platform choice to match where 35-55 professionals actually spend time (e.g., YouTube, Facebook).",
+    "Run a small-scale channel test before committing majority budget to any single platform.",
+    "Track cost-per-qualified-signup by channel, not just cost-per-click."
+  ]
+},
+{
+  company:"PawPocket", industry:"Pet Products E-commerce",
+  objective:"Increase brand awareness and sales for a new subscription pet-treat box.",
+  audience:"Dog and cat owners aged 25-45 who shop for pet products online.",
+  channels:["Instagram","Facebook","Pinterest","Influencer Seeding"],
+  budget:[{name:"Instagram",pct:45},{name:"Facebook",pct:20},{name:"Pinterest",pct:15},{name:"Influencer Seeding",pct:20}],
+  metrics:{reach:"1.8M",ctr:"0.3%",engagement:"6.2% (likes/comments)",conversions:"95 subscriptions",sales:"$2,850"},
+  comments:[
+    `"Adorable photos! ... wait, where do I actually buy this?"`,
+    `"I liked and shared but never saw a 'shop now' button anywhere."`,
+    `"Beautiful feed, but I had to Google the brand name to find the website."`
+  ],
+  social:"Engagement rate (6.2%) is well above industry average, driven by cute pet photos and shares, but almost none of the posts include a shoppable tag, swipe-up link, or bio CTA.",
+  mistake:"The team optimized content purely for likes, comments, and shares (vanity engagement) while neglecting shoppable links and clear purchase paths, so high engagement never funneled into subscriptions.",
+  clues:[
+    "Engagement rate (6.2%) is excellent, but conversions (95) are extremely low relative to that engagement.",
+    "Customer comments repeatedly ask where to buy or how to find the website.",
+    "Most posts lack shoppable tags, swipe-up links, or a clear bio call-to-action."
+  ],
+  distractorClues:[
+    "Pinterest boards are organized by pet breed rather than product type.",
+    "Influencer seeding sent products to accounts with under 5,000 followers.",
+    "Facebook ads use a carousel format instead of single image."
+  ],
+  distractorMistakes:[
+    "Influencer seeding targeted accounts that were too small to matter.",
+    "Pinterest content was mis-categorized, reducing discoverability.",
+    "Facebook ad format underperforms carousel benchmarks."
+  ],
+  explanation:"PawPocket's content team is clearly skilled at creating shareable, likeable pet content — engagement numbers prove it. But the social strategy treated likes and shares as the goal itself, rather than a means to purchase. Without shoppable tags or consistent CTAs, all that warm audience attention had nowhere obvious to go, so it evaporated instead of converting.",
+  improvements:[
+    "Add shoppable product tags and a consistent 'link in bio' CTA to every post.",
+    "Set up Instagram/Facebook Shops so users can purchase without leaving the app.",
+    "Track click-to-site rate and conversion rate as core KPIs alongside engagement.",
+    "Brief influencers to include a direct link or promo code in captions, not just product photos."
+  ]
+},
+{
+  company:"HearthHome", industry:"Home Décor & Furniture",
+  objective:"Increase online furniture sales ahead of the fall shopping season.",
+  audience:"Homeowners and renters aged 28-50 furnishing or refreshing their living spaces.",
+  channels:["YouTube Brand Ads","Display Network","Retargeting Ads","Email"],
+  budget:[{name:"YouTube Brand",pct:55},{name:"Display",pct:25},{name:"Retargeting",pct:10},{name:"Email",pct:10}],
+  metrics:{reach:"3.3M",ctr:"0.5%",engagement:"1.9%",conversions:"430 orders",sales:"$96,000"},
+  comments:[
+    `"I browsed their site for a couch three times and never saw an ad again."`,
+    `"Added a chair to my cart, got distracted, and completely forgot about it."`,
+    `"Saw the same brand video twice but never anything about the item I actually looked at."`
+  ],
+  social:"Analytics show cart-abandonment rate of 78%, yet retargeting ads receive only 10% of budget while broad awareness (YouTube) absorbs 55% — nearly the entire top-of-funnel budget with almost nothing to recover abandoners.",
+  mistake:"The vast majority of budget was allocated to broad brand-awareness advertising while high-intent shoppers who browsed products or abandoned carts received almost no retargeting support, leaving easy, near-term sales on the table.",
+  clues:[
+    "Cart abandonment sits at 78%, yet retargeting gets only 10% of total budget.",
+    "Customer comments describe browsing or adding items to cart and never seeing a relevant follow-up ad.",
+    "55% of budget goes to broad awareness (YouTube) which doesn't address people already close to purchasing."
+  ],
+  distractorClues:[
+    "Display network ads use a static banner instead of animated creative.",
+    "Email open rates are slightly below the retail benchmark.",
+    "YouTube ads run primarily on mobile rather than desktop."
+  ],
+  distractorMistakes:[
+    "Display ads are visually inconsistent with the brand's site design.",
+    "Email send frequency is too low to stay top of mind.",
+    "YouTube ads are skippable, reducing effective view-through rate."
+  ],
+  explanation:"HearthHome's plan leaned heavily on brand-building at the very top of the funnel, which builds awareness but does little to recover shoppers who already showed strong intent (product views, cart adds). With retargeting starved of budget, the campaign consistently let warm, nearly-converted shoppers go cold instead of nudging them across the finish line.",
+  improvements:[
+    "Shift a meaningful share of budget from broad awareness into dynamic product retargeting.",
+    "Set up cart-abandonment email/ad sequences triggered within hours, not days.",
+    "Use dynamic creative that shows the exact item a shopper viewed or added to cart.",
+    "Balance the funnel: keep some awareness spend, but size retargeting to match abandonment volume."
+  ]
+},
+{
+  company:"EchoStream", industry:"Music Streaming",
+  objective:"Promote a new 'summer road trip' playlist feature to boost app engagement.",
+  audience:"Active app users aged 16-30 who listen during commutes and travel.",
+  channels:["In-app Banners","Push Notifications","Social Media","Radio Co-promotion"],
+  budget:[{name:"In-app",pct:30},{name:"Push",pct:20},{name:"Social",pct:35},{name:"Radio",pct:15}],
+  metrics:{reach:"2.9M",ctr:"1.0%",engagement:"1.1%",conversions:"12,400 playlist saves",sales:"n/a (engagement campaign)"},
+  comments:[
+    `"Cheerful road-trip playlist ad right after severe weather warnings hit our region — bad timing."`,
+    `"Felt tone-deaf getting a 'hit the road!' push notification during a week everyone was told to stay home."`,
+    `"Not the vibe when half my feed is about the storm damage."`
+  ],
+  social:"Campaign launch coincided with a major regional weather emergency in one of the largest markets; social comments in that region skew negative specifically citing bad timing, while unaffected regions perform close to plan.",
+  mistake:"The campaign launched a cheerful 'hit the road' promotion without checking for regional context, coinciding with a severe weather emergency in a key market, making the messaging feel tone-deaf and hurting sentiment in that region.",
+  clues:[
+    "Negative sentiment is concentrated specifically in the region experiencing the weather emergency, not campaign-wide.",
+    "Multiple comments explicitly cite bad timing relative to the regional event.",
+    "Unaffected regions perform close to plan, isolating the issue to context/timing rather than the creative itself."
+  ],
+  distractorClues:[
+    "Push notifications were sent at a slightly later hour than usual.",
+    "In-app banners used a color scheme that clashed with the app's usual palette.",
+    "Radio co-promotion partners had lower listenership than projected."
+  ],
+  distractorMistakes:[
+    "In-app banner design didn't match brand guidelines, hurting recognition.",
+    "Radio co-promotion partners were mismatched to the target age group.",
+    "Push notification copy was too long for lock-screen previews."
+  ],
+  explanation:"EchoStream's playlist idea and creative were sound, but the launch plan was national and one-size-fits-all, with no process for checking regional context before sending upbeat 'get on the road' messaging. When a real weather emergency hit one of its markets during launch week, the campaign's tone clashed badly with what people in that region were actually experiencing.",
+  improvements:[
+    "Build a regional-event check into the campaign launch checklist (weather, news, local sensitivities).",
+    "Allow regional pausing/holdouts for push and social content during local emergencies.",
+    "Prepare an alternate, neutral-tone creative that can swap in quickly for affected regions.",
+    "Monitor regional sentiment in the first 24 hours and have a rapid pause/adjust process ready."
+  ]
+},
+{
+  company:"Urban Threads", industry:"Fashion / Apparel",
+  objective:"Launch a new premium denim line at a higher price point than the brand's usual products.",
+  audience:"Existing budget-conscious customers plus a new aspirational premium segment.",
+  channels:["Instagram Ads","Email to Existing List","Retail Window Displays","Influencer Gifting"],
+  budget:[{name:"Instagram",pct:40},{name:"Email",pct:25},{name:"Retail Display",pct:20},{name:"Influencer Gifting",pct:15}],
+  metrics:{reach:"1.4M",ctr:"0.8%",engagement:"1.6%",conversions:"260 orders",sales:"$31,200"},
+  comments:[
+    `"$180 for jeans from a brand I know for $40 basics? Ad didn't explain why."`,
+    `"The photos looked exactly like their regular line, just... more expensive?"`,
+    `"Nothing in the ad told me what makes these 'premium' besides the price tag."`
+  ],
+  social:"Existing customer email list (used for 25% of budget) shows the highest unsubscribe spike in company history during this campaign, with replies citing sticker shock and no clear premium differentiation.",
+  mistake:"The campaign communicated a significantly higher price point using the same visual style, tone, and messaging as the brand's budget line, giving customers no explanation for the premium positioning and creating a jarring price-value mismatch.",
+  clues:[
+    "Customer comments repeatedly express confusion or shock at the price with no stated justification.",
+    "Existing email list saw record unsubscribes during a campaign that reused the brand's usual budget-line visual style.",
+    "Ad creative doesn't mention materials, craftsmanship, or any premium differentiators — only the product and price."
+  ],
+  distractorClues:[
+    "Retail window displays were only updated in half of store locations.",
+    "Influencer gifting went out two weeks before the ad campaign launched.",
+    "Instagram ads used a square format instead of vertical video."
+  ],
+  distractorMistakes:[
+    "Retail window displays were inconsistent across store locations.",
+    "Influencer gifting timing was misaligned with the paid campaign start.",
+    "Instagram ad format underperformed compared to Stories placements."
+  ],
+  explanation:"Urban Threads tried to stretch into a premium tier but kept the same creative language, tone, and channel mix used for its everyday budget products. Without visual or messaging cues explaining the higher price (materials, craftsmanship, exclusivity), existing budget-focused customers felt blindsided rather than intrigued, and the new premium positioning never got a real chance to land.",
+  improvements:[
+    "Develop distinct premium-tier creative and tone, separate from the core budget-line style.",
+    "Explicitly communicate what justifies the price increase (materials, construction, limited runs).",
+    "Segment email sends so budget-focused customers aren't blindsided by premium pricing without context.",
+    "Test premium messaging with a smaller, aspirational-segment audience before a full list send."
+  ]
+},
+{
+  company:"FreshFarm Delivery", industry:"Grocery Delivery",
+  objective:"Determine which marketing channels drive the most valuable repeat grocery customers.",
+  audience:"Busy households ordering weekly grocery delivery.",
+  channels:["Facebook Ads","Google Ads","Local Radio","Community Sponsorships"],
+  budget:[{name:"Facebook",pct:35},{name:"Google",pct:35},{name:"Radio",pct:20},{name:"Sponsorships",pct:10}],
+  metrics:{reach:"2.6M",ctr:"1.3%",engagement:"1.7%",conversions:"3,400 first orders",sales:"$187,000 (quarter)"},
+  comments:[
+    `"I heard about them from a community sponsorship at my kid's school, not an ad."`,
+    `"I always click the Google ad, but I first heard the name from the radio."`,
+    `"Report says Facebook drove my order, but that's just the last thing I clicked."`
+  ],
+  social:"No UTM parameters or consistent tracking links were used across radio, sponsorships, or in-store mentions; internal reports attribute nearly all conversions to Facebook and Google simply because they were the last click before purchase.",
+  mistake:"Without proper multi-touch tracking (like UTMs) across offline and awareness channels, the team relied on last-click attribution, wrongly crediting Facebook and Google for conversions that were actually driven earlier by radio and community sponsorships — leading to a flawed budget reallocation plan.",
+  clues:[
+    "No UTM parameters or tracking exist for radio, sponsorships, or offline mentions.",
+    "Customer comments describe first hearing about the brand through radio or sponsorships, not the 'credited' channel.",
+    "Internal reporting attributes almost all conversions to last-click channels (Facebook/Google), ignoring earlier touchpoints."
+  ],
+  distractorClues:[
+    "Facebook ad creative wasn't refreshed for six weeks.",
+    "Google Ads keyword bids were set below the recommended range.",
+    "Radio spots ran only during weekday mornings."
+  ],
+  distractorMistakes:[
+    "Google Ads bids were too conservative, limiting impression share.",
+    "Radio ad scheduling missed peak commute hours.",
+    "Community sponsorships were placed in low-visibility events."
+  ],
+  explanation:"FreshFarm's data looked clean and conclusive — Facebook and Google 'obviously' drove the most orders. But without tracking on offline and brand-awareness channels, every campaign that built initial awareness (radio, sponsorships) got zero credit, while the channels that simply captured the last click looked artificially dominant. Acting on this data would mean cutting the very channels quietly doing much of the real work.",
+  improvements:[
+    "Implement UTM tracking and unique promo codes for every channel, including offline.",
+    "Move to a multi-touch attribution model instead of last-click only.",
+    "Run a post-purchase 'how did you hear about us' survey to fill attribution gaps.",
+    "Re-evaluate budget allocation only after attribution data reflects the full customer journey."
+  ]
+},
+{
+  company:"TechNest", industry:"Smart Home Devices",
+  objective:"Drive pre-orders for a new smart thermostat before general retail availability.",
+  audience:"Homeowners aged 30-55 interested in energy savings and home automation.",
+  channels:["Google Search Ads","Facebook Ads","Home Improvement Blogs","Email Waitlist"],
+  budget:[{name:"Google Search",pct:30},{name:"Facebook",pct:40},{name:"Blogs",pct:15},{name:"Email",pct:15}],
+  metrics:{reach:"1.6M",ctr:"0.5%",engagement:"1.2%",conversions:"540 pre-orders",sales:"$97,200"},
+  comments:[
+    `"Ad was just a product photo and a price, didn't tell me why I'd want this over my current thermostat."`,
+    `"Nothing about savings or features, just 'pre-order now'."`,
+    `"Bland ad, easy to scroll past."`
+  ],
+  social:"A single ad creative (product shot + price + 'Pre-order Now' button) was used across 100% of paid spend; a small unofficial test of 3 alternate creatives (highlighting energy savings) run briefly by a regional team showed roughly double the CTR before being paused due to budget consolidation.",
+  mistake:"The team rolled out full budget behind a single, untested ad creative that only showed the product and price with no benefit messaging, missing the chance to discover and scale a stronger-performing variant that emphasized energy savings.",
+  clues:[
+    "100% of paid budget ran on one untested creative for the entire campaign.",
+    "Customer comments say the ad lacks any explanation of benefits like energy savings.",
+    "A small unofficial test of alternate creatives showed roughly double the CTR, but was paused rather than scaled."
+  ],
+  distractorClues:[
+    "Google Search ads targeted broad match keywords instead of exact match.",
+    "The email waitlist signup form asked for too much personal information.",
+    "Home improvement blog placements were on lower-traffic articles."
+  ],
+  distractorMistakes:[
+    "Broad match keywords on Google Search wasted budget on irrelevant queries.",
+    "The waitlist signup form's length reduced completion rates.",
+    "Blog placements were on articles with declining monthly traffic."
+  ],
+  explanation:"TechNest had promising evidence sitting in front of it — a small test showed benefit-focused creative roughly doubling CTR — but budget consolidation pressure led the team to commit fully to a single, unproven price-and-photo ad instead of running a proper test first. The campaign therefore scaled a mediocre creative when a clearly stronger option was already within reach.",
+  improvements:[
+    "Always run a structured A/B test with a meaningful budget split before committing full spend to one creative.",
+    "Scale the winning variant from small tests rather than defaulting to the simplest asset.",
+    "Include a clear benefit (e.g., energy savings %) in all product ad creative going forward.",
+    "Set a standing 'test before scale' rule for any campaign above a defined budget threshold."
+  ]
+},
+{
+  company:"Bloom & Co", industry:"Flower Subscription E-commerce",
+  objective:"Convert social media traffic into paid flower subscription sign-ups.",
+  audience:"Gift-givers and self-care shoppers aged 25-45, primarily browsing on mobile.",
+  channels:["Instagram Ads","Pinterest Ads","Facebook Ads","Google Shopping"],
+  budget:[{name:"Instagram",pct:40},{name:"Pinterest",pct:25},{name:"Facebook",pct:20},{name:"Google Shopping",pct:15}],
+  metrics:{reach:"2.2M",ctr:"1.4%",engagement:"2.3%",conversions:"310 completed subscriptions",sales:"$18,600"},
+  comments:[
+    `"Clicked the ad on my phone, but the checkout button was so small I could barely tap it."`,
+    `"Kept trying to enter my card info and the form kept resetting on mobile."`,
+    `"Gave up and figured I'd just order from my laptop later... forgot."`
+  ],
+  social:"92% of ad clicks come from mobile devices, but session recordings show a 68% checkout abandonment rate on mobile versus 24% on desktop, concentrated at the payment-details step.",
+  mistake:"The vast majority of traffic arrives on mobile, but the checkout experience was not optimized for mobile, causing a dramatically higher abandonment rate at the payment step and losing sales that the ads had already successfully generated.",
+  clues:[
+    "92% of clicks are mobile, yet mobile checkout abandonment (68%) is nearly triple desktop's (24%).",
+    "Customer comments specifically describe small buttons and forms resetting on mobile during checkout.",
+    "Abandonment is concentrated at the payment-details step, pointing to a checkout UX issue rather than an ad targeting problem."
+  ],
+  distractorClues:[
+    "Pinterest ad images use a landscape format instead of vertical.",
+    "Google Shopping listings are missing customer review stars.",
+    "Facebook ads target a slightly wider age range than Instagram."
+  ],
+  distractorMistakes:[
+    "Pinterest ad creative isn't optimized for the platform's preferred image ratio.",
+    "Google Shopping feed is missing product review data.",
+    "Facebook and Instagram audiences overlap too much, wasting spend."
+  ],
+  explanation:"Bloom & Co's ads were doing their job — clicks, reach, and engagement all looked healthy, especially on mobile. But the checkout flow, apparently designed and tested mainly on desktop, broke down on phones (tiny tap targets, forms that reset), so a large share of interested, ready-to-buy mobile visitors dropped off right at payment, quietly erasing much of the campaign's hard-won traffic.",
+  improvements:[
+    "Run a mobile-specific UX audit of the entire checkout flow, especially the payment step.",
+    "Fix tap-target sizing and form-persistence issues identified in session recordings.",
+    "Set mobile checkout completion rate as a tracked KPI alongside ad CTR and reach.",
+    "A/B test a simplified, mobile-first checkout against the current flow before scaling ad spend further."
+  ]
+}
+];
+
+/* ============================= STATE ============================= */
+const state = {
+  view:"title",
+  caseIdx:-1,
+  data:null,
+  order:[],           // shuffled evidence keys
+  revealed:{},        // key -> true
+  selectedMistake:null,
+  mistakeOptions:[],
+  selectedClues:new Set(),
+  clueOptions:[],
+  score:0,
+  lastCaseIdx:-1
+};
+
+const EVIDENCE_KEYS = ["objective","audience","channels","budget","metrics","comments","social"];
+const EVIDENCE_LABELS = {
+  objective:"Campaign Objective", audience:"Target Audience", channels:"Marketing Channels",
+  budget:"Budget Allocation", metrics:"Campaign Metrics", comments:"Customer Comments", social:"Social Media Performance"
+};
+
+const STEPS = ["Assignment","Board","Investigate","Solve","Closed","Report"];
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function pickCase(){
+  let idx;
+  do{ idx = Math.floor(Math.random()*CASES.length); } while(CASES.length>1 && idx===state.lastCaseIdx);
+  return idx;
+}
+
+/* ============================= RENDER HELPERS ============================= */
+const app = document.getElementById("app");
+
+function topbarHtml(stepIndex){
+  const dots = STEPS.map((s,i)=>{
+    let cls = "dot";
+    if(i<stepIndex) cls += " done";
+    else if(i===stepIndex) cls += " active";
+    return `<div class="${cls}" title="${s}"></div>`;
+  }).join("");
+  const label = STEPS[stepIndex] || "";
+  return `
+  <div class="topbar">
+    <div class="brand"><div class="badge">&#128269;</div> Marketing Detective</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="progress-label">${label}</span>
+      <div class="progress">${dots}</div>
+    </div>
+  </div>`;
+}
+
+function render(){
+  app.innerHTML = "";
+  if(state.view==="title") return renderTitle();
+  if(state.view==="assignment") return renderAssignment();
+  if(state.view==="board") return renderBoard();
+  if(state.view==="solve") return renderSolve();
+  if(state.view==="closed") return renderClosed();
+  if(state.view==="report") return renderReport();
+}
+
+/* ---------------- TITLE ---------------- */
+function renderTitle(){
+  app.innerHTML = `
+    <div class="screen title-screen">
+      <div class="badge-lg">&#128373;</div>
+      <h1 class="noir-title">MARKETING <span class="accent">DETECTIVE</span></h1>
+      <p class="sub">Somewhere in the files of a hundred failed campaigns lies the truth.
+      Every case hides one critical mistake, buried under charts, comments, and cold hard numbers.
+      Pin the evidence. Read between the lines. Crack the case.</p>
+      <button class="btn btn-primary" id="startBtn">Take the Case</button>
+      <div class="stamp-line"><span>12+ Case Files</span><span>&bull;</span><span>Confidential</span><span>&bull;</span><span>Est. 1948</span></div>
+    </div>
+  `;
+  document.getElementById("startBtn").onclick = ()=>{
+    state.caseIdx = pickCase();
+    state.lastCaseIdx = state.caseIdx;
+    state.data = CASES[state.caseIdx];
+    state.revealed = {};
+    state.selectedMistake = null;
+    state.selectedClues = new Set();
+    state.score = 0;
+    state.view = "assignment";
+    render();
+  };
+}
+
+/* ---------------- ASSIGNMENT ---------------- */
+function renderAssignment(){
+  const c = state.data;
+  app.innerHTML = `
+    ${topbarHtml(0)}
+    <div class="screen">
+      <div class="folder-wrap">
+        <div class="folder">
+          <div class="stamp">TOP SECRET</div>
+          <h2>${c.company}</h2>
+          <div class="industry">${c.industry}</div>
+          <div class="field"><label>Campaign Objective</label><div>${c.objective}</div></div>
+          <div class="field"><label>Target Audience</label><div>${c.audience}</div></div>
+          <hr>
+          <div class="field"><label>Your Mission</label><div>Something in this campaign went wrong. Investigate the evidence board, uncover every clue, and identify the primary marketing mistake before you can close the case.</div></div>
+          <div class="folder-actions">
+            <button class="btn btn-primary" id="toBoard">Open Investigation Board &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById("toBoard").onclick = ()=>{
+    state.order = shuffle(EVIDENCE_KEYS);
+    state.view = "board";
+    render();
+  };
+}
+
+/* ---------------- BOARD / INVESTIGATE ---------------- */
+function evidenceBodyHtml(key, c){
+  if(key==="channels"){
+    return `<ul style="margin:0;padding-left:16px;">${c.channels.map(ch=>`<li>${ch}</li>`).join("")}</ul>`;
+  }
+  if(key==="budget"){
+    return c.budget.map(b=>`
+      <div class="bar-row"><span class="lbl">${b.name}</span><div class="bar-track"><div class="bar-fill" data-pct="${b.pct}"></div></div><span class="bar-val">${b.pct}%</span></div>
+    `).join("");
+  }
+  if(key==="metrics"){
+    const m = c.metrics;
+    return `
+      <div style="font-size:12.5px;line-height:1.9;">
+        <div><b>Reach:</b> ${m.reach}</div>
+        <div><b>CTR:</b> ${m.ctr}</div>
+        <div><b>Engagement:</b> ${m.engagement}</div>
+        <div><b>Conversions:</b> ${m.conversions}</div>
+        <div><b>Sales:</b> ${m.sales}</div>
+      </div>`;
+  }
+  if(key==="comments"){
+    return c.comments.map(q=>`<div class="quote">${q}</div>`).join("");
+  }
+  if(key==="social"){
+    return `<div>${c.social}</div>`;
+  }
+  // objective / audience
+  return `<div>${c[key]}</div>`;
+}
+
+function renderBoard(){
+  const c = state.data;
+  const revealedCount = Object.keys(state.revealed).length;
+  const total = EVIDENCE_KEYS.length;
+
+  const cardsHtml = state.order.map((key,i)=>{
+    const revealed = !!state.revealed[key];
+    const rot = (i%2===0? -4-(i%3): 4+(i%3));
+    return `
+      <div class="note ${revealed? 'revealed':'locked'}" style="--rot:${rot}deg;" data-key="${key}" draggable="true">
+        <div class="pin"></div>
+        <div class="title">${EVIDENCE_LABELS[key]}</div>
+        <div class="redacted"></div>
+        <div class="redacted"></div>
+        <div class="redacted"></div>
+        <div class="redacted"></div>
+        <span class="stamp-classified">CLASSIFIED</span>
+        <div class="body-content">${evidenceBodyHtml(key,c)}</div>
+      </div>
+    `;
+  }).join("");
+
+  app.innerHTML = `
+    ${topbarHtml(2)}
+    <div class="screen">
+      <div class="board-layout">
+        <div class="hint-banner">Drag a folder onto the corkboard — or simply click it — to declassify the evidence inside.</div>
+        <div class="corkboard" id="corkboard">${cardsHtml}</div>
+        <div class="board-footer">
+          <div class="reveal-progress"><div class="reveal-progress-fill" id="revealFill" style="width:${(revealedCount/total)*100}%;"></div></div>
+          <div style="font-size:12px;color:var(--muted);">${revealedCount} / ${total} pieces of evidence declassified</div>
+          <button class="btn btn-primary" id="toSolve" ${revealedCount<total? "disabled":""}>Solve the Case &rarr;</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const board = document.getElementById("corkboard");
+
+  function revealCard(key, el){
+    if(state.revealed[key]) return;
+    state.revealed[key] = true;
+    el.classList.add("flipping");
+    el.classList.remove("locked");
+    setTimeout(()=>{ el.classList.add("revealed"); el.classList.remove("flipping"); animateBars(el); }, 260);
+    updateFooter();
+  }
+
+  function animateBars(el){
+    el.querySelectorAll(".bar-fill").forEach(bar=>{
+      const pct = bar.getAttribute("data-pct");
+      requestAnimationFrame(()=>{ bar.style.width = pct+"%"; });
+    });
+  }
+
+  function updateFooter(){
+    const count = Object.keys(state.revealed).length;
+    document.getElementById("revealFill").style.width = ((count/total)*100)+"%";
+    document.querySelector(".board-footer div[style]").textContent = `${count} / ${total} pieces of evidence declassified`;
+    document.getElementById("toSolve").disabled = count<total;
+  }
+
+  board.querySelectorAll(".note").forEach(note=>{
+    note.addEventListener("click", ()=> revealCard(note.getAttribute("data-key"), note));
+    note.addEventListener("dragstart", (e)=>{ e.dataTransfer.setData("text/plain", note.getAttribute("data-key")); });
+  });
+  board.addEventListener("dragover", (e)=>{ e.preventDefault(); board.classList.add("dragover"); });
+  board.addEventListener("dragleave", ()=> board.classList.remove("dragover"));
+  board.addEventListener("drop", (e)=>{
+    e.preventDefault();
+    board.classList.remove("dragover");
+    const key = e.dataTransfer.getData("text/plain");
+    const el = board.querySelector(`.note[data-key="${key}"]`);
+    if(el) revealCard(key, el);
+  });
+
+  document.getElementById("toSolve").onclick = ()=>{
+    prepareSolveOptions();
+    state.view = "solve";
+    render();
+  };
+}
+
+/* ---------------- SOLVE ---------------- */
+function prepareSolveOptions(){
+  const c = state.data;
+  state.mistakeOptions = shuffle([c.mistake, ...c.distractorMistakes]);
+  state.clueOptions = shuffle([...c.clues, ...c.distractorClues]);
+  state.selectedMistake = null;
+  state.selectedClues = new Set();
+}
+
+function renderSolve(){
+  const c = state.data;
+  const mistakeHtml = state.mistakeOptions.map((m,i)=>`
+    <div class="option ${state.selectedMistake===i? 'selected':''}" data-idx="${i}">
+      <div class="marker"></div><div>${m}</div>
+    </div>
+  `).join("");
+  const clueHtml = state.clueOptions.map((cl,i)=>`
+    <div class="option chk ${state.selectedClues.has(i)? 'selected':''}" data-idx="${i}">
+      <div class="marker"></div><div>${cl}</div>
+    </div>
+  `).join("");
+
+  app.innerHTML = `
+    ${topbarHtml(3)}
+    <div class="screen">
+      <div class="solve-wrap">
+        <div class="solve-card">
+          <h3>Step 1 &mdash; Identify the Primary Marketing Mistake</h3>
+          <div id="mistakeOptions">${mistakeHtml}</div>
+        </div>
+        <div class="solve-card">
+          <h3>Step 2 &mdash; Select the Three Supporting Clues</h3>
+          <div id="clueOptions">${clueHtml}</div>
+          <div class="clue-counter" id="clueCounter">${state.selectedClues.size} / 3 selected</div>
+        </div>
+        <div class="solve-submit">
+          <button class="btn btn-primary" id="submitBtn" disabled>Close the Case</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("mistakeOptions").querySelectorAll(".option").forEach(opt=>{
+    opt.onclick = ()=>{
+      state.selectedMistake = parseInt(opt.getAttribute("data-idx"),10);
+      renderSolve();
+    };
+  });
+  document.getElementById("clueOptions").querySelectorAll(".option").forEach(opt=>{
+    opt.onclick = ()=>{
+      const idx = parseInt(opt.getAttribute("data-idx"),10);
+      if(state.selectedClues.has(idx)) state.selectedClues.delete(idx);
+      else if(state.selectedClues.size<3) state.selectedClues.add(idx);
+      renderSolve();
+    };
+  });
+  const submitBtn = document.getElementById("submitBtn");
+  submitBtn.disabled = !(state.selectedMistake!==null && state.selectedClues.size===3);
+  submitBtn.onclick = ()=>{
+    computeScore();
+    state.view = "closed";
+    render();
+  };
+}
+
+function computeScore(){
+  const c = state.data;
+  let score = 20; // investigation completion bonus
+  if(state.mistakeOptions[state.selectedMistake]===c.mistake) score += 50;
+  let correctClueCount = 0;
+  state.selectedClues.forEach(i=>{
+    if(c.clues.includes(state.clueOptions[i])) correctClueCount++;
+  });
+  score += correctClueCount*10;
+  state.score = score;
+  state.correctClueCount = correctClueCount;
+  state.mistakeCorrect = state.mistakeOptions[state.selectedMistake]===c.mistake;
+}
+
+/* ---------------- CASE CLOSED ---------------- */
+function renderClosed(){
+  app.innerHTML = `
+    ${topbarHtml(4)}
+    <div class="screen closed-screen">
+      <div class="stamp-final">CASE CLOSED</div>
+      <div class="score-tag"><span class="num">${state.score}</span> / 100 Detective Score</div>
+    </div>
+  `;
+  // falling papers
+  for(let i=0;i<24;i++){
+    const p = document.createElement("div");
+    p.className = "paper-fall";
+    p.style.left = (Math.random()*100)+"vw";
+    p.style.animationDuration = (2.5+Math.random()*2.5)+"s";
+    p.style.animationDelay = (Math.random()*0.8)+"s";
+    p.style.background = Math.random()>0.5? "var(--paper)":"#d8cba4";
+    document.body.appendChild(p);
+    setTimeout(()=>{ p.remove(); }, 6000);
+  }
+  setTimeout(()=>{
+    const cont = document.createElement("div");
+    cont.style.cssText = "display:flex;justify-content:center;margin-top:6vh;position:relative;z-index:6;";
+    cont.innerHTML = `<button class="btn btn-primary" id="toReport">View Full Report &rarr;</button>`;
+    document.querySelector(".closed-screen").appendChild(cont);
+    document.getElementById("toReport").onclick = ()=>{ state.view="report"; render(); };
+  }, 1200);
+}
+
+/* ---------------- REPORT ---------------- */
+function renderReport(){
+  const c = state.data;
+  app.innerHTML = `
+    ${topbarHtml(5)}
+    <div class="screen">
+      <div class="report-wrap">
+        <div class="stat-row">
+          <div class="stat-box"><div class="n">${state.score}</div><div class="l">Detective Score</div></div>
+          <div class="stat-box"><div class="n">${state.mistakeCorrect? "YES":"NO"}</div><div class="l">Root Cause Found</div></div>
+          <div class="stat-box"><div class="n">${state.correctClueCount}/3</div><div class="l">Clues Confirmed</div></div>
+        </div>
+        <div class="report-card">
+          <h3>${c.company} &mdash; What Really Happened</h3>
+          <p><b>Primary Mistake:</b> ${c.mistake}</p>
+          <p>${c.explanation}</p>
+        </div>
+        <div class="report-card">
+          <h3>Suggested Improvements</h3>
+          <ul>${c.improvements.map(i=>`<li>${i}</li>`).join("")}</ul>
+        </div>
+        <div class="report-actions">
+          <button class="btn btn-primary" id="newCase">Investigate a New Case</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById("newCase").onclick = ()=>{
+    state.view = "title";
+    render();
+    // auto-jump straight into a new case for faster replay
+    setTimeout(()=>{ document.getElementById("startBtn").click(); }, 10);
+  };
+}
+
+/* ============================= INIT ============================= */
+render();
+
+})();
+</script>
+</body>
+</html>
