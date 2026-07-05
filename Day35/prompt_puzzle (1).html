@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🧩 Prompt Puzzle — Master AI Prompting Through Play</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{
+  --bg1:#0f0c29; --bg2:#302b63; --bg3:#24243e;
+  --accent:#ff7ac6; --accent2:#7afcff; --gold:#ffd76a;
+  --glass:rgba(255,255,255,0.06); --glassB:rgba(255,255,255,0.14);
+  --good:#5CE59A; --bad:#FF6767; --text:#f2f2fb; --muted:#b7b3d6;
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0; min-height:100vh; color:var(--text);
+  background:linear-gradient(135deg,var(--bg1),var(--bg2) 50%,var(--bg3));
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+#app{max-width:1100px;margin:0 auto;padding:24px 16px 80px;}
+h1,h2,h3{margin:0 0 8px;}
+.glass{
+  background:var(--glass); border:1px solid var(--glassB); border-radius:18px;
+  backdrop-filter:blur(14px); box-shadow:0 8px 32px rgba(0,0,0,0.35);
+}
+.title-bar{ text-align:center; padding:28px 20px; margin-bottom:24px; position:relative; overflow:hidden;}
+.title-bar::before{
+  content:""; position:absolute; inset:-50%; background:
+  radial-gradient(circle at 30% 30%, rgba(255,122,198,0.25), transparent 40%),
+  radial-gradient(circle at 70% 70%, rgba(122,252,255,0.2), transparent 40%);
+  animation:float 12s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translate(0,0) rotate(0deg);}50%{transform:translate(20px,-10px) rotate(8deg);}}
+.title-bar h1{font-size:2rem; position:relative; background:linear-gradient(90deg,var(--accent),var(--gold),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent; letter-spacing:0.5px;}
+.title-bar p{position:relative; color:var(--muted); margin:0;}
+.badge{display:inline-block; padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:600;
+  background:rgba(255,255,255,0.1); border:1px solid var(--glassB); margin:2px 4px;}
+.badge.domain{color:var(--accent2);} .badge.diff{color:var(--gold);}
+
+/* HUD */
+#hud{display:flex; flex-wrap:wrap; gap:10px; padding:14px 18px; margin-bottom:20px; justify-content:space-between; align-items:center;}
+.hud-stats{display:flex; flex-wrap:wrap; gap:14px;}
+.stat{text-align:center; min-width:64px;}
+.stat .val{font-size:1.2rem; font-weight:700; color:var(--gold); transition:transform .25s;}
+.stat .lab{font-size:0.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;}
+.stat.pulse .val{animation:pulse .4s ease;}
+@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.35); color:#fff;}100%{transform:scale(1);}}
+
+.progress-wrap{flex:1; min-width:180px; margin:0 12px;}
+.progress-bar{height:10px; border-radius:6px; background:rgba(255,255,255,0.08); overflow:hidden;}
+.progress-fill{height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); width:0%; transition:width .5s ease;}
+
+/* Menu / scenario cards */
+#scenario-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin-bottom:20px;}
+.scenario-card{padding:18px; cursor:pointer; transition:transform .25s, box-shadow .25s; position:relative;}
+.scenario-card:hover{transform:translateY(-6px) scale(1.02); box-shadow:0 14px 40px rgba(255,122,198,0.25);}
+.scenario-card.done{opacity:0.55;}
+.scenario-card.done::after{content:"✓ Completed"; position:absolute; top:10px; right:12px; color:var(--good); font-weight:700; font-size:0.75rem;}
+.scenario-card h3{font-size:1rem; color:var(--accent2);}
+.scenario-card .ctype{font-size:0.7rem; color:var(--gold); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; display:block;}
+.scenario-card p{font-size:0.85rem; color:var(--muted); margin:6px 0 0;}
+
+/* Challenge area */
+.panel{padding:22px; margin-bottom:20px;}
+.desired-output{background:rgba(122,252,255,0.08); border-left:3px solid var(--accent2); padding:12px 16px; border-radius:8px; margin-bottom:16px; font-size:0.92rem;}
+.hint-btn, .primary-btn, .secondary-btn{
+  border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;
+  transition:transform .15s, box-shadow .15s; font-size:0.85rem;
+}
+.primary-btn{background:linear-gradient(90deg,var(--accent),var(--gold)); color:#1a1526;}
+.secondary-btn{background:rgba(255,255,255,0.1); color:var(--text); border:1px solid var(--glassB);}
+.hint-btn{background:rgba(255,215,106,0.15); color:var(--gold); border:1px solid rgba(255,215,106,0.4);}
+.primary-btn:hover,.secondary-btn:hover,.hint-btn:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,0.3);}
+.primary-btn:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
+
+/* Blocks / DnD */
+.blocks-pool, .prompt-slots{
+  display:flex; flex-wrap:wrap; gap:10px; min-height:64px; padding:12px;
+  border-radius:12px; background:rgba(255,255,255,0.04); border:1.5px dashed var(--glassB);
+}
+.block{
+  padding:10px 14px; border-radius:10px; background:linear-gradient(135deg,#3a3564,#4a3f7a);
+  border:1px solid var(--glassB); cursor:grab; font-size:0.85rem; user-select:none;
+  transition:transform .15s, box-shadow .15s, opacity .15s;
+}
+.block:active{cursor:grabbing;}
+.block:hover{transform:translateY(-3px); box-shadow:0 6px 16px rgba(122,252,255,0.25);}
+.block.dragging{opacity:0.4;}
+.block.correct-flash{animation:goodFlash .5s;}
+.block.wrong-flash{animation:badFlash .5s;}
+@keyframes goodFlash{0%{box-shadow:0 0 0 0 rgba(92,229,154,0.7);}100%{box-shadow:0 0 0 12px rgba(92,229,154,0);}}
+@keyframes badFlash{0%{box-shadow:0 0 0 0 rgba(255,103,103,0.7);}100%{box-shadow:0 0 0 12px rgba(255,103,103,0);}}
+.slot-label, .pool-label{font-size:0.7rem; text-transform:uppercase; letter-spacing:0.6px; color:var(--muted); margin:14px 0 6px;}
+.prompt-slots.dragover{border-color:var(--accent2); background:rgba(122,252,255,0.06);}
+
+/* choose best */
+.choice-card{padding:16px; margin-bottom:12px; cursor:pointer; border:1.5px solid var(--glassB); border-radius:14px; transition:.2s;}
+.choice-card:hover{border-color:var(--accent2); transform:translateX(4px);}
+.choice-card.selected-good{border-color:var(--good); background:rgba(92,229,154,0.1);}
+.choice-card.selected-bad{border-color:var(--bad); background:rgba(255,103,103,0.1);}
+.choice-label{font-size:0.7rem; color:var(--gold); text-transform:uppercase; font-weight:700; margin-bottom:4px; display:block;}
+
+/* output compare */
+.output-compare{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;}
+@media(max-width:640px){.output-compare{grid-template-columns:1fr;}}
+.output-box{padding:12px 14px; border-radius:10px; font-size:0.82rem;}
+.output-box.weak{background:rgba(255,103,103,0.08); border-left:3px solid var(--bad);}
+.output-box.optimized{background:rgba(92,229,154,0.08); border-left:3px solid var(--good);}
+
+.principle-box{margin-top:14px; padding:12px 16px; background:rgba(255,215,106,0.08); border-left:3px solid var(--gold); border-radius:8px; font-size:0.85rem;}
+
+/* Toast */
+#toast-wrap{position:fixed; top:20px; right:20px; z-index:999; display:flex; flex-direction:column; gap:10px;}
+.toast{padding:12px 18px; border-radius:12px; font-size:0.85rem; font-weight:600; min-width:200px;
+  animation:slideIn .35s ease, fadeOut .4s ease 2.6s forwards; box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+.toast.good{background:linear-gradient(135deg,#1e5e46,#2e8b63); color:#eafff3;}
+.toast.bad{background:linear-gradient(135deg,#6e2323,#a63838); color:#ffecec;}
+.toast.info{background:linear-gradient(135deg,#2a2a5c,#3f3f88); color:#eef;}
+@keyframes slideIn{from{transform:translateX(120%); opacity:0;} to{transform:translateX(0); opacity:1;}}
+@keyframes fadeOut{to{opacity:0; transform:translateX(30px);}}
+
+/* Report */
+#report{display:none;}
+.score-hero{text-align:center; padding:36px 20px;}
+.score-hero .big-score{font-size:3.4rem; font-weight:800; background:linear-gradient(90deg,var(--gold),var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.rank-tag{display:inline-block; margin-top:8px; padding:6px 18px; border-radius:20px; font-weight:700; background:rgba(255,255,255,0.1); border:1px solid var(--glassB);}
+.dna-wrap{display:flex; flex-direction:column; gap:10px; margin-top:20px;}
+.dna-row{display:flex; align-items:center; gap:10px;}
+.dna-row .lab{width:140px; font-size:0.8rem; color:var(--muted);}
+.dna-bar{flex:1; height:12px; border-radius:8px; background:rgba(255,255,255,0.08); overflow:hidden;}
+.dna-fill{height:100%; border-radius:8px; background:linear-gradient(90deg,var(--accent2),var(--accent)); width:0%; transition:width 1s ease;}
+.dna-row .num{width:36px; text-align:right; font-size:0.8rem; color:var(--gold); font-weight:700;}
+.feedback-box{margin-top:20px; padding:16px 18px;}
+.final-prompt-box{margin-top:16px; padding:16px 18px; background:rgba(122,252,255,0.06); border-left:3px solid var(--accent2); font-size:0.85rem; white-space:pre-wrap;}
+
+/* Confetti */
+.confetti{position:fixed; top:-10px; width:8px; height:14px; opacity:0.9; z-index:998; animation:fall linear forwards;}
+@keyframes fall{to{transform:translateY(105vh) rotate(400deg); opacity:0.2;}}
+
+footer-note{display:none;}
+.hidden{display:none !important;}
+.small-muted{font-size:0.75rem; color:var(--muted);}
+</style>
+</head>
+<body>
+<div id="toast-wrap"></div>
+<div id="app">
+
+  <div class="glass title-bar">
+    <h1>🧩 Prompt Puzzle</h1>
+    <p>Master AI Prompting Through Play</p>
+    <div style="margin-top:10px;">
+      <span class="badge domain">✍️ Creative Writing & Storytelling</span>
+      <span class="badge diff">🌱 Beginner</span>
+    </div>
+  </div>
+
+  <div class="glass" id="hud">
+    <div class="hud-stats">
+      <div class="stat" id="stat-accuracy"><div class="val">0%</div><div class="lab">Accuracy</div></div>
+      <div class="stat" id="stat-time"><div class="val">0s</div><div class="lab">Time</div></div>
+      <div class="stat" id="stat-moves"><div class="val">0</div><div class="lab">Moves</div></div>
+      <div class="stat" id="stat-wrong"><div class="val">0</div><div class="lab">Wrong</div></div>
+      <div class="stat" id="stat-hints"><div class="val">0</div><div class="lab">Hints</div></div>
+      <div class="stat" id="stat-score"><div class="val">0</div><div class="lab">Score</div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="small-muted" id="progress-label" style="text-align:center;margin-top:4px;">0 / 0 scenarios</div>
+    </div>
+  </div>
+
+  <div id="menu-view">
+    <h2 style="color:var(--accent2);">Choose a Scenario</h2>
+    <p class="small-muted">Complete all scenarios to generate your Prompt Performance Report.</p>
+    <div id="scenario-grid"></div>
+    <div style="text-align:center; margin-top:10px;">
+      <button class="primary-btn" id="btn-finish" disabled>📊 Generate Performance Report</button>
+    </div>
+  </div>
+
+  <div id="challenge-view" class="hidden"></div>
+
+  <div id="report" class="glass score-hero">
+    <h2 style="color:var(--gold);">🏆 Prompt Performance Report</h2>
+    <div class="big-score" id="final-score">0</div>
+    <div class="small-muted">Prompt Score</div>
+    <div class="rank-tag" id="final-rank">Novice</div>
+    <div id="final-rating" class="small-muted" style="margin-top:6px;"></div>
+
+    <div class="dna-wrap" id="dna-wrap"></div>
+
+    <div class="glass feedback-box" style="text-align:left;">
+      <h3 style="color:var(--accent2);">💬 Personalized Feedback</h3>
+      <p id="feedback-text"></p>
+      <p><strong>🎯 Next Milestone:</strong> <span id="next-milestone"></span></p>
+    </div>
+
+    <div class="final-prompt-box" style="text-align:left;">
+      <strong style="color:var(--gold);">✨ Your Final Optimized Prompt Example</strong>
+      <div id="final-prompt-text" style="margin-top:8px;"></div>
+    </div>
+
+    <div style="margin-top:24px;">
+      <button class="primary-btn" id="btn-replay">🔁 Replay With New Scenarios</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============ SCENARIO DATA (Creative Writing & Storytelling - Beginner) ============ */
+const SCENARIO_BANK = [
+{
+  id:"s1",
+  title:"Fantasy Character Intro",
+  desiredOutput:"A vivid, sensory introduction of a young elf archer entering a forbidden forest, written in third person, with a tone of quiet wonder and mild dread — about 150 words.",
+  correctBlocks:[
+    "Write a 150-word third-person passage",
+    "about a young elf archer entering a forbidden forest",
+    "using vivid sensory details (sound, light, smell)",
+    "with a tone of quiet wonder mixed with mild dread"
+  ],
+  distractorBlocks:[
+    "Make it a rhyming poem",
+    "Include a full character backstory going back 3 generations",
+    "Write in first person as a dragon instead"
+  ],
+  weakPrompt:"Write about an elf in a forest.",
+  optimizedPrompt:"Write a 150-word third-person passage about a young elf archer entering a forbidden forest, using vivid sensory details (sound, light, smell), with a tone of quiet wonder mixed with mild dread.",
+  overEngineeredPrompt:"Write a 150-word third-person passage about a young elf archer entering a forbidden forest, using vivid sensory details, with a tone of quiet wonder mixed with mild dread, and also include a full 3-generation backstory, a map description, a magic system explanation, a rhyme scheme, and a plot twist involving time travel.",
+  weakOutput:"The elf walked into the forest. It was dark and scary. She had a bow. She felt nervous.",
+  optimizedOutput:"Mira stepped past the mossy threshold, and the forest exhaled — a cold breath of pine and old rain. Her bowstring hummed faintly against her palm, as if the wood itself remembered every arrow she'd loosed. Shafts of grey light fell like blades between the trees, illuminating dust that drifted the way snow does in dreams. Somewhere ahead, a branch cracked. She didn't flinch, but her pulse rose — half thrill, half warning. The forbidden forest wasn't silent, she realized; it was listening back.",
+  principle:"Specificity in tone, length, and sensory detail transforms a generic description into an immersive scene. Vague prompts produce vague, flat prose.",
+  challengeType:"build"
+},
+{
+  id:"s2",
+  title:"Short Mystery Opening",
+  desiredOutput:"A suspenseful opening paragraph (under 100 words) for a detective short story, set in 1920s London, revealing a mysterious letter without explaining its contents yet.",
+  correctBlocks:[
+    "Write an opening paragraph under 100 words",
+    "for a detective short story set in 1920s London",
+    "that introduces a mysterious sealed letter",
+    "without revealing its contents"
+  ],
+  distractorBlocks:[
+    "Reveal the entire plot twist immediately",
+    "Set it in modern-day Tokyo instead",
+    "Make it a comedic tone"
+  ],
+  weakPrompt:"Write a mystery story opening.",
+  optimizedPrompt:"Write an opening paragraph under 100 words for a detective short story set in 1920s London, that introduces a mysterious sealed letter without revealing its contents.",
+  overEngineeredPrompt:"Write an opening paragraph under 100 words for a detective story set in 1920s London that introduces a mysterious sealed letter without revealing contents, and also include the detective's full biography, three red herrings, a map of London, dialogue in period-accurate slang footnoted with translations, and a cliffhanger ending mid-sentence.",
+  weakOutput:"There was a letter. It was mysterious. The detective looked at it and wondered what was inside.",
+  optimizedOutput:"Fog pressed against the windows of 14 Marlowe Street the night the letter arrived, sealed in wax the color of dried blood. Inspector Hale turned it over twice before setting it down, untouched. He had learned, over eleven years on the force, that some letters were best left unopened until you were certain you were ready for what they'd cost you to read.",
+  principle:"Constraints like word count and 'without revealing X' create narrative tension and force economical, purposeful writing.",
+  challengeType:"clean"
+},
+{
+  id:"s3",
+  title:"Children's Bedtime Story",
+  desiredOutput:"A gentle, whimsical bedtime story (short, calming) about a sleepy cloud looking for a place to rest, suitable for a 5-year-old, ending on a comforting note.",
+  correctBlocks:[
+    "Write a short, calming bedtime story",
+    "about a sleepy cloud looking for a place to rest",
+    "using simple, whimsical language suitable for a 5-year-old",
+    "ending on a comforting, sleep-inducing note"
+  ],
+  distractorBlocks:[
+    "Include scary monster imagery",
+    "Use complex vocabulary for adults",
+    "Make it end on a cliffhanger"
+  ],
+  weakPrompt:"Write a kids story about a cloud.",
+  optimizedPrompt:"Write a short, calming bedtime story about a sleepy cloud looking for a place to rest, using simple whimsical language suitable for a 5-year-old, ending on a comforting, sleep-inducing note.",
+  overEngineeredPrompt:"Write a short calming bedtime story about a sleepy cloud looking for a place to rest, using simple whimsical language for a 5-year-old, ending comfortingly, but also include a subplot about cloud politics, a villain thunderstorm with a tragic backstory, footnotes about meteorology, and a moral lesson delivered as a formal essay at the end.",
+  weakOutput:"A cloud was tired. It flew around. Then it found a place. The end.",
+  optimizedOutput:"Little Puff drifted through the evening sky, yawning a soft, cottony yawn. She floated past the tall mountains, too rocky. She floated past the busy city, too loud. At last, she found a quiet valley where the stars blinked hello. Puff sighed happily, curled into a fluffy pillow shape, and drifted off to sleep, dreaming gentle dreams until morning.",
+  principle:"Matching tone and vocabulary to the intended audience is essential — an adult-complexity prompt for a children's story derails the whole purpose.",
+  challengeType:"choose"
+},
+{
+  id:"s4",
+  title:"Sci-Fi Dialogue Scene",
+  desiredOutput:"A tense dialogue-only scene (no narration) between two astronauts disagreeing about whether to abort a mission, roughly 120 words, natural speech patterns.",
+  correctBlocks:[
+    "Write a dialogue-only scene, no narration",
+    "between two astronauts disagreeing about aborting a mission",
+    "around 120 words",
+    "with natural, tense speech patterns"
+  ],
+  distractorBlocks:[
+    "Include detailed narration of the spaceship interior",
+    "Make them agree immediately with no conflict",
+    "Write it as a formal business memo"
+  ],
+  weakPrompt:"Write astronauts talking about a problem.",
+  optimizedPrompt:"Write a dialogue-only scene (no narration) between two astronauts disagreeing about whether to abort a mission, around 120 words, with natural, tense speech patterns.",
+  overEngineeredPrompt:"Write a dialogue-only scene between two astronauts disagreeing about aborting a mission, around 120 words, tense and natural, but also include stage directions in screenplay format, a third character who translates for the reader, technical schematics of the ship, and a musical score description.",
+  weakOutput:"Astronaut 1: We should stop. Astronaut 2: No we should not stop. Astronaut 1: Ok.",
+  optimizedOutput:"\"We abort now, or we don't come back.\" \n\"We abort now, and the mission's dead anyway.\" \n\"Better dead mission than dead crew, Sarah.\" \n\"Don't. Don't do the noble captain thing right now.\" \n\"I'm not being noble. I'm being honest.\" \n\"Twenty more minutes. That's all I'm asking.\" \n\"You don't have twenty minutes. None of us do.\"",
+  principle:"Specifying format ('dialogue-only, no narration') is a structural constraint that directly shapes output style — omitting it invites unwanted narration or exposition.",
+  challengeType:"build"
+},
+{
+  id:"s5",
+  title:"Poetic Nature Description",
+  desiredOutput:"A short free-verse poem (6-8 lines) about autumn leaves falling, using metaphor, avoiding cliché phrases like 'crisp air'.",
+  correctBlocks:[
+    "Write a free-verse poem, 6-8 lines",
+    "about autumn leaves falling",
+    "using original metaphor",
+    "avoiding cliché phrases like 'crisp air'"
+  ],
+  distractorBlocks:[
+    "Make it rhyme in strict AABB pattern",
+    "Use as many clichés as possible",
+    "Write 50 lines minimum"
+  ],
+  weakPrompt:"Write a poem about autumn.",
+  optimizedPrompt:"Write a free-verse poem, 6-8 lines, about autumn leaves falling, using original metaphor, avoiding cliché phrases like 'crisp air'.",
+  overEngineeredPrompt:"Write a free-verse poem about autumn leaves falling, 6-8 lines, using original metaphor and avoiding clichés, but also incorporate iambic pentameter, three languages, a hidden acrostic spelling a secret word, and a footnote analyzing your own metaphors.",
+  weakOutput:"Autumn leaves fall down. The crisp air is here. Leaves are orange and red. Fall is nice.",
+  optimizedOutput:"The maple lets go\nlike a hand finally tired\nof holding a promise.\nEach leaf spins down,\na small orange verdict,\nsettling into the grass\nwithout apology.",
+  principle:"Explicitly banning clichés forces more original, evocative language — a simple negative constraint can dramatically raise creative quality.",
+  challengeType:"clean"
+},
+{
+  id:"s6",
+  title:"Villain Monologue",
+  desiredOutput:"A short, chilling monologue (under 100 words) from a calm, articulate villain explaining their reasoning, without shouting or cartoonish menace.",
+  correctBlocks:[
+    "Write a monologue under 100 words",
+    "from a calm, articulate villain",
+    "explaining their reasoning for their actions",
+    "avoiding shouting or cartoonish menace"
+  ],
+  distractorBlocks:[
+    "Make the villain shout and laugh maniacally",
+    "Include a redemption arc in the same monologue",
+    "Write it as a children's nursery rhyme"
+  ],
+  weakPrompt:"Write a villain speech.",
+  optimizedPrompt:"Write a monologue under 100 words from a calm, articulate villain explaining their reasoning for their actions, avoiding shouting or cartoonish menace.",
+  overEngineeredPrompt:"Write a monologue under 100 words from a calm villain explaining their reasoning without shouting, but also include a full philosophical treatise citing five academic sources, a musical cue sheet, and a Q&A session with the audience afterward.",
+  weakOutput:"MUAHAHA! I WILL DESTROY EVERYTHING! YOU CANNOT STOP ME! I AM EVIL AND POWERFUL!",
+  optimizedOutput:"You call it destruction. I call it correction. The world rewards patience, not virtue — I simply stopped waiting for permission. Every empire you admire was built by someone willing to do what you're too comfortable to consider. I don't hate you. I just stopped needing you to understand.",
+  principle:"Explicitly forbidding a common trope ('no shouting') pushes the model toward subtler, more sophisticated characterization.",
+  challengeType:"choose"
+}
+];
+
+/* ============ STATE ============ */
+let state = {
+  scenarios: [],
+  currentIndex: -1,
+  completed: {},
+  stats: { correctMoves:0, totalMoves:0, wrongPlacements:0, hintsUsed:0, startTime:null, perScenarioScore:{} },
+  totalScore:0
+};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function initGame(){
+  state.scenarios = shuffle(SCENARIO_BANK).slice(0, 6);
+  state.completed = {};
+  state.stats = { correctMoves:0, totalMoves:0, wrongPlacements:0, hintsUsed:0, startTime:Date.now(), perScenarioScore:{} };
+  state.totalScore = 0;
+  renderMenu();
+  updateHUD();
+  document.getElementById("report").style.display="none";
+  document.getElementById("menu-view").classList.remove("hidden");
+  document.getElementById("challenge-view").classList.add("hidden");
+}
+
+/* ============ TOAST ============ */
+function toast(msg, type){
+  type = type || "info";
+  const wrap = document.getElementById("toast-wrap");
+  const t = document.createElement("div");
+  t.className = "toast " + type;
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(()=>t.remove(), 3000);
+}
+
+/* ============ HUD ============ */
+function pulseStat(id){
+  const el = document.getElementById(id);
+  el.classList.remove("pulse");
+  void el.offsetWidth;
+  el.classList.add("pulse");
+}
+
+function elapsedSeconds(){
+  if(!state.stats.startTime) return 0;
+  return Math.floor((Date.now()-state.stats.startTime)/1000);
+}
+
+function computeAccuracy(){
+  const tm = state.stats.totalMoves;
+  if(tm===0) return 100;
+  return Math.max(0, Math.round((state.stats.correctMoves/tm)*100));
+}
+
+function updateHUD(){
+  document.querySelector("#stat-accuracy .val").textContent = computeAccuracy()+"%";
+  document.querySelector("#stat-time .val").textContent = elapsedSeconds()+"s";
+  document.querySelector("#stat-moves .val").textContent = state.stats.totalMoves;
+  document.querySelector("#stat-wrong .val").textContent = state.stats.wrongPlacements;
+  document.querySelector("#stat-hints .val").textContent = state.stats.hintsUsed;
+  document.querySelector("#stat-score .val").textContent = state.totalScore;
+
+  const doneCount = Object.keys(state.completed).length;
+  const total = state.scenarios.length;
+  document.getElementById("progress-fill").style.width = (total? (doneCount/total*100):0)+"%";
+  document.getElementById("progress-label").textContent = doneCount+" / "+total+" scenarios";
+  document.getElementById("btn-finish").disabled = doneCount < total;
+}
+setInterval(()=>{ if(document.getElementById("challenge-view").classList.contains("hidden") === false || true){ updateHUD(); } }, 1000);
+
+/* ============ MENU ============ */
+const TYPE_LABELS = { build:"🧱 Build the Prompt", clean:"🧹 Clean the Prompt", choose:"🎯 Choose the Best Prompt" };
+
+function renderMenu(){
+  const grid = document.getElementById("scenario-grid");
+  grid.innerHTML = "";
+  state.scenarios.forEach((sc, idx)=>{
+    const card = document.createElement("div");
+    card.className = "glass scenario-card" + (state.completed[sc.id] ? " done":"");
+    card.innerHTML = `<span class="ctype">${TYPE_LABELS[sc.challengeType]}</span>
+      <h3>${sc.title}</h3>
+      <p>${sc.desiredOutput.slice(0,70)}...</p>`;
+    card.addEventListener("click", ()=> openScenario(idx));
+    grid.appendChild(card);
+  });
+}
+
+/* ============ SCENARIO ROUTING ============ */
+function openScenario(idx){
+  state.currentIndex = idx;
+  document.getElementById("menu-view").classList.add("hidden");
+  const view = document.getElementById("challenge-view");
+  view.classList.remove("hidden");
+  const sc = state.scenarios[idx];
+  if(sc.challengeType === "build") renderBuild(sc);
+  else if(sc.challengeType === "clean") renderClean(sc);
+  else renderChoose(sc);
+}
+
+function backToMenu(){
+  document.getElementById("challenge-view").classList.add("hidden");
+  document.getElementById("menu-view").classList.remove("hidden");
+  renderMenu();
+  updateHUD();
+}
+
+function scenarioHeader(sc){
+  return `
+  <div class="glass panel">
+    <span class="badge diff">${TYPE_LABELS[sc.challengeType]}</span>
+    <h2 style="margin-top:10px;">${sc.title}</h2>
+    <div class="desired-output"><strong>🎬 Desired Output:</strong> ${sc.desiredOutput}</div>
+  </div>`;
+}
+
+function scoreScenario(sc, opts){
+  // opts: {accuracyLocal (0-100), hints, wrong, overEngBonus}
+  let base = Math.round(opts.accuracyLocal * 0.7);
+  let hintPenalty = opts.hints * 8;
+  let wrongPenalty = opts.wrong * 5;
+  let bonus = opts.overEngBonus || 0;
+  let score = Math.max(0, base - hintPenalty - wrongPenalty + bonus + 30);
+  score = Math.min(100, score);
+  state.stats.perScenarioScore[sc.id] = score;
+  state.totalScore = Object.values(state.stats.perScenarioScore).reduce((a,b)=>a+b,0);
+  return score;
+}
+
+function finishScenario(sc, opts){
+  state.completed[sc.id] = true;
+  const score = scoreScenario(sc, opts);
+  pulseStat("stat-score");
+  toast("✅ Scenario complete! +"+score+" pts", "good");
+  updateHUD();
+}
+
+/* ============ CHALLENGE 1: BUILD THE PROMPT ============ */
+function renderBuild(sc){
+  const view = document.getElementById("challenge-view");
+  const allBlocks = shuffle(sc.correctBlocks.concat(sc.distractorBlocks));
+  let localWrong = 0, localHints = 0, placed = [];
+
+  view.innerHTML = scenarioHeader(sc) + `
+    <div class="glass panel">
+      <div class="pool-label">🧩 Available Blocks (drag the correct ones into order below)</div>
+      <div class="blocks-pool" id="pool"></div>
+      <div class="slot-label">🎯 Your Prompt (drop blocks here in the right order)</div>
+      <div class="prompt-slots" id="slots"></div>
+      <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="hint-btn" id="btn-hint">💡 Use Hint</button>
+        <button class="primary-btn" id="btn-check">✅ Check Prompt</button>
+        <button class="secondary-btn" id="btn-back">← Back to Menu</button>
+      </div>
+      <div id="result-area"></div>
+    </div>`;
+
+  const pool = document.getElementById("slots") ? document.getElementById("pool") : null;
+  const slots = document.getElementById("slots");
+
+  function makeBlockEl(text, isCorrect){
+    const el = document.createElement("div");
+    el.className = "block";
+    el.textContent = text;
+    el.draggable = true;
+    el.dataset.text = text;
+    el.dataset.correct = isCorrect ? "1":"0";
+    el.addEventListener("dragstart", e=>{
+      e.dataTransfer.setData("text/plain", text);
+      el.classList.add("dragging");
+    });
+    el.addEventListener("dragend", ()=> el.classList.remove("dragging"));
+    return el;
+  }
+
+  allBlocks.forEach(b=>{
+    const isCorrect = sc.correctBlocks.includes(b);
+    document.getElementById("pool").appendChild(makeBlockEl(b, isCorrect));
+  });
+
+  [document.getElementById("pool"), slots].forEach(zone=>{
+    zone.addEventListener("dragover", e=>{ e.preventDefault(); zone.classList.add("dragover"); });
+    zone.addEventListener("dragleave", ()=> zone.classList.remove("dragover"));
+    zone.addEventListener("drop", e=>{
+      e.preventDefault();
+      zone.classList.remove("dragover");
+      const text = e.dataTransfer.getData("text/plain");
+      const dragging = document.querySelector(".block.dragging");
+      if(!dragging) return;
+      zone.appendChild(dragging);
+      state.stats.totalMoves++;
+      if(zone === slots){
+        const isCorrect = dragging.dataset.correct === "1";
+        if(isCorrect){
+          state.stats.correctMoves++;
+          dragging.classList.add("correct-flash");
+          placed.push(text);
+        } else {
+          state.stats.wrongPlacements++;
+          localWrong++;
+          dragging.classList.add("wrong-flash");
+          toast("❌ That's a distractor block — reconsider!", "bad");
+        }
+        setTimeout(()=>dragging.classList.remove("correct-flash","wrong-flash"), 500);
+      } else {
+        // moved back to pool
+        placed = placed.filter(p=>p!==text);
+      }
+      updateHUD();
+    });
+  });
+
+  document.getElementById("btn-hint").addEventListener("click", ()=>{
+    localHints++;
+    state.stats.hintsUsed++;
+    const missing = sc.correctBlocks.find(b=>!placed.includes(b));
+    toast(missing ? "💡 Try including: \""+missing+"\"" : "💡 You have all correct blocks — check order!", "info");
+    updateHUD();
+  });
+
+  document.getElementById("btn-check").addEventListener("click", ()=>{
+    const slotEls = Array.from(slots.children).map(c=>c.dataset.text);
+    const correctCount = slotEls.filter(t=>sc.correctBlocks.includes(t)).length;
+    const hasDistractor = slotEls.some(t=>!sc.correctBlocks.includes(t));
+    const orderOK = JSON.stringify(slotEls.filter(t=>sc.correctBlocks.includes(t))) === JSON.stringify(sc.correctBlocks.filter(t=>slotEls.includes(t)));
+    const accuracyLocal = Math.round((correctCount/sc.correctBlocks.length)*100) - (hasDistractor?15:0);
+    const resultArea = document.getElementById("result-area");
+    if(correctCount===sc.correctBlocks.length && !hasDistractor){
+      resultArea.innerHTML = renderComparisonBlock(sc, orderOK);
+      attachContinueHandler();
+      finishScenario(sc, {accuracyLocal: Math.max(0,accuracyLocal), hints: localHints, wrong: localWrong, overEngBonus: orderOK?10:0});
+      document.getElementById("btn-check").disabled = true;
+    } else {
+      toast("Not quite — keep arranging the blocks!", "bad");
+    }
+  });
+
+  document.getElementById("btn-back").addEventListener("click", backToMenu);
+}
+
+/* ============ CHALLENGE 2: CLEAN THE PROMPT ============ */
+function renderClean(sc){
+  const view = document.getElementById("challenge-view");
+  // Build "messy" prompt = correct blocks + distractors, all as removable chips
+  const messyBlocks = shuffle(sc.correctBlocks.concat(sc.distractorBlocks));
+  let localWrong=0, localHints=0;
+  let removed = new Set();
+
+  view.innerHTML = scenarioHeader(sc) + `
+    <div class="glass panel">
+      <div class="pool-label">🧹 Messy Prompt — click the parts that DON'T belong to remove them</div>
+      <div class="blocks-pool" id="messy"></div>
+      <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="hint-btn" id="btn-hint">💡 Use Hint</button>
+        <button class="primary-btn" id="btn-check">✅ Confirm Clean Prompt</button>
+        <button class="secondary-btn" id="btn-back">← Back to Menu</button>
+      </div>
+      <div id="result-area"></div>
+    </div>`;
+
+  const messy = document.getElementById("messy");
+  messyBlocks.forEach(b=>{
+    const el = document.createElement("div");
+    el.className = "block";
+    el.textContent = b;
+    el.dataset.text = b;
+    el.dataset.distractor = sc.distractorBlocks.includes(b) ? "1":"0";
+    el.addEventListener("click", ()=>{
+      if(el.classList.contains("wrong-flash-removed")) return;
+      state.stats.totalMoves++;
+      if(el.dataset.distractor === "1"){
+        state.stats.correctMoves++;
+        el.style.textDecoration="line-through";
+        el.style.opacity="0.35";
+        el.classList.add("correct-flash");
+        removed.add(b);
+        toast("🗑️ Removed a distractor — nice catch!", "good");
+      } else {
+        state.stats.wrongPlacements++;
+        localWrong++;
+        el.classList.add("wrong-flash");
+        toast("⚠️ That block was actually needed!", "bad");
+        setTimeout(()=>el.classList.remove("wrong-flash"),500);
+      }
+      updateHUD();
+    });
+    messy.appendChild(el);
+  });
+
+  document.getElementById("btn-hint").addEventListener("click", ()=>{
+    localHints++;
+    state.stats.hintsUsed++;
+    const stillThere = sc.distractorBlocks.find(b=>!removed.has(b));
+    toast(stillThere ? "💡 This doesn't belong: \""+stillThere+"\"" : "💡 All distractors removed!", "info");
+    updateHUD();
+  });
+
+  document.getElementById("btn-check").addEventListener("click", ()=>{
+    const allRemoved = sc.distractorBlocks.every(b=>removed.has(b));
+    const resultArea = document.getElementById("result-area");
+    if(allRemoved){
+      const accuracyLocal = 100 - (localWrong*10);
+      resultArea.innerHTML = renderComparisonBlock(sc, true);
+      attachContinueHandler();
+      finishScenario(sc, {accuracyLocal: Math.max(0,accuracyLocal), hints: localHints, wrong: localWrong, overEngBonus: 10});
+      document.getElementById("btn-check").disabled = true;
+    } else {
+      toast("There are still distractors hiding in the prompt!", "bad");
+    }
+  });
+
+  document.getElementById("btn-back").addEventListener("click", backToMenu);
+}
+
+/* ============ CHALLENGE 3: CHOOSE THE BEST PROMPT ============ */
+function renderChoose(sc){
+  const view = document.getElementById("challenge-view");
+  const options = shuffle([
+    {label:"Weak", text: sc.weakPrompt, good:false},
+    {label:"Optimized", text: sc.optimizedPrompt, good:true},
+    {label:"Over-Engineered", text: sc.overEngineeredPrompt, good:false}
+  ]);
+  let localHints=0, chosen=false;
+
+  view.innerHTML = scenarioHeader(sc) + `
+    <div class="glass panel">
+      <div class="pool-label">🎯 Which prompt best achieves the desired output?</div>
+      <div id="choices"></div>
+      <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="hint-btn" id="btn-hint">💡 Use Hint</button>
+        <button class="secondary-btn" id="btn-back">← Back to Menu</button>
+      </div>
+      <div id="result-area"></div>
+    </div>`;
+
+  const choicesEl = document.getElementById("choices");
+  options.forEach(opt=>{
+    const card = document.createElement("div");
+    card.className = "glass choice-card";
+    card.innerHTML = `<span class="choice-label">${opt.label} Prompt</span>${opt.text}`;
+    card.addEventListener("click", ()=>{
+      if(chosen) return;
+      chosen = true;
+      state.stats.totalMoves++;
+      const cards = choicesEl.querySelectorAll(".choice-card");
+      cards.forEach(c=>c.style.pointerEvents="none");
+      if(opt.good){
+        state.stats.correctMoves++;
+        card.classList.add("selected-good");
+        toast("✅ Correct — that's the optimized prompt!", "good");
+        const resultArea = document.getElementById("result-area");
+        resultArea.innerHTML = renderComparisonBlock(sc, true);
+      attachContinueHandler();
+        finishScenario(sc, {accuracyLocal: 100 - localHints*10, hints: localHints, wrong: 0, overEngBonus: 15});
+      } else {
+        state.stats.wrongPlacements++;
+        card.classList.add("selected-bad");
+        toast("❌ Not quite — that prompt has issues.", "bad");
+        // reveal correct
+        setTimeout(()=>{
+          const goodCard = Array.from(cards).find(c=>c.textContent.includes(sc.optimizedPrompt));
+          if(goodCard) goodCard.classList.add("selected-good");
+          const resultArea = document.getElementById("result-area");
+          resultArea.innerHTML = renderComparisonBlock(sc, true);
+      attachContinueHandler();
+          finishScenario(sc, {accuracyLocal: 40, hints: localHints, wrong: 1, overEngBonus: 0});
+        }, 700);
+      }
+      updateHUD();
+    });
+    choicesEl.appendChild(card);
+  });
+
+  document.getElementById("btn-hint").addEventListener("click", ()=>{
+    localHints++;
+    state.stats.hintsUsed++;
+    toast("💡 Look for the prompt that is specific but not bloated with unnecessary requests.", "info");
+    updateHUD();
+  });
+
+  document.getElementById("btn-back").addEventListener("click", backToMenu);
+}
+
+/* ============ SHARED: COMPARISON / PRINCIPLE BLOCK ============ */
+function renderComparisonBlock(sc, showBackBtn){
+  return `
+    <div class="output-compare">
+      <div class="output-box weak"><strong>😐 Weak AI Output</strong><br>${sc.weakOutput}</div>
+      <div class="output-box optimized"><strong>✨ Optimized AI Output</strong><br>${sc.optimizedOutput}</div>
+    </div>
+    <div class="principle-box"><strong>📚 Prompt Principle:</strong> ${sc.principle}</div>
+    <div style="margin-top:16px;">
+      <button class="primary-btn" id="btn-next-scenario">Continue →</button>
+    </div>
+  `;
+}
+
+function attachContinueHandler(){
+  const btn = document.getElementById("btn-next-scenario");
+  if(btn) btn.addEventListener("click", backToMenu);
+}
+
+/* ============ FINISH / REPORT ============ */
+function computeRankAndRating(score, maxScore){
+  const pct = maxScore ? (score/maxScore*100) : 0;
+  let rank, rating;
+  if(pct >= 90){ rank="🏆 Prompt Master"; rating="Exceptional"; }
+  else if(pct >= 75){ rank="🥇 Prompt Pro"; rating="Excellent"; }
+  else if(pct >= 60){ rank="🥈 Skilled Prompter"; rating="Good"; }
+  else if(pct >= 40){ rank="🥉 Apprentice"; rating="Developing"; }
+  else { rank="🌱 Novice"; rating="Needs Practice"; }
+  return {rank, rating, pct};
+}
+
+function renderReport(){
+  document.getElementById("challenge-view").classList.add("hidden");
+  document.getElementById("menu-view").classList.add("hidden");
+  const report = document.getElementById("report");
+  report.style.display = "block";
+
+  const maxScore = state.scenarios.length * 100;
+  const total = state.totalScore;
+  const {rank, rating, pct} = computeRankAndRating(total, maxScore);
+
+  document.getElementById("final-score").textContent = total;
+  document.getElementById("final-rank").textContent = rank;
+  document.getElementById("final-rating").textContent = "Rating: " + rating + " (" + Math.round(pct) + "%)";
+
+  // Prompt DNA — derived metrics
+  const acc = computeAccuracy();
+  const speedScore = Math.max(0, 100 - Math.min(100, elapsedSeconds()));
+  const precision = Math.max(0, 100 - state.stats.wrongPlacements*8);
+  const independence = Math.max(0, 100 - state.stats.hintsUsed*12);
+  const optimization = Math.round(pct);
+  const dna = [
+    {label:"Accuracy", val:acc},
+    {label:"Speed", val:Math.min(100,speedScore)},
+    {label:"Precision", val:precision},
+    {label:"Independence", val:independence},
+    {label:"Optimization", val:optimization}
+  ];
+  const dnaWrap = document.getElementById("dna-wrap");
+  dnaWrap.innerHTML = dna.map(d=>`
+    <div class="dna-row">
+      <div class="lab">${d.label}</div>
+      <div class="dna-bar"><div class="dna-fill" style="width:0%" data-w="${d.val}"></div></div>
+      <div class="num">${d.val}</div>
+    </div>`).join("");
+  setTimeout(()=>{
+    dnaWrap.querySelectorAll(".dna-fill").forEach(f=>{
+      f.style.width = f.dataset.w + "%";
+    });
+  }, 150);
+
+  // Feedback
+  let feedback = "You completed all scenarios! ";
+  if(state.stats.hintsUsed > 4) feedback += "You leaned on hints often — try trusting your instincts on prompt structure next time. ";
+  if(state.stats.wrongPlacements > 5) feedback += "Watch out for distractor phrases that add bloat without improving output. ";
+  if(acc >= 85) feedback += "Your accuracy shows a strong grasp of what makes prompts specific and effective. ";
+  feedback += "Keep practicing constraints like tone, length, and format — they're the biggest levers in creative prompting.";
+  document.getElementById("feedback-text").textContent = feedback;
+
+  let milestone = pct >= 90 ? "Try Intermediate difficulty to push your skills further!" :
+    pct >= 60 ? "Aim for zero wrong placements next run to boost your Precision score." :
+    "Focus on reading the Desired Output carefully before placing any blocks.";
+  document.getElementById("next-milestone").textContent = milestone;
+
+  const sampleSc = state.scenarios[0];
+  document.getElementById("final-prompt-text").textContent = sampleSc.optimizedPrompt;
+
+  launchConfetti();
+}
+
+function launchConfetti(){
+  const colors = ["#ff7ac6","#7afcff","#ffd76a","#5CE59A"];
+  for(let i=0;i<40;i++){
+    const c = document.createElement("div");
+    c.className="confetti";
+    c.style.left = Math.random()*100+"vw";
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDuration = (2+Math.random()*2)+"s";
+    c.style.borderRadius = Math.random()>0.5 ? "50%":"2px";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 4200);
+  }
+}
+
+/* ============ INIT / EVENTS ============ */
+document.getElementById("btn-finish").addEventListener("click", renderReport);
+document.getElementById("btn-replay").addEventListener("click", initGame);
+
+initGame();
+})();
+</script>
+</body>
+</html>
