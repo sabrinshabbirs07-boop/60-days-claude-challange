@@ -144,3 +144,6 @@ This project demonstrates that prompt engineering can be learned through interac
 Built with the goal of learning prompt engineering by creating practical AI-powered educational experiences.
 
 ---
+
+# HTML FILE OF PROJECT 
+[HTML](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day35/prompt_puzzle%20(1).html)
