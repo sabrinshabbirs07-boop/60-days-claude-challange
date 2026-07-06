@@ -136,4 +136,4 @@ Instead of functioning as a personality or psychological assessment, the applica
 ---
 
 # Cognitive Pattern Explorer
-  [html file]()
+  [html file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day36/cognitive-pattern-explorer.html)
