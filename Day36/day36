@@ -1,0 +1,139 @@
+# Day 36/60 – Cognitive Pattern Explorer
+
+## Overview
+
+As part of my **60 Days of Claude Challenge**, Day 36 focused on designing and building an interactive **Cognitive Pattern Explorer**—a psychology-inspired self-reflection web application that encourages users to explore their thinking patterns through engaging scenarios and activities.
+
+The project is built as a **single self-contained HTML file** using only **HTML, CSS, and Vanilla JavaScript**, making it lightweight, responsive, and fully functional offline without any external frameworks.
+
+> **Disclaimer:** This project is intended for educational and self-reflection purposes only. It does not diagnose or assess mental health.
+
+---
+
+## Features
+
+- Single-file application (HTML, CSS & JavaScript)
+- Fully offline functionality
+- Modern, calm, and responsive interface
+- Interactive multi-step experience
+- Smooth page transitions and animations
+- Progress tracking throughout the journey
+- Calm Mode and Stress Mode selection
+- Scenario-based thinking exploration
+- Drag-and-drop priority sorting
+- Interactive thinking timeline mapping
+- Native HTML5 drag-and-drop
+- Touch-friendly drag support
+- Keyboard accessibility
+- Reduced motion support
+- Dynamic scoring system
+- Personalized reflection journal
+- Percentage-based thinking tendency visualization
+- Educational and non-diagnostic experience
+
+---
+
+## Thinking Tendencies Explored
+
+- Analytical Thinker
+- Emotional Intuitive
+- Overthinking Loop Style
+- Action-First Decision Maker
+- Balanced Reflective Thinker
+
+---
+
+## Application Flow
+
+### Step 1 — Start Screen
+- Welcome interface
+- Calm / Stress mode selection
+- Introduction to the experience
+
+### Step 2 — Discover Your Thinking Style
+- Everyday decision-making scenarios
+- Interactive choices
+- Dynamic score calculation
+
+### Step 3 — Choose Your Priorities
+- Drag-and-drop priority cards
+- "Matters Most" vs "Matters Less"
+- Reusable drag-and-drop system
+
+### Step 4 — Map Your Thinking
+- Timeline-based drag interactions
+- Visual organization of thought processes
+- Additional scoring refinement
+
+### Step 5 — Reflection Journal
+- Personalized insights
+- Percentage breakdown of thinking tendencies
+- Educational reflection summary
+
+---
+
+## Technologies Used
+
+- HTML5
+- CSS3
+- Vanilla JavaScript
+- HTML5 Drag & Drop API
+
+---
+
+## Technical Highlights
+
+- Responsive layout
+- Offline-first architecture
+- Native drag-and-drop
+- Touch interaction fallback
+- Keyboard navigation
+- Reusable JavaScript components
+- Object-based scenario storage
+- Dynamic state management
+- Progress tracking
+- Smooth animations
+- Accessibility support
+- Reduced motion compatibility
+
+---
+
+## Learning Outcomes
+
+Through this project, I strengthened my understanding of:
+
+- Building complete single-page applications
+- JavaScript state management
+- Drag-and-drop interactions
+- Responsive web design
+- Accessibility best practices
+- Component reusability
+- User experience design
+- Educational interactive application development
+- Prompt engineering with Claude AI
+
+---
+
+## Future Improvements
+
+- Save progress using Local Storage
+- Export reflection as PDF
+- Multiple visual themes
+- Additional thinking scenarios
+- Charts for result visualization
+- Achievement badges
+- Optional user profiles
+- Reflection history
+
+---
+
+## Project Goal
+
+The objective of this project was to create an engaging, interactive self-reflection experience that encourages users to better understand their decision-making patterns in a thoughtful and approachable way.
+
+Instead of functioning as a personality or psychological assessment, the application promotes curiosity, exploration, and personal insight through interactive storytelling and game-like mechanics.
+
+---
+
+# Cognitive Pattern Explorer
+  [html file]()
