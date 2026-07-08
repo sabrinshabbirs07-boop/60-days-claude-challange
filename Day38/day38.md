@@ -116,7 +116,7 @@ Working on this project helped me improve my understanding of:
 ---
 
 #  Typing Speed Studio
-[html file]()
+[html file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day38/typing-speed-studio.html)
 
 ## Conclusion
 
