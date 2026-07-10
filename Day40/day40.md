@@ -182,5 +182,5 @@ During this project, I learned:
 - Interview Preparation Suggestions
 
   #  AI Assistant Documentation:
-  [HTML FILE]()
+  [HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day40/scanline-ats-checker%20(1).html)
 
