@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Learning Studio — Linear Equations &amp; Inequalities</title>
+<style>
+  :root{
+    --ink:#10151f;
+    --ink-2:#1a2230;
+    --paper:#eef2f6;
+    --paper-2:#ffffff;
+    --line:#c7d2de;
+    --blue:#2f6690;
+    --blue-deep:#1d425c;
+    --amber:#e2a63b;
+    --green:#3f8f6f;
+    --red:#c0503e;
+    --text:#151b24;
+    --text-soft:#4a5568;
+    --text-inv:#eef2f6;
+    --radius:10px;
+    --serif:Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    --mono:'Courier New',Courier,monospace;
+    --shadow:0 6px 20px rgba(16,21,31,.10);
+  }
+  [data-theme="dark"]{
+    --paper:#0d1219;
+    --paper-2:#161f2b;
+    --line:#2a3646;
+    --text:#e7edf4;
+    --text-soft:#a8b6c6;
+    --text-inv:#10151f;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    background:var(--paper);
+    color:var(--text);
+    transition:background .3s ease,color .3s ease;
+    line-height:1.6;
+  }
+  h1,h2,h3,h4{font-family:var(--serif); margin:0 0 .5em; letter-spacing:.2px;}
+  p{margin:0 0 1em;}
+  .container{max-width:920px;margin:0 auto;padding:0 24px;}
+  a{color:var(--blue);}
+
+  /* ===== TOPBAR ===== */
+  #topbar{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper-2);
+    border-bottom:1px solid var(--line);
+    backdrop-filter:blur(6px);
+  }
+  #topbar .row{
+    display:flex;align-items:center;justify-content:space-between;
+    max-width:920px;margin:0 auto;padding:10px 24px;gap:16px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-weight:bold;font-size:1.05rem;}
+  .brand .mark{width:22px;height:22px;flex:none;}
+  .top-controls{display:flex;align-items:center;gap:14px;}
+  .points-pill{
+    display:flex;align-items:center;gap:6px;
+    background:var(--blue);color:#fff;
+    padding:5px 12px;border-radius:999px;font-size:.82rem;font-weight:600;
+  }
+  #themeToggle{
+    background:none;border:1px solid var(--line);color:var(--text);
+    width:34px;height:34px;border-radius:999px;cursor:pointer;font-size:1rem;
+    display:flex;align-items:center;justify-content:center;
+  }
+  #progressTrack{height:4px;background:var(--line);width:100%;}
+  #progressFill{height:4px;background:linear-gradient(90deg,var(--blue),var(--amber));width:0%;transition:width .4s ease;}
+
+  /* ===== HERO ===== */
+  .hero{
+    padding:64px 0 40px;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(47,102,144,.07) 28px),
+      repeating-linear-gradient(90deg, transparent, transparent 27px, rgba(47,102,144,.07) 28px);
+  }
+  .eyebrow{
+    font-family:var(--mono); text-transform:uppercase; font-size:.75rem;
+    letter-spacing:2px; color:var(--blue); margin-bottom:10px; display:block;
+  }
+  .hero h1{font-size:2.5rem; max-width:14ch;}
+  .hero .lede{font-size:1.1rem; color:var(--text-soft); max-width:60ch;}
+
+  .balance-hero{margin:28px 0 8px;}
+  svg{display:block;}
+
+  .info-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:14px; margin-top:32px;
+  }
+  .info-card{
+    background:var(--paper-2); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px 18px;
+  }
+  .info-card .label{font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:1px; color:var(--text-soft);}
+  .info-card .val{font-size:1.02rem; font-weight:600; margin-top:4px;}
+
+  .reward-box{
+    margin-top:22px; padding:18px 20px; border-radius:var(--radius);
+    border:1px dashed var(--amber); background:rgba(226,166,59,.08);
+    display:flex; gap:14px; align-items:flex-start;
+  }
+  .reward-box .icon{font-size:1.5rem;}
+  .reward-box h4{margin:0 0 4px; font-size:1rem;}
+  .reward-box p{margin:0; font-size:.92rem; color:var(--text-soft);}
+
+  .start-btn{
+    margin-top:28px; display:inline-flex; align-items:center; gap:8px;
+    background:var(--ink); color:#fff; border:none; padding:14px 26px;
+    font-size:1rem; font-weight:600; border-radius:999px; cursor:pointer;
+    box-shadow:var(--shadow);
+  }
+  [data-theme="dark"] .start-btn{background:var(--blue);}
+
+  /* ===== MODULES ===== */
+  .module{
+    padding:52px 0; border-top:1px solid var(--line);
+    opacity:.35; filter:grayscale(60%); pointer-events:none;
+  }
+  .module.unlocked{opacity:1; filter:none; pointer-events:auto;}
+  .module .lock-note{
+    font-family:var(--mono); font-size:.8rem; color:var(--text-soft); margin-top:10px;
+  }
+  .mod-head{display:flex; align-items:baseline; gap:14px; margin-bottom:6px;}
+  .mod-num{font-family:var(--serif); font-size:2.2rem; color:var(--blue); opacity:.5;}
+  .mod-tag{font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-soft);}
+
+  .card{
+    background:var(--paper-2); border:1px solid var(--line); border-radius:var(--radius);
+    padding:22px 24px; margin:20px 0;
+  }
+  .card h3{font-size:1.15rem;}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media(max-width:720px){.two-col{grid-template-columns:1fr;}}
+
+  .example-box{
+    border-left:3px solid var(--blue); padding:6px 0 6px 16px; margin:14px 0;
+    background:rgba(47,102,144,.05); border-radius:0 8px 8px 0; padding-top:12px; padding-bottom:12px;
+  }
+  .analogy-box{
+    border-left:3px solid var(--amber); padding:12px 16px; margin:14px 0;
+    background:rgba(226,166,59,.08); border-radius:0 8px 8px 0;
+  }
+  .analogy-box .tag,.example-box .tag{font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--text-soft); display:block; margin-bottom:6px;}
+  .misconception{
+    border-left:3px solid var(--red); padding:12px 16px; margin:14px 0;
+    background:rgba(192,80,62,.07); border-radius:0 8px 8px 0;
+  }
+  .takeaways{list-style:none; padding:0; margin:0;}
+  .takeaways li{padding:8px 0 8px 28px; position:relative; border-bottom:1px solid var(--line);}
+  .takeaways li:last-child{border-bottom:none;}
+  .takeaways li:before{content:"✓"; position:absolute; left:0; color:var(--green); font-weight:bold;}
+
+  .comparison-table{width:100%; border-collapse:collapse; font-size:.92rem; margin:12px 0;}
+  .comparison-table th,.comparison-table td{border:1px solid var(--line); padding:9px 12px; text-align:left;}
+  .comparison-table th{background:var(--blue); color:#fff; font-family:var(--serif);}
+  .comparison-table tr:nth-child(even) td{background:rgba(47,102,144,.05);}
+
+  /* balance scale svg */
+  .scale-wrap{display:flex; justify-content:center; margin:18px 0;}
+
+  /* number line */
+  .numberline-wrap{overflow-x:auto; margin:16px 0;}
+
+  /* exercise */
+  .exercise{
+    border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px;
+    background:linear-gradient(180deg, rgba(47,102,144,.05), transparent);
+  }
+  .exercise .tag{font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:1px; color:var(--blue);}
+  .exercise input[type=text],.exercise input[type=number]{
+    font-family:var(--mono); font-size:1rem; padding:9px 12px; border:1px solid var(--line);
+    border-radius:6px; background:var(--paper); color:var(--text); width:160px;
+  }
+  .exercise button, .quiz button, .btn{
+    font-family:var(--sans); font-weight:600; cursor:pointer; border:none;
+    background:var(--blue); color:#fff; padding:9px 18px; border-radius:6px; font-size:.92rem;
+  }
+  .exercise button:hover,.quiz button:hover,.btn:hover{background:var(--blue-deep);}
+  .feedback{margin-top:12px; padding:10px 14px; border-radius:8px; font-size:.92rem; display:none;}
+  .feedback.show{display:block;}
+  .feedback.correct{background:rgba(63,143,111,.15); color:var(--green); border:1px solid var(--green);}
+  .feedback.wrong{background:rgba(192,80,62,.15); color:var(--red); border:1px solid var(--red);}
+
+  /* interactive slider element for inequality module */
+  .slider-demo{display:flex; flex-direction:column; gap:8px; margin:14px 0;}
+  .slider-demo input[type=range]{width:100%;}
+
+  /* ===== QUIZ ===== */
+  .quiz-block{
+    margin-top:30px; background:var(--ink); color:var(--text-inv); border-radius:var(--radius);
+    padding:26px 28px;
+  }
+  [data-theme="dark"] .quiz-block{background:var(--paper-2); border:1px solid var(--line);}
+  .quiz-block h3{color:inherit;}
+  .qz-q{margin-bottom:22px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.15);}
+  [data-theme="dark"] .qz-q{border-bottom:1px solid var(--line);}
+  .qz-q:last-of-type{border-bottom:none;}
+  .qz-opts{display:flex; flex-direction:column; gap:8px; margin-top:10px;}
+  .qz-opt{
+    display:flex; gap:10px; align-items:center; padding:9px 12px; border-radius:8px;
+    border:1px solid rgba(255,255,255,.2); cursor:pointer; font-size:.94rem;
+  }
+  [data-theme="dark"] .qz-opt{border:1px solid var(--line);}
+  .qz-opt:hover{background:rgba(255,255,255,.06);}
+  .qz-opt.selected{border-color:var(--amber); background:rgba(226,166,59,.15);}
+  .qz-opt.correct{border-color:var(--green); background:rgba(63,143,111,.25);}
+  .qz-opt.incorrect{border-color:var(--red); background:rgba(192,80,62,.25);}
+  .qz-explain{
+    margin-top:8px; font-size:.86rem; padding:8px 12px; border-radius:6px;
+    background:rgba(255,255,255,.08); display:none;
+  }
+  [data-theme="dark"] .qz-explain{background:rgba(47,102,144,.12);}
+  .qz-explain.show{display:block;}
+  .qz-submit{margin-top:8px;}
+  .qz-result{
+    margin-top:18px; padding:16px 18px; border-radius:8px; background:rgba(226,166,59,.15);
+    border:1px solid var(--amber); display:none;
+  }
+  .qz-result.show{display:block;}
+  .qz-result h4{margin:0 0 6px;}
+
+  /* ===== FOOTER SECTIONS ===== */
+  .final-section{padding:56px 0; border-top:1px solid var(--line);}
+  .resource-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-top:14px;}
+  .resource-card{background:var(--paper-2); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px;}
+  .resource-card h4{font-size:.95rem; margin-bottom:8px; color:var(--blue);}
+  .resource-card ul{margin:0; padding-left:18px; font-size:.88rem; color:var(--text-soft);}
+  .resource-card li{margin-bottom:5px;}
+  .keyword-chip{
+    display:inline-block; background:rgba(47,102,144,.12); color:var(--blue);
+    padding:4px 10px; border-radius:999px; font-size:.8rem; margin:3px 4px 3px 0; font-family:var(--mono);
+  }
+  .cheatsheet{background:var(--ink); color:var(--text-inv); border-radius:var(--radius); padding:24px 26px; font-family:var(--mono); font-size:.86rem; line-height:1.8;}
+  [data-theme="dark"] .cheatsheet{background:var(--paper-2); border:1px solid var(--line);}
+  .cheatsheet .csrow{display:flex; justify-content:space-between; gap:20px; border-bottom:1px dashed rgba(255,255,255,.2); padding:6px 0;}
+  [data-theme="dark"] .cheatsheet .csrow{border-bottom:1px dashed var(--line);}
+  .print-btn{margin-top:16px;}
+
+  #completionBanner{
+    display:none; text-align:center; padding:60px 24px; background:linear-gradient(180deg, rgba(226,166,59,.15), transparent);
+  }
+  #completionBanner.show{display:block;}
+  #completionBanner .big-badge{font-size:3rem;}
+
+  footer{text-align:center; padding:30px 24px; font-size:.8rem; color:var(--text-soft);}
+
+  @media print{
+    #topbar,.hero .start-btn,.exercise button,.quiz-block,.slider-demo{display:none !important;}
+    .module{opacity:1 !important; filter:none !important;}
+    body{background:#fff; color:#000;}
+  }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="row">
+    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M4 8h16M4 8l3-4M4 8l3 4M20 8l-3-4M20 8l-3 4M12 8v13M8 21h8" stroke="#2f6690" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Interactive Learning Studio</div>
+    <div class="top-controls">
+      <div class="points-pill">⚖️ <span id="pointsDisplay">0</span> pts</div>
+      <button id="themeToggle" title="Toggle dark mode">🌙</button>
+    </div>
+  </div>
+  <div id="progressTrack"><div id="progressFill"></div></div>
+</div>
+
+<section class="hero">
+  <div class="container">
+    <span class="eyebrow">Algebra · Module Track</span>
+    <h1>Linear Equations &amp; Inequalities</h1>
+    <p class="lede">Master the art of keeping things balanced — from solving one-variable equations to graphing inequalities and tackling real-world problems, one deliberate step at a time.</p>
+
+    <div class="balance-hero">
+      <svg id="heroScale" viewBox="0 0 400 160" width="100%" height="160" style="max-width:420px;">
+        <line x1="200" y1="20" x2="200" y2="140" stroke="var(--text-soft)" stroke-width="4"/>
+        <circle cx="200" cy="18" r="5" fill="var(--amber)"/>
+        <g id="heroBeam" style="transform-origin:200px 20px;">
+          <line x1="90" y1="20" x2="310" y2="20" stroke="var(--blue)" stroke-width="5" stroke-linecap="round"/>
+          <line x1="90" y1="20" x2="90" y2="60" stroke="var(--text-soft)" stroke-width="2"/>
+          <line x1="310" y1="20" x2="310" y2="60" stroke="var(--text-soft)" stroke-width="2"/>
+          <path d="M65 60 h50 l-8 30 h-34 z" fill="var(--paper-2)" stroke="var(--blue)" stroke-width="2"/>
+          <text x="90" y="82" text-anchor="middle" font-family="Georgia" font-size="14" fill="var(--text)">x + 3</text>
+          <path d="M285 60 h50 l-8 30 h-34 z" fill="var(--paper-2)" stroke="var(--amber)" stroke-width="2"/>
+          <text x="310" y="82" text-anchor="middle" font-family="Georgia" font-size="14" fill="var(--text)">7</text>
+        </g>
+        <path d="M175 138 h50 l-15 18 h-20 z" fill="var(--text-soft)"/>
+      </svg>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card"><span class="label">Learning objectives</span><div class="val">Solve, graph &amp; apply linear equations and inequalities</div></div>
+      <div class="info-card"><span class="label">Estimated time</span><div class="val">55–70 minutes</div></div>
+      <div class="info-card"><span class="label">Prerequisites</span><div class="val">Basic arithmetic, integers</div></div>
+      <div class="info-card"><span class="label">Outcome</span><div class="val">Confidently solve &amp; graph linear relationships</div></div>
+    </div>
+
+    <div class="reward-box">
+      <div class="icon">🏅</div>
+      <div>
+        <h4>Reward system</h4>
+        <p>Earn <strong>10 points</strong> per correct quiz answer and <strong>25 points</strong> per completed exercise. Unlock each module by finishing the quiz before it (70%+ to pass). Collect all 4 module badges plus the Mastery Badge from the final challenge.</p>
+      </div>
+    </div>
+
+    <button class="start-btn" onclick="document.getElementById('module1').scrollIntoView({behavior:'smooth'})">Begin Module 1 →</button>
+  </div>
+</section>
+
+<!-- ============ MODULE 1 ============ -->
+<section class="module unlocked" id="module1">
+  <div class="container">
+    <div class="mod-head"><span class="mod-num">01</span><div><span class="mod-tag">Foundational</span><h2>What Is a Linear Equation?</h2></div></div>
+    <p>A <strong>linear equation</strong> in one variable is a statement that two expressions are equal, where the variable appears only to the first power (no exponents, no roots, no variable-times-variable). Its graph, if you plotted it, would always be a straight line — hence "linear."</p>
+
+    <div class="card">
+      <h3>The balance scale model</h3>
+      <div class="analogy-box"><span class="tag">Analogy</span>Think of an equation like <strong>x + 3 = 7</strong> as a balance scale. The left side and right side must always weigh the same. Whatever you do to one side — add, subtract, multiply, divide — you must do to the <em>other</em> side too, or the scale tips and the equation becomes false.</div>
+      <div class="scale-wrap">
+        <svg viewBox="0 0 400 170" width="100%" height="170" style="max-width:420px;">
+          <line x1="200" y1="20" x2="200" y2="150" stroke="var(--text-soft)" stroke-width="4"/>
+          <circle cx="200" cy="18" r="5" fill="var(--amber)"/>
+          <g id="module1Beam" style="transform-origin:200px 20px; transition: transform .6s ease;">
+            <line x1="90" y1="20" x2="310" y2="20" stroke="var(--blue)" stroke-width="5" stroke-linecap="round"/>
+            <line x1="90" y1="20" x2="90" y2="60" stroke="var(--text-soft)" stroke-width="2"/>
+            <line x1="310" y1="20" x2="310" y2="60" stroke="var(--text-soft)" stroke-width="2"/>
+            <path d="M65 60 h50 l-8 30 h-34 z" fill="var(--paper-2)" stroke="var(--blue)" stroke-width="2"/>
+            <text id="m1LeftLabel" x="90" y="82" text-anchor="middle" font-family="Georgia" font-size="14" fill="var(--text)">x + 3</text>
+            <path d="M285 60 h50 l-8 30 h-34 z" fill="var(--paper-2)" stroke="var(--amber)" stroke-width="2"/>
+            <text id="m1RightLabel" x="310" y="82" text-anchor="middle" font-family="Georgia" font-size="14" fill="var(--text)">7</text>
+          </g>
+          <path d="M175 148 h50 l-15 18 h-20 z" fill="var(--text-soft)"/>
+        </svg>
+      </div>
+      <div style="text-align:center;">
+        <button class="btn" onclick="module1Step()">Subtract 3 from both sides →</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Worked examples</h3>
+      <div class="example-box"><span class="tag">Example 1</span><strong>x + 3 = 7</strong> → subtract 3 from both sides → <strong>x = 4</strong>. Check: 4 + 3 = 7 ✓</div>
+      <div class="example-box"><span class="tag">Example 2</span><strong>2x = 10</strong> → divide both sides by 2 → <strong>x = 5</strong>. Check: 2(5) = 10 ✓</div>
+      <div class="example-box"><span class="tag">Example 3</span><strong>3x − 4 = 11</strong> → add 4 to both sides → 3x = 15 → divide by 3 → <strong>x = 5</strong>. Check: 3(5) − 4 = 11 ✓</div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <h3>Key operations (inverse pairs)</h3>
+        <table class="comparison-table">
+          <tr><th>Operation on equation</th><th>Undoes</th></tr>
+          <tr><td>Subtraction</td><td>Addition</td></tr>
+          <tr><td>Addition</td><td>Subtraction</td></tr>
+          <tr><td>Division</td><td>Multiplication</td></tr>
+          <tr><td>Multiplication</td><td>Division</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Common misconceptions</h3>
+        <div class="misconception">"I only need to change the side with the variable." No — whatever you do must be applied to <em>both</em> sides to preserve balance.</div>
+        <div class="misconception">"Moving a term across the equals sign just deletes it." It doesn't disappear — it flips sign because you're really subtracting/adding it on both sides.</div>
+      </div>
+    </div>
+
+    <div class="card takeaways-card">
+      <h3>Key takeaways</h3>
+      <ul class="takeaways">
+        <li>A linear equation has the variable raised only to the power 1.</li>
+        <li>Solving means isolating the variable using inverse operations.</li>
+        <li>Whatever you do to one side, do to the other — keep the scale balanced.</li>
+        <li>Always check your solution by substituting it back into the original equation.</li>
+      </ul>
+    </div>
+
+    <div class="card exercise">
+      <span class="tag">Practical exercise</span>
+      <h3>Solve for x: 5x − 2 = 18</h3>
+      <p>Type your answer for x below.</p>
+      <input type="text" id="ex1input" placeholder="x = ?">
+      <button onclick="checkEx1()">Check answer</button>
+      <div class="feedback" id="ex1feedback"></div>
+    </div>
+
+    <!-- QUIZ 1 -->
+    <div class="quiz-block" id="quiz1">
+      <h3>Module 1 Quiz</h3>
+      <div id="quiz1-questions"></div>
+      <button class="btn qz-submit" onclick="gradeQuiz(1)">Submit answers</button>
+      <div class="qz-result" id="quiz1-result"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODULE 2 ============ -->
+<section class="module" id="module2">
+  <div class="container">
+    <div class="mod-head"><span class="mod-num">02</span><div><span class="mod-tag">Building — Locked until Quiz 1 passed</span><h2>Linear Inequalities</h2></div></div>
+    <p class="lock-note" id="lock2note">🔒 Score at least 70% on the Module 1 quiz to unlock this module.</p>
+
+    <p>An inequality compares two expressions using <strong>&lt;, &gt;, ≤, or ≥</strong> instead of an equals sign. Solving one works almost exactly like solving an equation — with one crucial twist.</p>
+
+    <div class="card">
+      <h3>The golden rule</h3>
+      <div class="analogy-box"><span class="tag">Analogy</span>Picture a tug-of-war rope. If you multiply or divide <em>both</em> sides by a negative number, you flip which side is "winning" — so the inequality sign must flip too. It's like mirror-reversing the whole comparison.</div>
+      <div class="misconception"><strong>The #1 mistake in this topic:</strong> forgetting to flip the inequality sign when multiplying or dividing by a negative number. −2x &lt; 6 → dividing by −2 gives x &gt; −3 (sign flips!), not x &lt; −3.</div>
+    </div>
+
+    <div class="card">
+      <h3>Graphing on a number line</h3>
+      <div class="numberline-wrap">
+        <svg viewBox="0 0 420 70" width="100%" height="70" style="max-width:460px;">
+          <line x1="20" y1="35" x2="400" y2="35" stroke="var(--text-soft)" stroke-width="2"/>
+          <g id="nlTicks"></g>
+          <line x1="230" y1="35" x2="400" y2="35" stroke="var(--blue)" stroke-width="4"/>
+          <circle cx="230" cy="35" r="7" fill="var(--paper-2)" stroke="var(--blue)" stroke-width="3"/>
+          <polygon points="395,28 408,35 395,42" fill="var(--blue)"/>
+        </svg>
+      </div>
+      <p style="font-size:.88rem;color:var(--text-soft);">Open circle (○) = value not included (&lt; or &gt;). Closed/filled circle (●) = value included (≤ or ≥). Example above: <strong>x &gt; 2</strong>, open circle at 2, arrow pointing right.</p>
+    </div>
+
+    <div class="card">
+      <h3>Worked examples</h3>
+      <div class="example-box"><span class="tag">Example 1</span><strong>x − 4 ≤ 9</strong> → add 4 to both sides → <strong>x ≤ 13</strong>. Closed circle at 13, shade left.</div>
+      <div class="example-box"><span class="tag">Example 2</span><strong>−3x &gt; 12</strong> → divide by −3 (flip!) → <strong>x &lt; −4</strong>. Open circle at −4, shade left.</div>
+      <div class="example-box"><span class="tag">Example 3 (compound)</span><strong>−2 ≤ x + 1 &lt; 5</strong> → subtract 1 across all three parts → <strong>−3 ≤ x &lt; 4</strong>.</div>
+    </div>
+
+    <div class="card">
+      <h3>Equations vs. Inequalities</h3>
+      <table class="comparison-table">
+        <tr><th>Feature</th><th>Equation</th><th>Inequality</th></tr>
+        <tr><td>Symbol</td><td>=</td><td>&lt;, &gt;, ≤, ≥</td></tr>
+        <tr><td>Solution</td><td>One exact value (usually)</td><td>A range of values</td></tr>
+        <tr><td>Graph</td><td>Single point</td><td>Ray or segment with open/closed circle</td></tr>
+        <tr><td>Sign flip rule</td><td>Never needed</td><td>Flip when × or ÷ by negative</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Try it: does the sign flip?</h3>
+      <div class="slider-demo">
+        <label for="flipSlider">Drag to pick a multiplier for both sides of <strong>x &gt; 5</strong>:</label>
+        <input type="range" id="flipSlider" min="-5" max="5" step="1" value="1" oninput="updateFlipDemo()">
+        <p id="flipResult" style="font-family:var(--mono);"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Key takeaways</h3>
+      <ul class="takeaways">
+        <li>Solve inequalities using the same steps as equations.</li>
+        <li>Flip the inequality sign only when multiplying/dividing both sides by a negative number.</li>
+        <li>Open circle excludes the boundary value; closed circle includes it.</li>
+        <li>Compound inequalities apply the same operation to all three parts at once.</li>
+      </ul>
+    </div>
+
+    <div class="card exercise">
+      <span class="tag">Practical exercise</span>
+      <h3>Solve for x: −4x + 3 &gt; 15 &nbsp;(type using &lt; or &gt;, e.g. "x &lt; -3")</h3>
+      <input type="text" id="ex2input" placeholder="e.g. x < -3">
+      <button onclick="checkEx2()">Check answer</button>
+      <div class="feedback" id="ex2feedback"></div>
+    </div>
+
+    <div class="quiz-block" id="quiz2">
+      <h3>Module 2 Quiz</h3>
+      <div id="quiz2-questions"></div>
+      <button class="btn qz-submit" onclick="gradeQuiz(2)">Submit answers</button>
+      <div class="qz-result" id="quiz2-result"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODULE 3 ============ -->
+<section class="module" id="module3">
+  <div class="container">
+    <div class="mod-head"><span class="mod-num">03</span><div><span class="mod-tag">Application — Locked until Quiz 2 passed</span><h2>Graphing &amp; Real-World Applications</h2></div></div>
+    <p class="lock-note" id="lock3note">🔒 Score at least 70% on the Module 2 quiz to unlock this module.</p>
+
+    <p>Every linear equation in two variables — like <strong>y = 2x + 1</strong> — describes a straight line on a coordinate plane. Two numbers control everything: the <strong>slope</strong> (steepness/direction) and the <strong>y-intercept</strong> (where it crosses the y-axis).</p>
+
+    <div class="card">
+      <h3>Slope-intercept form: y = mx + b</h3>
+      <div class="analogy-box"><span class="tag">Analogy</span>Think of <strong>b</strong> as your starting altitude on a hike, and <strong>m</strong> as the steepness of the trail — positive m means climbing, negative means descending, and the size of m tells you how steep.</div>
+      <div class="scale-wrap">
+        <svg viewBox="0 0 320 220" width="100%" height="220" style="max-width:340px;">
+          <line x1="20" y1="110" x2="300" y2="110" stroke="var(--text-soft)" stroke-width="1.5"/>
+          <line x1="160" y1="10" x2="160" y2="210" stroke="var(--text-soft)" stroke-width="1.5"/>
+          <text x="295" y="105" font-size="10" fill="var(--text-soft)">x</text>
+          <text x="165" y="20" font-size="10" fill="var(--text-soft)">y</text>
+          <line x1="60" y1="190" x2="260" y2="30" stroke="var(--blue)" stroke-width="3"/>
+          <circle cx="160" cy="70" r="4" fill="var(--amber)"/>
+          <text x="168" y="66" font-size="11" fill="var(--text)">b (y-intercept)</text>
+          <text x="230" y="45" font-size="11" fill="var(--text)">slope = m</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Worked examples</h3>
+      <div class="example-box"><span class="tag">Example 1</span><strong>y = 2x + 1</strong>: start at (0,1), rise 2 / run 1 to plot the next point at (1,3).</div>
+      <div class="example-box"><span class="tag">Example 2 (real world)</span>A taxi charges a flat $3 fee plus $2 per mile: <strong>cost = 2m + 3</strong>. Slope 2 = cost per mile, intercept 3 = starting fee.</div>
+      <div class="example-box"><span class="tag">Example 3 (from two points)</span>Points (1,4) and (3,10): slope = (10−4)/(3−1) = 3. Using y = 3x + b and (1,4): 4 = 3(1)+b → b = 1. So <strong>y = 3x + 1</strong>.</div>
+    </div>
+
+    <div class="card">
+      <h3>Forms of a linear equation</h3>
+      <table class="comparison-table">
+        <tr><th>Form</th><th>Pattern</th><th>Best for</th></tr>
+        <tr><td>Slope-intercept</td><td>y = mx + b</td><td>Quickly graphing / reading slope &amp; intercept</td></tr>
+        <tr><td>Standard</td><td>Ax + By = C</td><td>Finding intercepts, systems of equations</td></tr>
+        <tr><td>Point-slope</td><td>y − y₁ = m(x − x₁)</td><td>Writing an equation from a point + slope</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Common misconceptions</h3>
+      <div class="misconception">"A steeper line always has a bigger number." A slope of −5 is steeper than a slope of 2 — steepness is about magnitude, direction is about sign.</div>
+      <div class="misconception">"The y-intercept is always positive." It can be zero or negative — it's simply where x = 0.</div>
+    </div>
+
+    <div class="card">
+      <h3>Key takeaways</h3>
+      <ul class="takeaways">
+        <li>y = mx + b: m is slope (rate of change), b is the y-intercept (starting value).</li>
+        <li>Real-world linear relationships often model flat fee + rate situations.</li>
+        <li>You can find an equation from two points using the slope formula.</li>
+        <li>Every point on the line is a solution to the equation.</li>
+      </ul>
+    </div>
+
+    <div class="card exercise">
+      <span class="tag">Practical exercise</span>
+      <h3>A gym charges a $20 signup fee plus $15/month. Write the equation for total cost C after m months.</h3>
+      <p style="font-size:.85rem;color:var(--text-soft);">Format: C = [slope]m + [intercept], e.g. "C = 5m + 2"</p>
+      <input type="text" id="ex3input" placeholder="C = 15m + 20">
+      <button onclick="checkEx3()">Check answer</button>
+      <div class="feedback" id="ex3feedback"></div>
+    </div>
+
+    <div class="quiz-block" id="quiz3">
+      <h3>Module 3 Quiz</h3>
+      <div id="quiz3-questions"></div>
+      <button class="btn qz-submit" onclick="gradeQuiz(3)">Submit answers</button>
+      <div class="qz-result" id="quiz3-result"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODULE 4 ============ -->
+<section class="module" id="module4">
+  <div class="container">
+    <div class="mod-head"><span class="mod-num">04</span><div><span class="mod-tag">Mastery — Locked until Quiz 3 passed</span><h2>Multi-Step Equations, Both Sides &amp; Absolute Value</h2></div></div>
+    <p class="lock-note" id="lock4note">🔒 Score at least 70% on the Module 3 quiz to unlock this module.</p>
+
+    <p>Real problems rarely arrive pre-simplified. This module combines everything: distributing, combining like terms, variables on both sides, and an introduction to absolute value equations/inequalities.</p>
+
+    <div class="card">
+      <h3>Variables on both sides</h3>
+      <div class="analogy-box"><span class="tag">Analogy</span>If weight sits on both pans of the balance scale, first remove the smaller matching amount from both sides — the scale stays level, and you're left with a simpler comparison.</div>
+      <div class="example-box"><span class="tag">Example</span><strong>5x − 3 = 2x + 9</strong> → subtract 2x from both sides → 3x − 3 = 9 → add 3 → 3x = 12 → <strong>x = 4</strong>.</div>
+    </div>
+
+    <div class="card">
+      <h3>Distributing first</h3>
+      <div class="example-box"><span class="tag">Example</span><strong>3(x + 2) = 21</strong> → distribute → 3x + 6 = 21 → subtract 6 → 3x = 15 → <strong>x = 5</strong>.</div>
+    </div>
+
+    <div class="card">
+      <h3>Absolute value equations &amp; inequalities</h3>
+      <p>|x| means "distance from zero," so it's always non-negative. Solving |expression| = k (k ≥ 0) splits into <em>two</em> cases.</p>
+      <div class="example-box"><span class="tag">Example (equation)</span><strong>|x − 2| = 5</strong> → x − 2 = 5 <em>or</em> x − 2 = −5 → <strong>x = 7 or x = −3</strong>.</div>
+      <div class="example-box"><span class="tag">Example (inequality)</span><strong>|x| &lt; 3</strong> means x is within 3 of zero → <strong>−3 &lt; x &lt; 3</strong>. But <strong>|x| &gt; 3</strong> means x is far from zero → <strong>x &lt; −3 or x &gt; 3</strong>.</div>
+      <div class="misconception">"|x| &gt; k always gives one connected range." It actually splits into two separate rays pointing in opposite directions — unlike |x| &lt; k, which gives one connected interval.</div>
+    </div>
+
+    <div class="card">
+      <h3>Strategy comparison</h3>
+      <table class="comparison-table">
+        <tr><th>Situation</th><th>First move</th></tr>
+        <tr><td>Parentheses present</td><td>Distribute</td></tr>
+        <tr><td>Like terms on same side</td><td>Combine them</td></tr>
+        <tr><td>Variable on both sides</td><td>Move smaller variable term to the other side</td></tr>
+        <tr><td>Absolute value</td><td>Isolate the bars, then split into two cases</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Key takeaways</h3>
+      <ul class="takeaways">
+        <li>Always simplify each side fully (distribute, combine like terms) before moving variables.</li>
+        <li>When variables appear on both sides, collect them on one side first.</li>
+        <li>Absolute value equations/inequalities require splitting into two cases.</li>
+        <li>"Less than" absolute value inequalities give one connected range; "greater than" gives two separate rays.</li>
+      </ul>
+    </div>
+
+    <div class="card exercise">
+      <span class="tag">Practical exercise</span>
+      <h3>Solve: 4(x − 1) = 2x + 10</h3>
+      <input type="text" id="ex4input" placeholder="x = ?">
+      <button onclick="checkEx4()">Check answer</button>
+      <div class="feedback" id="ex4feedback"></div>
+    </div>
+
+    <div class="quiz-block" id="quiz4">
+      <h3>Module 4 Quiz</h3>
+      <div id="quiz4-questions"></div>
+      <button class="btn qz-submit" onclick="gradeQuiz(4)">Submit answers</button>
+      <div class="qz-result" id="quiz4-result"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CHALLENGE ============ -->
+<section class="final-section" id="finalChallenge">
+  <div class="container">
+    <div class="mod-head"><span class="mod-num">★</span><div><span class="mod-tag">Final Challenge — Locked until Quiz 4 passed</span><h2>The Road Trip Problem</h2></div></div>
+    <p class="lock-note" id="lockFinalNote">🔒 Score at least 70% on the Module 4 quiz to unlock the final challenge.</p>
+    <div class="card">
+      <p><strong>Scenario:</strong> A car rental company charges a flat $40 fee plus $0.25 per mile driven. You have a budget of at most $100.</p>
+      <p><strong>Part A</strong> — Write an inequality for the total cost C based on miles driven, m, that stays within budget.</p>
+      <input type="text" id="finalA" placeholder="e.g. 0.25m + 40 ≤ 100">
+      <button onclick="checkFinalA()">Check Part A</button>
+      <div class="feedback" id="finalAfeedback"></div>
+      <br>
+      <p style="margin-top:18px;"><strong>Part B</strong> — Solve the inequality: how many miles, m, can you drive at most?</p>
+      <input type="text" id="finalB" placeholder="e.g. m ≤ 240">
+      <button onclick="checkFinalB()">Check Part B</button>
+      <div class="feedback" id="finalBfeedback"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHEAT SHEET / SUMMARY ============ -->
+<section class="final-section">
+  <div class="container">
+    <h2>Cheat Sheet</h2>
+    <div class="cheatsheet">
+      <div class="csrow"><span>Isolate variable</span><span>Use inverse operations, apply to both sides</span></div>
+      <div class="csrow"><span>Flip inequality</span><span>Only when × or ÷ both sides by a negative</span></div>
+      <div class="csrow"><span>Open circle</span><span>&lt; or &gt; (value excluded)</span></div>
+      <div class="csrow"><span>Closed circle</span><span>≤ or ≥ (value included)</span></div>
+      <div class="csrow"><span>Slope-intercept</span><span>y = mx + b (m = slope, b = y-intercept)</span></div>
+      <div class="csrow"><span>Slope formula</span><span>m = (y₂ − y₁) / (x₂ − x₁)</span></div>
+      <div class="csrow"><span>|x| = k</span><span>x = k or x = −k</span></div>
+      <div class="csrow"><span>|x| &lt; k</span><span>−k &lt; x &lt; k (one range)</span></div>
+      <div class="csrow"><span>|x| &gt; k</span><span>x &lt; −k or x &gt; k (two rays)</span></div>
+    </div>
+    <button class="btn print-btn" onclick="window.print()">🖨️ Print / Save notes as PDF</button>
+
+    <h2 style="margin-top:44px;">Summary Notes</h2>
+    <div class="card">
+      <p>Linear equations and inequalities are the algebraic language of balance and comparison. Equations describe exact equilibrium (one side equals the other); inequalities describe ranges of possibility. Both are solved with the same core toolkit — inverse operations applied consistently — with the single extra rule that inequality signs flip under negative multiplication or division. In two variables, these relationships become straight lines, fully described by a slope and an intercept, which is why they show up constantly in real-world rate-plus-fee situations: taxi fares, phone plans, rentals, and budgets.</p>
+    </div>
+
+    <h2 style="margin-top:44px;">Continue Learning</h2>
+    <div class="resource-grid">
+      <div class="resource-card">
+        <h4>📚 Books</h4>
+        <ul>
+          <li>"Algebra I" — Paul A. Foerster</li>
+          <li>"Elementary Algebra" — Harold R. Jacobs</li>
+          <li>"Practical Algebra" — Peter Selby &amp; Steve Slavin</li>
+        </ul>
+      </div>
+      <div class="resource-card">
+        <h4>📖 Documentation &amp; Guides</h4>
+        <ul>
+          <li>Khan Academy — Algebra I course</li>
+          <li>Paul's Online Math Notes — Algebra</li>
+          <li>OpenStax "Elementary Algebra" (free textbook)</li>
+        </ul>
+      </div>
+      <div class="resource-card">
+        <h4>🔬 Research &amp; Papers</h4>
+        <ul>
+          <li>NCTM research briefs on algebraic reasoning development</li>
+          <li>"Students' Understanding of the Equal Sign" — education research literature</li>
+        </ul>
+      </div>
+      <div class="resource-card">
+        <h4>👥 Communities</h4>
+        <ul>
+          <li>r/learnmath, r/algebra (Reddit)</li>
+          <li>Art of Problem Solving forums</li>
+          <li>Math Stack Exchange</li>
+        </ul>
+      </div>
+      <div class="resource-card">
+        <h4>🎯 Practice Platforms</h4>
+        <ul>
+          <li>Khan Academy exercises</li>
+          <li>IXL Algebra</li>
+          <li>Desmos (graphing practice)</li>
+        </ul>
+      </div>
+      <div class="resource-card">
+        <h4>🔎 Search Keywords</h4>
+        <p>
+          <span class="keyword-chip">solving linear equations</span>
+          <span class="keyword-chip">inequality sign flip rule</span>
+          <span class="keyword-chip">slope-intercept form</span>
+          <span class="keyword-chip">absolute value inequalities</span>
+          <span class="keyword-chip">systems of linear equations</span>
+        </p>
+      </div>
+      <div class="resource-card">
+        <h4>🤖 Further AI Prompts</h4>
+        <ul>
+          <li>"Give me 10 word problems that model real life with linear equations."</li>
+          <li>"Explain why absolute value inequalities split into two cases, step by step."</li>
+          <li>"Quiz me on graphing linear equations from a table of values."</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="completionBanner">
+  <div class="big-badge">🏆</div>
+  <h2>Mastery Achieved!</h2>
+  <p>You've completed every module of Linear Equations &amp; Inequalities.</p>
+  <p id="finalScoreLine" style="font-weight:600;"></p>
+</div>
+
+<footer>Interactive Learning Studio · Built for focused, single-sitting mastery.</footer>
+
+<script>
+/* ---------------- THEME ---------------- */
+const themeBtn = document.getElementById('themeToggle');
+themeBtn.addEventListener('click', ()=>{
+  const cur = document.documentElement.getAttribute('data-theme');
+  if(cur==='dark'){document.documentElement.removeAttribute('data-theme'); themeBtn.textContent='🌙';}
+  else{document.documentElement.setAttribute('data-theme','dark'); themeBtn.textContent='☀️';}
+});
+
+/* ---------------- POINTS / PROGRESS ---------------- */
+let points = 0;
+let modulesUnlocked = 1;
+const TOTAL_MODULES = 4;
+function addPoints(n){ points += n; document.getElementById('pointsDisplay').textContent = points; updateProgress(); }
+function updateProgress(){
+  const pct = Math.min(100, Math.round((modulesUnlocked-1)/TOTAL_MODULES*100 + (modulesUnlocked>TOTAL_MODULES?0:0)));
+  document.getElementById('progressFill').style.width = (( (modulesUnlocked-1) / TOTAL_MODULES )*100) + '%';
+}
+updateProgress();
+
+/* ---------------- HERO SCALE IDLE ANIMATION ---------------- */
+let heroTilt = 0, heroDir = 1;
+setInterval(()=>{
+  heroTilt += heroDir*0.6;
+  if(heroTilt>6||heroTilt<-6) heroDir*=-1;
+  document.getElementById('heroBeam').style.transform = `rotate(${heroTilt}deg)`;
+}, 90);
+
+/* ---------------- MODULE 1 balance step ---------------- */
+let m1step = 0;
+function module1Step(){
+  const beam = document.getElementById('module1Beam');
+  const leftLabel = document.getElementById('m1LeftLabel');
+  const rightLabel = document.getElementById('m1RightLabel');
+  if(m1step===0){
+    beam.style.transform = 'rotate(0deg)';
+    leftLabel.textContent = 'x';
+    rightLabel.textContent = '4';
+    m1step=1;
+    addPoints(5);
+  } else {
+    leftLabel.textContent = 'x + 3';
+    rightLabel.textContent = '7';
+    m1step=0;
+  }
+}
+
+/* ---------------- NUMBER LINE TICKS (module 2) ---------------- */
+(function drawTicks(){
+  const g = document.getElementById('nlTicks');
+  if(!g) return;
+  for(let i=-3;i<=6;i++){
+    const x = 60 + (i+3)*34;
+    const tick = document.createElementNS('http://www.w3.org/2000/svg','line');
+    tick.setAttribute('x1',x); tick.setAttribute('x2',x);
+    tick.setAttribute('y1',30); tick.setAttribute('y2',40);
+    tick.setAttribute('stroke','var(--text-soft)'); tick.setAttribute('stroke-width','1.5');
+    g.appendChild(tick);
+    const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x',x); txt.setAttribute('y',55);
+    txt.setAttribute('font-size','10'); txt.setAttribute('text-anchor','middle');
+    txt.setAttribute('fill','var(--text-soft)'); txt.textContent = i;
+    g.appendChild(txt);
+  }
+})();
+
+/* ---------------- FLIP SLIDER DEMO ---------------- */
+function updateFlipDemo(){
+  const v = parseInt(document.getElementById('flipSlider').value);
+  const out = document.getElementById('flipResult');
+  if(v===0){ out.textContent = "Multiplying by 0 isn't valid here — pick another value."; return; }
+  const newBound = 5*v;
+  let sign = v>0 ? '>' : '<';
+  out.textContent = `x ${v} > 5×${v}  →  x ${sign} ${newBound}   ${v<0 ? '(sign flipped because we used a negative number!)' : '(no flip needed)'}`;
+}
+updateFlipDemo();
+
+/* ---------------- EXERCISES ---------------- */
+function showFeedback(id, correct, msg){
+  const el = document.getElementById(id);
+  el.className = 'feedback show ' + (correct?'correct':'wrong');
+  el.textContent = msg;
+  if(correct) addPoints(25);
+}
+function checkEx1(){
+  const v = document.getElementById('ex1input').value.replace(/\s|x|=/gi,'').trim();
+  if(v==='4') showFeedback('ex1feedback', true, '✓ Correct! 5(4) − 2 = 18.');
+  else showFeedback('ex1feedback', false, '✗ Not quite. Add 2 to both sides first (5x = 20), then divide by 5.');
+}
+function checkEx2(){
+  const v = document.getElementById('ex2input').value.replace(/\s/g,'').toLowerCase();
+  if(v==='x<-3' || v==='x<−3') showFeedback('ex2feedback', true, '✓ Correct! Subtract 3, divide by −4, and flip the sign: x < −3.');
+  else showFeedback('ex2feedback', false, '✗ Not quite. −4x > 12 → divide by −4 and flip the inequality sign → x < −3.');
+}
+function checkEx3(){
+  const v = document.getElementById('ex3input').value.replace(/\s/g,'').toLowerCase();
+  if(v==='c=15m+20') showFeedback('ex3feedback', true, '✓ Correct! Rate (slope) = 15, flat fee (intercept) = 20.');
+  else showFeedback('ex3feedback', false, '✗ Not quite. The per-month rate is the slope (15) and the signup fee is the intercept (20): C = 15m + 20.');
+}
+function checkEx4(){
+  const v = document.getElementById('ex4input').value.replace(/\s|x|=/gi,'').trim();
+  if(v==='7') showFeedback('ex4feedback', true, '✓ Correct! 4x − 4 = 2x + 10 → 2x = 14 → x = 7.');
+  else showFeedback('ex4feedback', false, '✗ Not quite. Distribute first: 4x − 4 = 2x + 10, then collect variables: 2x = 14.');
+}
+function checkFinalA(){
+  const v = document.getElementById('finalA').value.replace(/\s/g,'').toLowerCase();
+  const ok = v==='0.25m+40≤100' || v==='.25m+40≤100' || v==='40+0.25m≤100';
+  if(ok) showFeedback('finalAfeedback', true, '✓ Correct! 0.25m + 40 ≤ 100.');
+  else showFeedback('finalAfeedback', false, '✗ Close — the flat fee (40) plus rate×miles (0.25m) must be ≤ 100.');
+}
+function checkFinalB(){
+  const v = document.getElementById('finalB').value.replace(/\s/g,'').toLowerCase();
+  if(v==='m≤240') { showFeedback('finalBfeedback', true, '✓ Correct! Subtract 40: 0.25m ≤ 60 → divide by 0.25 → m ≤ 240.'); finishAll(); }
+  else showFeedback('finalBfeedback', false, '✗ Not quite. Subtract 40 from both sides, then divide by 0.25.');
+}
+function finishAll(){
+  document.getElementById('completionBanner').classList.add('show');
+  document.getElementById('finalScoreLine').textContent = `Total points earned: ${points}`;
+  document.getElementById('completionBanner').scrollIntoView({behavior:'smooth'});
+}
+
+/* ---------------- QUIZ DATA ---------------- */
+const quizData = {
+  1: [
+    {q:"Solve: x − 5 = 12", opts:["x = 7","x = 17","x = −7","x = 60"], correct:1, exp:"Add 5 to both sides: x = 12 + 5 = 17."},
+    {q:"Which operation undoes multiplication?", opts:["Addition","Subtraction","Division","Multiplication"], correct:2, exp:"Division is the inverse operation of multiplication."},
+    {q:"Solve: 3x = 21", opts:["x = 18","x = 24","x = 7","x = 63"], correct:2, exp:"Divide both sides by 3: x = 21 ÷ 3 = 7."},
+    {q:"What must you do to both sides of an equation?", opts:["Nothing, only change one side","The same operation, to preserve balance","Always add the same number","Always multiply by −1"], correct:1, exp:"The balance scale analogy: apply the same operation to both sides to keep it true."}
+  ],
+  2: [
+    {q:"When do you flip an inequality sign?", opts:["Always","Never","When adding a positive number","When multiplying/dividing by a negative number"], correct:3, exp:"Multiplying or dividing both sides by a negative number reverses the inequality direction."},
+    {q:"Solve: x + 6 ≤ 10", opts:["x ≤ 4","x ≤ 16","x ≥ 4","x ≤ −4"], correct:0, exp:"Subtract 6 from both sides: x ≤ 4."},
+    {q:"An open circle on a number line means:", opts:["The value is included","The value is excluded","The graph is a ray","The graph is a line segment"], correct:1, exp:"Open circles are used for strict inequalities (< or >) where the boundary value itself isn't a solution."},
+    {q:"Solve: −5x ≥ 20", opts:["x ≥ −4","x ≤ −4","x ≥ 4","x ≤ 4"], correct:1, exp:"Divide by −5 and flip the sign: x ≤ −4."}
+  ],
+  3: [
+    {q:"In y = mx + b, what does m represent?", opts:["The y-intercept","The x-intercept","The slope","The solution"], correct:2, exp:"m is the slope — the rate of change of y with respect to x."},
+    {q:"What is the y-intercept of y = −3x + 7?", opts:["−3","3","7","−7"], correct:2, exp:"The y-intercept is b, the constant term: 7."},
+    {q:"Find the slope between (2,3) and (4,9).", opts:["2","3","6","1/3"], correct:1, exp:"Slope = (9−3)/(4−2) = 6/2 = 3."},
+    {q:"A phone plan costs $10 flat plus $0.05 per text. Which equation models total cost C for t texts?", opts:["C = 10t + 0.05","C = 0.05t + 10","C = 0.05 + 10t","C = t + 10"], correct:1, exp:"Rate per text (0.05) is the slope, flat fee (10) is the intercept: C = 0.05t + 10."}
+  ],
+  4: [
+    {q:"Solve: 2(x + 3) = 16", opts:["x = 5","x = 8","x = 11","x = 2"], correct:0, exp:"Distribute: 2x + 6 = 16 → 2x = 10 → x = 5."},
+    {q:"Solve: 6x − 2 = 3x + 10", opts:["x = 2","x = 4","x = 12","x = 8"], correct:1, exp:"Subtract 3x: 3x − 2 = 10 → 3x = 12 → x = 4."},
+    {q:"Solve: |x + 1| = 6", opts:["x = 5 only","x = −7 only","x = 5 or x = −7","x = 7 or x = −5"], correct:2, exp:"x + 1 = 6 → x = 5, or x + 1 = −6 → x = −7."},
+    {q:"What is the solution to |x| > 4?", opts:["−4 < x < 4","x < −4 or x > 4","x = 4 or x = −4","x > 4 only"], correct:1, exp:"Greater-than absolute value inequalities split into two separate rays: x < −4 or x > 4."}
+  ]
+};
+
+/* ---------------- RENDER QUIZZES ---------------- */
+function renderQuiz(num){
+  const container = document.getElementById(`quiz${num}-questions`);
+  container.innerHTML = '';
+  quizData[num].forEach((item, qi)=>{
+    const block = document.createElement('div');
+    block.className='qz-q';
+    block.innerHTML = `<p><strong>Q${qi+1}.</strong> ${item.q}</p>
+      <div class="qz-opts" data-q="${qi}">
+        ${item.opts.map((o,oi)=>`<div class="qz-opt" data-o="${oi}" onclick="selectOpt(${num},${qi},${oi})">${o}</div>`).join('')}
+      </div>
+      <div class="qz-explain" id="explain-${num}-${qi}"></div>`;
+    container.appendChild(block);
+  });
+}
+[1,2,3,4].forEach(renderQuiz);
+
+const userAnswers = {1:{},2:{},3:{},4:{}};
+function selectOpt(num, qi, oi){
+  userAnswers[num][qi]=oi;
+  const opts = document.querySelectorAll(`#quiz${num}-questions .qz-q:nth-child(${qi+1}) .qz-opt`);
+  opts.forEach(o=>o.classList.remove('selected'));
+  opts[oi].classList.add('selected');
+}
+function gradeQuiz(num){
+  const data = quizData[num];
+  let score = 0;
+  data.forEach((item, qi)=>{
+    const opts = document.querySelectorAll(`#quiz${num}-questions .qz-q:nth-child(${qi+1}) .qz-opt`);
+    const chosen = userAnswers[num][qi];
+    opts.forEach((o,oi)=>{
+      o.style.pointerEvents='none';
+      if(oi===item.correct) o.classList.add('correct');
+      else if(oi===chosen && chosen!==item.correct) o.classList.add('incorrect');
+    });
+    const exp = document.getElementById(`explain-${num}-${qi}`);
+    exp.classList.add('show');
+    exp.textContent = (chosen===item.correct? '✓ Correct. ':'✗ Incorrect. ') + item.exp;
+    if(chosen===item.correct){ score++; addPoints(10); }
+  });
+  const pct = Math.round(score/data.length*100);
+  const resultEl = document.getElementById(`quiz${num}-result`);
+  resultEl.classList.add('show');
+  resultEl.innerHTML = `<h4>Score: ${score}/${data.length} (${pct}%)</h4><p>${pct>=70 ? 'Great work — next module unlocked!' : 'Review the explanations above and keep going — you can still proceed once ready.'}</p>`;
+  if(pct>=70){
+    unlockNext(num);
+  }
+}
+function unlockNext(afterModule){
+  const nextNum = afterModule+1;
+  if(nextNum<=TOTAL_MODULES){
+    const nextMod = document.getElementById(`module${nextNum}`);
+    nextMod.classList.add('unlocked');
+    document.getElementById(`lock${nextNum}note`).style.display='none';
+    modulesUnlocked = Math.max(modulesUnlocked, nextNum);
+    updateProgress();
+  } else {
+    // unlock final challenge
+    document.getElementById('finalChallenge').querySelectorAll('input,button').forEach(el=>el.style.pointerEvents='auto');
+    document.getElementById('lockFinalNote').style.display='none';
+    modulesUnlocked = TOTAL_MODULES+1;
+    updateProgress();
+  }
+}
+// lock final challenge inputs initially
+document.querySelectorAll('#finalChallenge input, #finalChallenge button').forEach(el=>el.style.pointerEvents='none');
+</script>
+</body>
+</html>
