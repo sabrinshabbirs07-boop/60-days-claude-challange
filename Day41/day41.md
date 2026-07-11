@@ -216,8 +216,4 @@ Unlike traditional AI tutors that only answer questions, Interactive Learning St
 ---
 # 📚 Interactive Learning Studio
 
-[html file ]()
-
-Give this repository a ⭐ and follow my **60 Days Claude AI Challenge** journey as I build AI-powered applications every day.
-
-#60DayClaudeChallenge #ClaudeAI #AI #EdTech #Learning #HTML #CSS #JavaScript #OpenSource
+[html file ](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day41/interactive-learning-studio-linear-equations.html)
