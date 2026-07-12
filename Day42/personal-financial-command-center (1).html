@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledgerline — Personal Financial Command Center</title>
+<style>
+:root{
+  --ink-950:#0d1220;
+  --ink-900:#131a2c;
+  --ink-800:#1b2438;
+  --ink-700:#263048;
+  --ink-600:#39466a;
+  --paper-050:#f7f3e9;
+  --paper-100:#efe8d8;
+  --paper-200:#e2d8bf;
+  --brass-500:#c9962c;
+  --brass-400:#e0ac3f;
+  --brass-300:#f0c469;
+  --moss-500:#5f8f6a;
+  --moss-400:#7cad86;
+  --rust-500:#b8542f;
+  --rust-400:#d16b43;
+  --ok:#7cad86;
+  --warn:#e0ac3f;
+  --bad:#c8563a;
+  --font-display: Georgia, 'Iowan Old Style', 'Palatino Linotype', Palatino, serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', 'Consolas', monospace;
+  --bg: var(--paper-050);
+  --surface: #ffffff;
+  --surface-2: var(--paper-100);
+  --border: var(--paper-200);
+  --text: var(--ink-950);
+  --text-dim: #5a5245;
+  --accent: var(--brass-500);
+  --accent-ink: #3a2c0a;
+  --shadow: 0 1px 2px rgba(20,14,0,.06), 0 8px 24px -12px rgba(20,14,0,.18);
+  --radius: 10px;
+}
+[data-theme="dark"]{
+  --bg: var(--ink-950);
+  --surface: var(--ink-900);
+  --surface-2: var(--ink-800);
+  --border: var(--ink-700);
+  --text: var(--paper-050);
+  --text-dim: #9aa3bd;
+  --accent: var(--brass-400);
+  --accent-ink: #1c1404;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 30px -14px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  transition:background .35s ease, color .35s ease;
+  -webkit-font-smoothing:antialiased;
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+}
+a{color:inherit;}
+button{font-family:inherit;}
+::selection{background:var(--accent); color:var(--accent-ink);}
+
+/* ---------- Layout shell ---------- */
+.shell{display:flex; min-height:100vh;}
+.sidebar{
+  width:236px; flex-shrink:0; background:var(--surface);
+  border-right:1px solid var(--border);
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+  padding:22px 14px 20px; display:flex; flex-direction:column; gap:4px;
+  z-index:40;
+}
+.brand{
+  display:flex; align-items:center; gap:10px; padding:4px 10px 18px;
+  border-bottom:1px solid var(--border); margin-bottom:14px;
+}
+.brand-mark{
+  width:34px;height:34px;border-radius:8px;
+  background:linear-gradient(155deg, var(--brass-400), var(--brass-500) 55%, var(--rust-500));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display); font-weight:700; color:#1c1404; font-size:17px;
+  box-shadow:var(--shadow);
+}
+.brand-text{display:flex;flex-direction:column;line-height:1.15;}
+.brand-text b{font-family:var(--font-display); font-size:16.5px; letter-spacing:.2px;}
+.brand-text span{font-size:10.5px; color:var(--text-dim); letter-spacing:.6px; text-transform:uppercase;}
+
+.navlink{
+  display:flex; align-items:center; gap:10px; padding:9px 11px; border-radius:8px;
+  color:var(--text-dim); text-decoration:none; font-size:13.5px; cursor:pointer;
+  border:1px solid transparent;
+}
+.navlink svg{width:16px;height:16px; flex-shrink:0; opacity:.85;}
+.navlink:hover{background:var(--surface-2); color:var(--text);}
+.navlink.active{background:var(--surface-2); color:var(--text); border-color:var(--border); font-weight:600;}
+.navlink.active svg{color:var(--accent); opacity:1;}
+.nav-group-label{
+  font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim);
+  padding:16px 11px 4px; opacity:.7;
+}
+
+.sidebar-foot{margin-top:auto; padding-top:14px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:8px;}
+.theme-toggle{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+  padding:8px 10px; font-size:12.5px; cursor:pointer; color:var(--text);
+}
+.switch{width:34px;height:19px;border-radius:20px;background:var(--ink-600); position:relative; flex-shrink:0; transition:background .25s;}
+[data-theme="dark"] .switch{background:var(--brass-400);}
+.switch::after{content:'';position:absolute; top:2px; left:2px; width:15px;height:15px;border-radius:50%; background:#fff; transition:transform .25s;}
+[data-theme="dark"] .switch::after{transform:translateX(15px);}
+
+.print-btn{
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  background:var(--accent); color:var(--accent-ink); border:none; border-radius:8px;
+  padding:9px 10px; font-size:12.5px; font-weight:700; cursor:pointer;
+}
+
+.main{flex:1; min-width:0;}
+.topbar{
+  position:sticky; top:0; z-index:30; background:var(--bg); border-bottom:1px solid var(--border);
+  padding:16px 28px; display:flex; align-items:center; justify-content:space-between; gap:14px;
+  backdrop-filter:blur(6px);
+}
+.topbar h1{font-family:var(--font-display); font-size:21px; margin:0; font-weight:600;}
+.topbar .sub{font-size:12.5px; color:var(--text-dim); margin-top:2px;}
+.topbar-right{display:flex; align-items:center; gap:10px;}
+.pill{
+  font-size:11.5px; padding:5px 10px; border-radius:99px; border:1px solid var(--border);
+  color:var(--text-dim); font-family:var(--font-mono);
+}
+.content{padding:24px 28px 80px; max-width:1240px;}
+.view{display:none;}
+.view.active{display:block; animation:fadein .4s ease;}
+@keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+.grid{display:grid; gap:16px;}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+@media (max-width:1050px){ .grid-4{grid-template-columns:repeat(2,1fr);} .grid-3{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:640px){ .grid-4,.grid-3,.grid-2{grid-template-columns:1fr;} }
+
+.card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:18px; box-shadow:var(--shadow);
+}
+.card h3{margin:0 0 3px; font-family:var(--font-display); font-size:15.5px; font-weight:600;}
+.card .hint{font-size:11.5px; color:var(--text-dim); margin-bottom:12px;}
+.section-title{
+  font-family:var(--font-display); font-size:19px; margin:34px 0 14px; font-weight:600;
+  display:flex; align-items:center; gap:10px;
+}
+.section-title:first-child{margin-top:0;}
+.section-title .num{
+  font-family:var(--font-mono); font-size:11px; color:var(--accent); border:1px solid var(--border);
+  padding:2px 7px; border-radius:99px; background:var(--surface-2);
+}
+
+/* Stat cards */
+.stat-card{position:relative; overflow:hidden;}
+.stat-label{font-size:11.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.6px;}
+.stat-value{font-family:var(--font-mono); font-size:26px; font-weight:600; margin:6px 0 2px; letter-spacing:-.5px;}
+.stat-delta{font-size:12px; font-family:var(--font-mono);}
+.stat-delta.up{color:var(--ok);}
+.stat-delta.down{color:var(--bad);}
+
+/* Health score ring (signature element) */
+.score-panel{display:flex; align-items:center; gap:26px; flex-wrap:wrap;}
+.ring-wrap{position:relative; width:172px; height:172px; flex-shrink:0;}
+.ring-num{
+  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.ring-num b{font-family:var(--font-display); font-size:40px; line-height:1;}
+.ring-num span{font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-top:4px;}
+.score-breakdown{flex:1; min-width:220px; display:flex; flex-direction:column; gap:10px;}
+.score-row{display:flex; align-items:center; gap:10px; font-size:12.5px;}
+.score-row .label{width:110px; color:var(--text-dim); flex-shrink:0;}
+.score-bar{flex:1; height:7px; border-radius:99px; background:var(--surface-2); overflow:hidden;}
+.score-bar > i{display:block; height:100%; border-radius:99px; background:var(--accent);}
+.score-row .val{font-family:var(--font-mono); width:34px; text-align:right; flex-shrink:0;}
+
+/* Runway gauge (secondary signature) */
+.runway-box{display:flex; align-items:center; gap:18px; flex-wrap:wrap;}
+.runway-track{flex:1; min-width:220px; height:34px; border-radius:8px; background:var(--surface-2); position:relative; overflow:hidden; border:1px solid var(--border);}
+.runway-fill{height:100%; background:linear-gradient(90deg, var(--rust-500), var(--brass-400) 55%, var(--moss-500)); border-radius:8px 0 0 8px; transition:width .6s ease;}
+.runway-ticks{position:absolute; inset:0; display:flex; justify-content:space-between; padding:0 6px; align-items:center; pointer-events:none;}
+.runway-ticks span{font-size:9.5px; font-family:var(--font-mono); color:rgba(0,0,0,.35); mix-blend-mode:difference; opacity:.5;}
+.runway-readout{font-family:var(--font-mono); font-size:22px; font-weight:700; white-space:nowrap;}
+.runway-readout span{font-size:11px; color:var(--text-dim); display:block; font-weight:400; font-family:var(--font-body);}
+
+/* Tables */
+table{width:100%; border-collapse:collapse; font-size:13px;}
+th{
+  text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.6px; color:var(--text-dim);
+  padding:8px 10px; border-bottom:1px solid var(--border); font-weight:600;
+}
+td{padding:9px 10px; border-bottom:1px solid var(--border); vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+td.num, th.num{text-align:right; font-family:var(--font-mono);}
+.row-actions{display:flex; gap:6px; justify-content:flex-end;}
+.icon-btn{
+  background:none; border:1px solid var(--border); color:var(--text-dim); border-radius:6px;
+  width:26px; height:26px; display:flex; align-items:center; justify-content:center; cursor:pointer;
+}
+.icon-btn:hover{color:var(--bad); border-color:var(--bad);}
+.tag{
+  font-size:10.5px; padding:3px 8px; border-radius:99px; background:var(--surface-2); border:1px solid var(--border);
+  color:var(--text-dim); white-space:nowrap;
+}
+
+/* Forms */
+.form-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+.field{display:flex; flex-direction:column; gap:5px; flex:1; min-width:130px;}
+.field label{font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.4px;}
+input, select{
+  background:var(--surface-2); border:1px solid var(--border); border-radius:7px; padding:9px 10px;
+  font-size:13.5px; color:var(--text); font-family:var(--font-body);
+}
+input:focus, select:focus, button:focus-visible{
+  outline:2px solid var(--accent); outline-offset:1px;
+}
+input[type=range]{padding:0; accent-color:var(--accent);}
+.btn{
+  background:var(--accent); color:var(--accent-ink); border:none; border-radius:7px; padding:9px 16px;
+  font-weight:700; font-size:13px; cursor:pointer;
+}
+.btn.secondary{background:var(--surface-2); color:var(--text); border:1px solid var(--border); font-weight:600;}
+.btn.ghost{background:none; border:1px solid var(--border); color:var(--text);}
+.btn:hover{filter:brightness(1.06);}
+
+/* Insights */
+.insight{
+  display:flex; gap:12px; padding:12px 14px; border-radius:8px; background:var(--surface-2);
+  border-left:3px solid var(--accent); margin-bottom:10px; font-size:13px; line-height:1.5;
+}
+.insight.warn{border-left-color:var(--warn);}
+.insight.bad{border-left-color:var(--bad);}
+.insight.good{border-left-color:var(--ok);}
+.insight b{display:block; margin-bottom:2px; font-size:12.5px;}
+
+/* Checklist */
+.checklist label{
+  display:flex; align-items:flex-start; gap:10px; padding:9px 4px; font-size:13px; border-bottom:1px solid var(--border);
+  cursor:pointer;
+}
+.checklist label:last-child{border-bottom:none;}
+.checklist input[type=checkbox]{margin-top:2px; accent-color:var(--accent); width:15px; height:15px;}
+.checklist .done{text-decoration:line-through; color:var(--text-dim);}
+
+/* Tips grid */
+.tip-card{display:flex; gap:12px;}
+.tip-num{
+  font-family:var(--font-display); font-size:22px; color:var(--accent); flex-shrink:0; font-weight:700;
+  width:32px;
+}
+
+/* Canvas chart wrapper */
+.chart-wrap{position:relative; width:100%;}
+canvas{width:100%; display:block;}
+.legend{display:flex; gap:14px; flex-wrap:wrap; margin-top:10px;}
+.legend .item{display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-dim);}
+.legend .dot{width:9px; height:9px; border-radius:2px;}
+
+/* What-if sliders */
+.slider-row{margin-bottom:16px;}
+.slider-row .top{display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:6px;}
+.slider-row .top b{font-family:var(--font-mono); color:var(--accent);}
+input[type=range]{width:100%; height:5px; border-radius:99px; background:var(--surface-2); appearance:none; -webkit-appearance:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:var(--accent); border:2px solid var(--surface); box-shadow:0 0 0 1px var(--border); cursor:pointer;}
+input[type=range]::-moz-range-thumb{width:16px; height:16px; border-radius:50%; background:var(--accent); border:2px solid var(--surface); cursor:pointer;}
+
+.empty{text-align:center; padding:30px 10px; color:var(--text-dim); font-size:13px;}
+
+/* Modal */
+.modal-bg{
+  position:fixed; inset:0; background:rgba(10,8,2,.5); display:none; align-items:center; justify-content:center;
+  z-index:100; padding:20px;
+}
+.modal-bg.open{display:flex;}
+.modal{
+  background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:22px; width:100%; max-width:420px;
+  box-shadow:var(--shadow);
+}
+.modal h3{margin-top:0; font-family:var(--font-display);}
+.modal-foot{display:flex; justify-content:flex-end; gap:8px; margin-top:16px;}
+
+/* Toast */
+#toast{
+  position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px); opacity:0;
+  background:var(--ink-950); color:var(--paper-050); padding:10px 18px; border-radius:8px; font-size:12.5px;
+  transition:all .3s ease; z-index:200; pointer-events:none; font-family:var(--font-mono);
+}
+#toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+/* Mobile nav */
+.hamburger{display:none; background:none; border:1px solid var(--border); border-radius:8px; width:36px;height:36px; align-items:center; justify-content:center; cursor:pointer; color:var(--text);}
+@media (max-width:880px){
+  .sidebar{position:fixed; left:-260px; top:0; transition:left .3s ease; box-shadow:0 0 40px rgba(0,0,0,.3);}
+  .sidebar.open{left:0;}
+  .hamburger{display:flex;}
+  .content{padding:20px 16px 70px;}
+  .topbar{padding:14px 16px;}
+}
+
+/* Print */
+@media print{
+  .sidebar, .topbar-right, .hamburger, .no-print{display:none !important;}
+  .shell{display:block;}
+  .main{width:100%;}
+  .content{padding:0; max-width:100%;}
+  body{background:#fff; color:#000;}
+  .card{box-shadow:none; border:1px solid #ccc; break-inside:avoid;}
+  .view{display:block !important; margin-bottom:24px;}
+}
+</style>
+</head>
+<body data-theme="light">
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">L</div>
+      <div class="brand-text"><b>Ledgerline</b><span>Command Center</span></div>
+    </div>
+
+    <div class="nav-group-label">Overview</div>
+    <a class="navlink active" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</a>
+
+    <div class="nav-group-label">Money In / Out</div>
+    <a class="navlink" data-view="income"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>Income</a>
+    <a class="navlink" data-view="expenses"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>Expenses</a>
+    <a class="navlink" data-view="cashflow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Cash Flow</a>
+
+    <div class="nav-group-label">Building &amp; Protecting</div>
+    <a class="navlink" data-view="buffer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>Buffer Fund</a>
+    <a class="navlink" data-view="tax"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2h6l1 4H8l1-4z"/><path d="M6 6h12l1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L6 6z"/></svg>Tax Set-Aside</a>
+    <a class="navlink" data-view="goals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>Goals</a>
+
+    <div class="nav-group-label">Plan Ahead</div>
+    <a class="navlink" data-view="whatif"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V9M12 19V5M20 19v-7"/></svg>What-If Lab</a>
+    <a class="navlink" data-view="insights"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a6 6 0 00-4 10.5c.6.6 1 1.5 1 2.5h6c0-1 .4-1.9 1-2.5A6 6 0 0012 2z"/></svg>Insights</a>
+    <a class="navlink" data-view="learn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Tips &amp; Checklist</a>
+
+    <div class="sidebar-foot">
+      <div class="theme-toggle" id="themeToggle"><span id="themeLabel">Light mode</span><div class="switch"></div></div>
+      <button class="print-btn no-print" id="printBtn">🖨 Print report</button>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="hamburger" id="hamburger">☰</button>
+        <div>
+          <h1 id="pageTitle">Dashboard</h1>
+          <div class="sub" id="pageSub">Your freelance finances, at a glance.</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="pill" id="clockPill"></span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ============ DASHBOARD ============ -->
+      <div class="view active" id="view-dashboard">
+        <div class="grid grid-4">
+          <div class="card stat-card">
+            <div class="stat-label">Avg. Monthly Income</div>
+            <div class="stat-value" id="statIncome">₹0</div>
+            <div class="stat-delta" id="statIncomeDelta">—</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Avg. Monthly Expenses</div>
+            <div class="stat-value" id="statExpense">₹0</div>
+            <div class="stat-delta" id="statExpenseDelta">—</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Net Cash Flow</div>
+            <div class="stat-value" id="statNet">₹0</div>
+            <div class="stat-delta" id="statNetDelta">—</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Buffer Fund</div>
+            <div class="stat-value" id="statBuffer">₹0</div>
+            <div class="stat-delta" id="statBufferDelta">—</div>
+          </div>
+        </div>
+
+        <div class="section-title"><span class="num">01</span>Financial Health Score</div>
+        <div class="card score-panel">
+          <div class="ring-wrap">
+            <svg viewBox="0 0 172 172" width="172" height="172">
+              <circle cx="86" cy="86" r="74" fill="none" stroke="var(--surface-2)" stroke-width="14"/>
+              <circle id="scoreRing" cx="86" cy="86" r="74" fill="none" stroke="var(--accent)" stroke-width="14" stroke-linecap="round" transform="rotate(-90 86 86)" stroke-dasharray="465" stroke-dashoffset="465"/>
+            </svg>
+            <div class="ring-num"><b id="scoreNum">0</b><span>out of 100</span></div>
+          </div>
+          <div class="score-breakdown" id="scoreBreakdown"></div>
+        </div>
+
+        <div class="section-title"><span class="num">02</span>Runway — Months You Could Survive on Buffer Alone</div>
+        <div class="card runway-box">
+          <div class="runway-track">
+            <div class="runway-fill" id="runwayFill" style="width:0%"></div>
+            <div class="runway-ticks"><span>0</span><span>3mo</span><span>6mo</span><span>9mo</span><span>12mo+</span></div>
+          </div>
+          <div class="runway-readout"><span id="runwayMonths">0.0</span><span>months of runway</span></div>
+        </div>
+
+        <div class="section-title"><span class="num">03</span>Cash Flow — Last 6 Months</div>
+        <div class="card">
+          <div class="chart-wrap"><canvas id="dashFlowChart" height="220"></canvas></div>
+          <div class="legend">
+            <div class="item"><span class="dot" style="background:var(--moss-500)"></span>Income</div>
+            <div class="item"><span class="dot" style="background:var(--rust-400)"></span>Expenses</div>
+          </div>
+        </div>
+
+        <div class="section-title"><span class="num">04</span>Where This Month's Money Goes</div>
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Expense breakdown</h3>
+            <div class="hint">By category, current month</div>
+            <div class="chart-wrap"><canvas id="dashPieChart" height="230"></canvas></div>
+          </div>
+          <div class="card">
+            <h3>Top insights</h3>
+            <div class="hint">Auto-generated from your data</div>
+            <div id="dashInsights"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ INCOME ============ -->
+      <div class="view" id="view-income">
+        <div class="grid grid-3">
+          <div class="card stat-card"><div class="stat-label">This Month</div><div class="stat-value" id="incMonth">₹0</div></div>
+          <div class="card stat-card"><div class="stat-label">Retainer (recurring)</div><div class="stat-value" id="incRetainer">₹0</div></div>
+          <div class="card stat-card"><div class="stat-label">Project / One-off</div><div class="stat-value" id="incProject">₹0</div></div>
+        </div>
+
+        <div class="section-title">Log Income</div>
+        <div class="card">
+          <div class="form-row">
+            <div class="field"><label>Source</label><input id="incSource" placeholder="e.g. Acme Corp retainer"></div>
+            <div class="field"><label>Amount (₹)</label><input id="incAmount" type="number" placeholder="25000"></div>
+            <div class="field"><label>Type</label>
+              <select id="incType"><option value="Retainer">Retainer (recurring)</option><option value="Project">Project (one-off)</option><option value="Gig">Gig / Platform</option><option value="Other">Other</option></select>
+            </div>
+            <div class="field"><label>Date</label><input id="incDate" type="date"></div>
+          </div>
+          <button class="btn" id="addIncomeBtn">+ Add income entry</button>
+        </div>
+
+        <div class="section-title">Income Log</div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Date</th><th>Source</th><th>Type</th><th class="num">Amount</th><th></th></tr></thead>
+            <tbody id="incomeTable"></tbody>
+          </table>
+          <div class="empty" id="incomeEmpty" style="display:none;">No income logged yet. Add your first entry above.</div>
+        </div>
+      </div>
+
+      <!-- ============ EXPENSES ============ -->
+      <div class="view" id="view-expenses">
+        <div class="grid grid-3">
+          <div class="card stat-card"><div class="stat-label">This Month</div><div class="stat-value" id="expMonth">₹0</div></div>
+          <div class="card stat-card"><div class="stat-label">Fixed Costs</div><div class="stat-value" id="expFixed">₹0</div></div>
+          <div class="card stat-card"><div class="stat-label">Variable Costs</div><div class="stat-value" id="expVariable">₹0</div></div>
+        </div>
+
+        <div class="section-title">Log Expense</div>
+        <div class="card">
+          <div class="form-row">
+            <div class="field"><label>Description</label><input id="expDesc" placeholder="e.g. Adobe subscription"></div>
+            <div class="field"><label>Amount (₹)</label><input id="expAmount" type="number" placeholder="1499"></div>
+            <div class="field"><label>Category</label>
+              <select id="expCategory"><option>Housing</option><option>Software/Tools</option><option>Internet/Phone</option><option>Food</option><option>Transport</option><option>Health</option><option>Marketing</option><option>Taxes</option><option>Subscriptions</option><option>Other</option></select>
+            </div>
+            <div class="field"><label>Frequency</label>
+              <select id="expFreq"><option value="Fixed">Fixed (recurring)</option><option value="Variable">Variable (one-off)</option></select>
+            </div>
+            <div class="field"><label>Date</label><input id="expDate" type="date"></div>
+          </div>
+          <button class="btn" id="addExpenseBtn">+ Add expense entry</button>
+        </div>
+
+        <div class="section-title">Budget by Category</div>
+        <div class="card">
+          <div class="hint">Set a soft monthly cap for each category to track against actual spend.</div>
+          <div id="budgetRows"></div>
+        </div>
+
+        <div class="section-title">Expense Log</div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Freq.</th><th class="num">Amount</th><th></th></tr></thead>
+            <tbody id="expenseTable"></tbody>
+          </table>
+          <div class="empty" id="expenseEmpty" style="display:none;">No expenses logged yet. Add your first entry above.</div>
+        </div>
+      </div>
+
+      <!-- ============ CASH FLOW ============ -->
+      <div class="view" id="view-cashflow">
+        <div class="section-title">6-Month Trend</div>
+        <div class="card">
+          <div class="chart-wrap"><canvas id="cfChart" height="260"></canvas></div>
+          <div class="legend">
+            <div class="item"><span class="dot" style="background:var(--moss-500)"></span>Income</div>
+            <div class="item"><span class="dot" style="background:var(--rust-400)"></span>Expenses</div>
+            <div class="item"><span class="dot" style="background:var(--brass-400)"></span>Net</div>
+          </div>
+        </div>
+        <div class="section-title">Income Volatility</div>
+        <div class="card">
+          <div class="hint">Freelance income varies month to month — this measures how spiky yours is. Lower is more predictable.</div>
+          <div class="grid grid-3" style="margin-top:8px;">
+            <div class="stat-card card"><div class="stat-label">Best Month</div><div class="stat-value" id="cfBest">₹0</div></div>
+            <div class="stat-card card"><div class="stat-label">Worst Month</div><div class="stat-value" id="cfWorst">₹0</div></div>
+            <div class="stat-card card"><div class="stat-label">Volatility Index</div><div class="stat-value" id="cfVol">0%</div></div>
+          </div>
+        </div>
+        <div class="section-title">Monthly Breakdown</div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Month</th><th class="num">Income</th><th class="num">Expenses</th><th class="num">Net</th></tr></thead>
+            <tbody id="cfTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============ BUFFER FUND ============ -->
+      <div class="view" id="view-buffer">
+        <div class="grid grid-3">
+          <div class="card stat-card"><div class="stat-label">Current Buffer</div><div class="stat-value" id="bufCurrent">₹0</div></div>
+          <div class="card stat-card"><div class="stat-label">Target (6 mo. expenses)</div><div class="stat-value" id="bufTarget">₹0</div></div>
+          <div class="card stat-card"><div class="stat-label">% to Target</div><div class="stat-value" id="bufPct">0%</div></div>
+        </div>
+
+        <div class="section-title">Buffer Progress</div>
+        <div class="card">
+          <div class="score-bar" style="height:14px; margin-bottom:8px;"><i id="bufBar" style="width:0%"></i></div>
+          <div class="hint" id="bufHint">Building toward a full 6-month buffer — the top priority for freelancers with mixed income.</div>
+        </div>
+
+        <div class="section-title">Update Buffer Fund</div>
+        <div class="card">
+          <div class="form-row">
+            <div class="field"><label>Current buffer balance (₹)</label><input id="bufBalance" type="number" placeholder="50000"></div>
+            <div class="field"><label>Months of expenses to target</label>
+              <select id="bufMonthsTarget"><option value="3">3 months</option><option value="6" selected>6 months</option><option value="9">9 months</option><option value="12">12 months</option></select>
+            </div>
+          </div>
+          <button class="btn" id="saveBufferBtn">Save buffer settings</button>
+        </div>
+
+        <div class="section-title">Automated Buffer Plan</div>
+        <div class="card">
+          <div class="hint">Based on your average net cash flow, here's a suggested monthly transfer to reach your target.</div>
+          <div id="bufPlan" style="margin-top:10px;"></div>
+        </div>
+      </div>
+
+      <!-- ============ TAX SET-ASIDE ============ -->
+      <div class="view" id="view-tax">
+        <div class="grid grid-3">
+          <div class="card stat-card"><div class="stat-label">Estimated Set-Aside / Month</div><div class="stat-value" id="taxMonthly">₹0</div></div>
+          <div class="card stat-card"><div class="stat-label">Set Aside Since Jan</div><div class="stat-value" id="taxYtd">₹0</div></div>
+          <div class="card stat-card"><div class="stat-label">Next Quarterly Due</div><div class="stat-value" id="taxNextDue">—</div></div>
+        </div>
+
+        <div class="section-title">Set-Aside Rate</div>
+        <div class="card">
+          <div class="slider-row">
+            <div class="top"><span>Estimated effective tax rate</span><b id="taxRateVal">25%</b></div>
+            <input type="range" id="taxRate" min="10" max="40" value="25">
+          </div>
+          <div class="hint">Freelance income is rarely taxed at source — set aside a percentage of every payment as it lands. 25–30% is a common starting estimate; check with a tax professional for your bracket.</div>
+        </div>
+
+        <div class="section-title">Quarterly Estimate Calendar</div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Quarter</th><th class="num">Income (est.)</th><th class="num">Set-Aside Due</th><th>Due Date</th></tr></thead>
+            <tbody id="taxTable"></tbody>
+          </table>
+        </div>
+
+        <div class="section-title">Tax Set-Aside Tracker</div>
+        <div class="card">
+          <div class="form-row">
+            <div class="field"><label>Amount moved to tax account (₹)</label><input id="taxMoveAmount" type="number" placeholder="5000"></div>
+            <div class="field"><label>Date</label><input id="taxMoveDate" type="date"></div>
+          </div>
+          <button class="btn" id="addTaxMoveBtn">+ Log transfer to tax account</button>
+          <table style="margin-top:14px;">
+            <thead><tr><th>Date</th><th class="num">Amount Set Aside</th><th></th></tr></thead>
+            <tbody id="taxMoveTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ============ GOALS ============ -->
+      <div class="view" id="view-goals">
+        <div class="section-title">Financial Goals</div>
+        <div class="card">
+          <div class="form-row">
+            <div class="field"><label>Goal name</label><input id="goalName" placeholder="e.g. New laptop"></div>
+            <div class="field"><label>Target amount (₹)</label><input id="goalTarget" type="number" placeholder="80000"></div>
+            <div class="field"><label>Saved so far (₹)</label><input id="goalSaved" type="number" placeholder="0"></div>
+            <div class="field"><label>Target date</label><input id="goalDate" type="date"></div>
+          </div>
+          <button class="btn" id="addGoalBtn">+ Add goal</button>
+        </div>
+        <div class="section-title">Progress</div>
+        <div class="grid grid-2" id="goalsGrid"></div>
+        <div class="empty" id="goalsEmpty" style="display:none;">No goals yet. Add one above to start tracking.</div>
+      </div>
+
+      <!-- ============ WHAT-IF LAB ============ -->
+      <div class="view" id="view-whatif">
+        <div class="section-title">Simulate a Scenario</div>
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Adjust the levers</h3>
+            <div class="hint">See how changes ripple through your runway and buffer target.</div>
+            <div class="slider-row">
+              <div class="top"><span>Income change</span><b id="wiIncomeVal">0%</b></div>
+              <input type="range" id="wiIncome" min="-50" max="50" value="0">
+            </div>
+            <div class="slider-row">
+              <div class="top"><span>Expense change</span><b id="wiExpenseVal">0%</b></div>
+              <input type="range" id="wiExpense" min="-50" max="50" value="0">
+            </div>
+            <div class="slider-row">
+              <div class="top"><span>One-off income drought (months)</span><b id="wiDroughtVal">0 mo</b></div>
+              <input type="range" id="wiDrought" min="0" max="6" value="0">
+            </div>
+            <div class="slider-row">
+              <div class="top"><span>Extra monthly buffer contribution</span><b id="wiExtraVal">₹0</b></div>
+              <input type="range" id="wiExtra" min="0" max="20000" step="500" value="0">
+            </div>
+          </div>
+          <div class="card">
+            <h3>Simulated outcome</h3>
+            <div class="hint">Based on your current averages, adjusted by the levers</div>
+            <div class="grid grid-2" style="gap:12px;">
+              <div><div class="stat-label">New Monthly Net</div><div class="stat-value" id="wiNet" style="font-size:20px;">₹0</div></div>
+              <div><div class="stat-label">New Runway</div><div class="stat-value" id="wiRunway" style="font-size:20px;">0 mo</div></div>
+              <div><div class="stat-label">Months to Buffer Target</div><div class="stat-value" id="wiMonthsToTarget" style="font-size:20px;">—</div></div>
+              <div><div class="stat-label">Survives Drought?</div><div class="stat-value" id="wiSurvives" style="font-size:20px;">—</div></div>
+            </div>
+            <div id="wiNote" style="margin-top:12px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ INSIGHTS ============ -->
+      <div class="view" id="view-insights">
+        <div class="section-title">AI-Style Financial Insights</div>
+        <div class="card" id="fullInsights"></div>
+        <div class="section-title">Ask Yourself</div>
+        <div class="card">
+          <div class="grid grid-2">
+            <div class="insight"><b>Prompt</b>Which single client or platform makes up the largest share of my income — and what happens to my runway if they disappear next month?</div>
+            <div class="insight"><b>Prompt</b>If my slowest month this year repeated for three months in a row, would my buffer carry me through?</div>
+            <div class="insight"><b>Prompt</b>Which recurring subscription have I not opened or used in the last 30 days?</div>
+            <div class="insight"><b>Prompt</b>Am I pricing new projects to cover tax, tooling, and buffer — or just to match last year's rate?</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ LEARN / TIPS ============ -->
+      <div class="view" id="view-learn">
+        <div class="section-title">Freelancer Money Tips</div>
+        <div class="grid grid-2">
+          <div class="card tip-card"><div class="tip-num">01</div><div><h3>Pay yourself a "salary"</h3><p class="hint" style="margin-bottom:0;">Move a fixed amount to a personal account each month regardless of what clients pay when — smooths the feast-and-famine cycle.</p></div></div>
+          <div class="card tip-card"><div class="tip-num">02</div><div><h3>Separate tax money on arrival</h3><p class="hint" style="margin-bottom:0;">The moment a payment lands, shift your set-aside percentage to a separate account so it's never spent by accident.</p></div></div>
+          <div class="card tip-card"><div class="tip-num">03</div><div><h3>Buffer before big bets</h3><p class="hint" style="margin-bottom:0;">A 3–6 month buffer is what lets you say no to bad-fit clients and negotiate from strength.</p></div></div>
+          <div class="card tip-card"><div class="tip-num">04</div><div><h3>Track by client, not just total</h3><p class="hint" style="margin-bottom:0;">Knowing your income concentration reveals hidden risk long before a client actually leaves.</p></div></div>
+          <div class="card tip-card"><div class="tip-num">05</div><div><h3>Review subscriptions quarterly</h3><p class="hint" style="margin-bottom:0;">Tools accumulate fast for freelancers — a quarterly audit usually finds 10–20% in easy savings.</p></div></div>
+          <div class="card tip-card"><div class="tip-num">06</div><div><h3>Invoice with net-15, not net-30</h3><p class="hint" style="margin-bottom:0;">Shorter payment terms reduce the cash-flow gap that forces reliance on the buffer.</p></div></div>
+        </div>
+
+        <div class="section-title">Getting-Started Checklist</div>
+        <div class="card checklist" id="checklistCard"></div>
+
+        <div class="section-title">Resources</div>
+        <div class="card">
+          <ul style="margin:0; padding-left:18px; font-size:13.5px; line-height:2;">
+            <li>Keep a rolling 12-month income/expense log outside any single client relationship.</li>
+            <li>Learn your local self-employment tax filing calendar and set calendar reminders a week ahead of each due date.</li>
+            <li>Open a dedicated business/tax savings account so freelance money never fully mixes with personal spending.</li>
+            <li>Revisit your day-rate or project pricing at least twice a year against actual hours logged.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------------- Storage ---------------- */
+const STORE_KEY = "ledgerline_v1";
+const defaultState = {
+  theme: "light",
+  income: [],
+  expenses: [],
+  budgets: {},
+  buffer: { balance: 50000, monthsTarget: 6 },
+  taxRate: 25,
+  taxMoves: [],
+  goals: [],
+  checklist: {}
+};
+let state = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return seedDemoData(structuredCloneSafe(defaultState));
+    const parsed = JSON.parse(raw);
+    return Object.assign(structuredCloneSafe(defaultState), parsed);
+  }catch(e){ return seedDemoData(structuredCloneSafe(defaultState)); }
+}
+function structuredCloneSafe(o){ return JSON.parse(JSON.stringify(o)); }
+function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+function seedDemoData(s){
+  const today = new Date();
+  function d(monthsAgo, day){ const dt = new Date(today.getFullYear(), today.getMonth()-monthsAgo, day); return dt.toISOString().slice(0,10); }
+  s.income = [
+    {id:uid(), date:d(5,3), source:"Northwind Retainer", type:"Retainer", amount:28000},
+    {id:uid(), date:d(4,4), source:"Northwind Retainer", type:"Retainer", amount:28000},
+    {id:uid(), date:d(4,18), source:"Landing page project", type:"Project", amount:15000},
+    {id:uid(), date:d(3,2), source:"Northwind Retainer", type:"Retainer", amount:28000},
+    {id:uid(), date:d(3,20), source:"Fiverr gig", type:"Gig", amount:6000},
+    {id:uid(), date:d(2,3), source:"Northwind Retainer", type:"Retainer", amount:28000},
+    {id:uid(), date:d(2,10), source:"Brand identity project", type:"Project", amount:22000},
+    {id:uid(), date:d(1,4), source:"Northwind Retainer", type:"Retainer", amount:28000},
+    {id:uid(), date:d(1,25), source:"Fiverr gig", type:"Gig", amount:4500},
+    {id:uid(), date:d(0,3), source:"Northwind Retainer", type:"Retainer", amount:28000},
+    {id:uid(), date:d(0,15), source:"Logo project", type:"Project", amount:9000}
+  ];
+  s.expenses = [
+    {id:uid(), date:d(5,1), desc:"Rent share", category:"Housing", freq:"Fixed", amount:12000},
+    {id:uid(), date:d(5,2), desc:"Internet", category:"Internet/Phone", freq:"Fixed", amount:1200},
+    {id:uid(), date:d(4,1), desc:"Rent share", category:"Housing", freq:"Fixed", amount:12000},
+    {id:uid(), date:d(4,2), desc:"Adobe CC", category:"Software/Tools", freq:"Fixed", amount:1699},
+    {id:uid(), date:d(4,10), desc:"Groceries", category:"Food", freq:"Variable", amount:5200},
+    {id:uid(), date:d(3,1), desc:"Rent share", category:"Housing", freq:"Fixed", amount:12000},
+    {id:uid(), date:d(3,5), desc:"Notion + Figma", category:"Software/Tools", freq:"Fixed", amount:1500},
+    {id:uid(), date:d(3,15), desc:"Client dinner", category:"Marketing", freq:"Variable", amount:2200},
+    {id:uid(), date:d(2,1), desc:"Rent share", category:"Housing", freq:"Fixed", amount:12000},
+    {id:uid(), date:d(2,8), desc:"Groceries", category:"Food", freq:"Variable", amount:4800},
+    {id:uid(), date:d(2,12), desc:"Fuel", category:"Transport", freq:"Variable", amount:2000},
+    {id:uid(), date:d(1,1), desc:"Rent share", category:"Housing", freq:"Fixed", amount:12000},
+    {id:uid(), date:d(1,2), desc:"Phone bill", category:"Internet/Phone", freq:"Fixed", amount:699},
+    {id:uid(), date:d(1,20), desc:"Health checkup", category:"Health", freq:"Variable", amount:1500},
+    {id:uid(), date:d(0,1), desc:"Rent share", category:"Housing", freq:"Fixed", amount:12000},
+    {id:uid(), date:d(0,2), desc:"Adobe CC", category:"Software/Tools", freq:"Fixed", amount:1699},
+    {id:uid(), date:d(0,9), desc:"Groceries", category:"Food", freq:"Variable", amount:5000}
+  ];
+  s.budgets = {"Housing":12000,"Software/Tools":3500,"Food":6000,"Transport":2500,"Internet/Phone":2000,"Marketing":3000,"Health":2000,"Subscriptions":1500,"Taxes":0,"Other":2000};
+  s.buffer = { balance: 48000, monthsTarget: 6 };
+  s.taxMoves = [ {id:uid(), date:d(2,5), amount:8000}, {id:uid(), date:d(1,5), amount:9000} ];
+  s.goals = [
+    {id:uid(), name:"Emergency laptop upgrade", target:80000, saved:22000, date:futureDate(6)},
+    {id:uid(), name:"6-month buffer", target:150000, saved:48000, date:futureDate(10)}
+  ];
+  return s;
+}
+function futureDate(monthsAhead){ const dt=new Date(); dt.setMonth(dt.getMonth()+monthsAhead); return dt.toISOString().slice(0,10); }
+function uid(){ return Math.random().toString(36).slice(2,10); }
+
+/* ---------------- Utils ---------------- */
+const fmt = n => "₹" + Math.round(n).toLocaleString("en-IN");
+const fmt1 = n => n.toFixed(1);
+function monthKey(dateStr){ const dt=new Date(dateStr); return dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0"); }
+function monthLabel(key){ const [y,m]=key.split("-"); const dt=new Date(parseInt(y),parseInt(m)-1,1); return dt.toLocaleDateString("en-IN",{month:"short",year:"2-digit"}); }
+function lastNMonthKeys(n){
+  const out=[]; const today=new Date();
+  for(let i=n-1;i>=0;i--){ const dt=new Date(today.getFullYear(), today.getMonth()-i, 1); out.push(dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")); }
+  return out;
+}
+function toast(msg){
+  const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toast._h); toast._h=setTimeout(()=>t.classList.remove("show"), 2200);
+}
+
+/* ---------------- Derived aggregates ---------------- */
+function monthlyIncomeMap(){
+  const map={};
+  state.income.forEach(i=>{ const k=monthKey(i.date); map[k]=(map[k]||0)+Number(i.amount); });
+  return map;
+}
+function monthlyExpenseMap(){
+  const map={};
+  state.expenses.forEach(e=>{ const k=monthKey(e.date); map[k]=(map[k]||0)+Number(e.amount); });
+  return map;
+}
+function last6(){
+  const keys = lastNMonthKeys(6);
+  const inc = monthlyIncomeMap(), exp = monthlyExpenseMap();
+  return keys.map(k=>({key:k, label:monthLabel(k), income:inc[k]||0, expense:exp[k]||0, net:(inc[k]||0)-(exp[k]||0)}));
+}
+function avg(arr){ return arr.length? arr.reduce((a,b)=>a+b,0)/arr.length : 0; }
+function currentMonthKey(){ const dt=new Date(); return dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0"); }
+
+/* ---------------- Navigation ---------------- */
+const views = document.querySelectorAll(".view");
+const navlinks = document.querySelectorAll(".navlink");
+const pageTitle = document.getElementById("pageTitle");
+const pageSub = document.getElementById("pageSub");
+const titles = {
+  dashboard:["Dashboard","Your freelance finances, at a glance."],
+  income:["Income","Log and review every payment that comes in."],
+  expenses:["Expenses","Track spending and budgets by category."],
+  cashflow:["Cash Flow","How money moves in and out over time."],
+  buffer:["Buffer Fund","Your safety net for slow months."],
+  tax:["Tax Set-Aside","Stay ahead of quarterly obligations."],
+  goals:["Goals","Track progress toward what matters."],
+  whatif:["What-If Lab","Simulate scenarios before they happen."],
+  insights:["Insights","Patterns in your financial data."],
+  learn:["Tips & Checklist","Level up your freelance money habits."]
+};
+navlinks.forEach(link=>{
+  link.addEventListener("click", ()=>{
+    const v = link.dataset.view;
+    navlinks.forEach(l=>l.classList.remove("active"));
+    link.classList.add("active");
+    views.forEach(vw=>vw.classList.remove("active"));
+    document.getElementById("view-"+v).classList.add("active");
+    pageTitle.textContent = titles[v][0];
+    pageSub.textContent = titles[v][1];
+    document.getElementById("sidebar").classList.remove("open");
+    if(v==="dashboard") renderDashboard();
+    if(v==="income") renderIncome();
+    if(v==="expenses") renderExpenses();
+    if(v==="cashflow") renderCashflow();
+    if(v==="buffer") renderBuffer();
+    if(v==="tax") renderTax();
+    if(v==="goals") renderGoals();
+    if(v==="whatif") renderWhatIf();
+    if(v==="insights") renderInsightsFull();
+    if(v==="learn") renderChecklist();
+  });
+});
+document.getElementById("hamburger").addEventListener("click", ()=>document.getElementById("sidebar").classList.toggle("open"));
+
+/* ---------------- Theme ---------------- */
+function applyTheme(){
+  document.body.setAttribute("data-theme", state.theme);
+  document.getElementById("themeLabel").textContent = state.theme==="dark" ? "Dark mode":"Light mode";
+}
+document.getElementById("themeToggle").addEventListener("click", ()=>{
+  state.theme = state.theme==="dark" ? "light":"dark";
+  applyTheme(); save(); renderAll();
+});
+document.getElementById("printBtn").addEventListener("click", ()=>window.print());
+
+/* ---------------- Clock pill ---------------- */
+function tickClock(){
+  const dt = new Date();
+  document.getElementById("clockPill").textContent = dt.toLocaleDateString("en-IN",{weekday:"short", day:"2-digit", month:"short", year:"numeric"});
+}
+tickClock(); setInterval(tickClock, 60000);
+
+/* ---------------- Canvas chart helpers (no libraries) ---------------- */
+function setupCanvas(canvas){
+  const dpr = window.devicePixelRatio||1;
+  const rect = canvas.getBoundingClientRect();
+  const cssH = canvas.getAttribute("height") ? parseInt(canvas.getAttribute("height")) : rect.height;
+  canvas.width = rect.width*dpr;
+  canvas.height = cssH*dpr;
+  canvas.style.height = cssH+"px";
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr,dpr);
+  return {ctx, w:rect.width, h:cssH};
+}
+function cssVar(name){ return getComputedStyle(document.body).getPropertyValue(name).trim(); }
+
+function drawBarLineChart(canvasId, data){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const {ctx,w,h} = setupCanvas(canvas);
+  ctx.clearRect(0,0,w,h);
+  const padL=44, padR=10, padT=14, padB=26;
+  const plotW = w-padL-padR, plotH = h-padT-padB;
+  const maxVal = Math.max(1, ...data.map(d=>Math.max(d.income,d.expense)));
+  const n = data.length;
+  const groupW = plotW/n;
+  const barW = Math.min(22, groupW*0.3);
+
+  ctx.strokeStyle = cssVar("--border"); ctx.lineWidth=1; ctx.font="10.5px "+getComputedStyle(document.body).fontFamily;
+  ctx.fillStyle = cssVar("--text-dim");
+  for(let g=0; g<=4; g++){
+    const y = padT + plotH - (plotH*g/4);
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
+    const val = maxVal*g/4;
+    ctx.fillText(val>=1000? Math.round(val/1000)+"k": Math.round(val), 4, y+3);
+  }
+
+  data.forEach((d,i)=>{
+    const cx = padL + groupW*i + groupW/2;
+    const incH = (d.income/maxVal)*plotH;
+    const expH = (d.expense/maxVal)*plotH;
+    ctx.fillStyle = cssVar("--moss-500");
+    roundRect(ctx, cx-barW-2, padT+plotH-incH, barW, incH, 3); ctx.fill();
+    ctx.fillStyle = cssVar("--rust-400");
+    roundRect(ctx, cx+2, padT+plotH-expH, barW, expH, 3); ctx.fill();
+    ctx.fillStyle = cssVar("--text-dim");
+    ctx.textAlign="center";
+    ctx.fillText(d.label, cx, h-8);
+  });
+  ctx.textAlign="left";
+}
+
+function drawTrendChart(canvasId, data){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const {ctx,w,h} = setupCanvas(canvas);
+  ctx.clearRect(0,0,w,h);
+  const padL=48, padR=14, padT=16, padB=26;
+  const plotW=w-padL-padR, plotH=h-padT-padB;
+  const allVals = data.flatMap(d=>[d.income,d.expense,d.net]);
+  const maxVal = Math.max(1, ...allVals);
+  const minVal = Math.min(0, ...allVals);
+  const range = maxVal-minVal || 1;
+  const n = data.length;
+  function xFor(i){ return padL + (plotW*i/(n-1||1)); }
+  function yFor(v){ return padT + plotH - ((v-minVal)/range)*plotH; }
+
+  ctx.strokeStyle = cssVar("--border"); ctx.fillStyle=cssVar("--text-dim"); ctx.font="10.5px sans-serif";
+  for(let g=0; g<=4; g++){
+    const val = minVal + (range*g/4);
+    const y = yFor(val);
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
+    ctx.fillText(Math.round(val/1000)+"k", 4, y+3);
+  }
+  data.forEach((d,i)=>{ ctx.fillText(d.label, xFor(i)-10, h-8); });
+
+  function line(key, color){
+    ctx.beginPath(); ctx.strokeStyle=color; ctx.lineWidth=2.4; ctx.lineJoin="round";
+    data.forEach((d,i)=>{ const x=xFor(i), y=yFor(d[key]); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); });
+    ctx.stroke();
+    data.forEach((d,i)=>{ const x=xFor(i), y=yFor(d[key]); ctx.beginPath(); ctx.arc(x,y,3,0,7); ctx.fillStyle=color; ctx.fill(); });
+  }
+  line("income", cssVar("--moss-500"));
+  line("expense", cssVar("--rust-400"));
+  line("net", cssVar("--brass-400"));
+}
+
+function drawPieChart(canvasId, entries){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const {ctx,w,h} = setupCanvas(canvas);
+  ctx.clearRect(0,0,w,h);
+  const total = entries.reduce((a,b)=>a+b.value,0);
+  const cx = w*0.32, cy = h/2, r = Math.min(cx, h/2)-10;
+  const colors = ["#c9962c","#b8542f","#5f8f6a","#39466a","#e0ac3f","#d16b43","#7cad86","#8a94b8","#f0c469"];
+  let start = -Math.PI/2;
+  if(total<=0){
+    ctx.fillStyle = cssVar("--text-dim"); ctx.font="13px sans-serif"; ctx.fillText("No expense data yet", 10, h/2);
+    return;
+  }
+  entries.forEach((e,i)=>{
+    const angle = (e.value/total)*Math.PI*2;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,start+angle); ctx.closePath();
+    ctx.fillStyle = colors[i%colors.length]; ctx.fill();
+    start += angle;
+  });
+  ctx.globalCompositeOperation="destination-out";
+  ctx.beginPath(); ctx.arc(cx,cy,r*0.55,0,7); ctx.fill();
+  ctx.globalCompositeOperation="source-over";
+
+  let ly = 14;
+  entries.slice(0,8).forEach((e,i)=>{
+    ctx.fillStyle = colors[i%colors.length];
+    ctx.fillRect(cx+r+16, ly, 9, 9);
+    ctx.fillStyle = cssVar("--text");
+    ctx.font="11px sans-serif";
+    const pct = Math.round((e.value/total)*100);
+    ctx.fillText(e.label+" — "+pct+"%", cx+r+30, ly+8);
+    ly += 18;
+  });
+}
+function roundRect(ctx,x,y,w,h,r){
+  if(h<0){ y=y+h; h=Math.abs(h); }
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+/* ---------------- Financial Health Score ---------------- */
+function computeHealthScore(){
+  const m6 = last6();
+  const avgInc = avg(m6.map(d=>d.income));
+  const avgExp = avg(m6.map(d=>d.expense));
+  const avgNet = avgInc-avgExp;
+  const savingsRate = avgInc>0 ? Math.max(0, avgNet/avgInc) : 0;
+  const bufferTarget = avgExp * (state.buffer.monthsTarget||6);
+  const bufferPct = bufferTarget>0 ? Math.min(1, state.buffer.balance/bufferTarget) : 0;
+  const incomeVals = m6.map(d=>d.income).filter(v=>v>0);
+  const volatility = incomeVals.length>1 ? (Math.max(...incomeVals)-Math.min(...incomeVals))/(avg(incomeVals)||1) : 0;
+  const stabilityScore = Math.max(0, 1-Math.min(1,volatility/1.5));
+  const taxReadiness = (function(){
+    const est = estimateTaxDue();
+    if(est.due<=0) return 1;
+    return Math.max(0, Math.min(1, est.setAside/est.due));
+  })();
+  const debtFree = 1; // no debt module tracked distinct; assume healthy unless flagged by user later
+
+  const weights = { savings:0.28, buffer:0.30, stability:0.20, tax:0.17, discipline:0.05 };
+  const disciplineScore = state.income.length+state.expenses.length > 4 ? 1 : 0.4;
+
+  const total = (savingsRate*100*weights.savings/28*28 // keep proportion simple below instead
+  );
+  const scoreParts = [
+    {label:"Savings rate", pct: Math.min(1,savingsRate*3), weight:28},
+    {label:"Buffer fund", pct: bufferPct, weight:30},
+    {label:"Income stability", pct: stabilityScore, weight:20},
+    {label:"Tax readiness", pct: taxReadiness, weight:17},
+    {label:"Tracking discipline", pct: disciplineScore, weight:5}
+  ];
+  const finalScore = Math.round(scoreParts.reduce((s,p)=>s+p.pct*p.weight,0));
+  return {finalScore, scoreParts, avgInc, avgExp, avgNet, bufferPct, bufferTarget, volatility};
+}
+
+function estimateTaxDue(){
+  const rate = state.taxRate/100;
+  const inc = state.income.reduce((a,b)=>a+Number(b.amount),0);
+  const due = inc*rate;
+  const setAside = state.taxMoves.reduce((a,b)=>a+Number(b.amount),0);
+  return {due, setAside, rate, inc};
+}
+
+/* ---------------- Renderers ---------------- */
+function renderDashboard(){
+  const m6 = last6();
+  const health = computeHealthScore();
+
+  document.getElementById("statIncome").textContent = fmt(health.avgInc);
+  document.getElementById("statExpense").textContent = fmt(health.avgExp);
+  document.getElementById("statNet").textContent = fmt(health.avgNet);
+  document.getElementById("statBuffer").textContent = fmt(state.buffer.balance);
+
+  const netDeltaEl = document.getElementById("statNetDelta");
+  netDeltaEl.textContent = (health.avgNet>=0?"▲ ":"▼ ") + "positive cash flow avg.";
+  netDeltaEl.className = "stat-delta " + (health.avgNet>=0?"up":"down");
+
+  const incDeltaEl = document.getElementById("statIncomeDelta");
+  const last2 = m6.slice(-2);
+  const incTrend = last2.length===2 ? last2[1].income-last2[0].income : 0;
+  incDeltaEl.textContent = (incTrend>=0?"▲ ":"▼ ")+fmt(Math.abs(incTrend))+" vs prior month";
+  incDeltaEl.className = "stat-delta "+(incTrend>=0?"up":"down");
+
+  const expDeltaEl = document.getElementById("statExpenseDelta");
+  const expTrend = last2.length===2 ? last2[1].expense-last2[0].expense : 0;
+  expDeltaEl.textContent = (expTrend<=0?"▲ ":"▼ ")+fmt(Math.abs(expTrend))+" vs prior month";
+  expDeltaEl.className = "stat-delta "+(expTrend<=0?"up":"down");
+
+  document.getElementById("statBufferDelta").textContent = Math.round(health.bufferPct*100)+"% of "+(state.buffer.monthsTarget)+"-mo target";
+  document.getElementById("statBufferDelta").className = "stat-delta "+(health.bufferPct>=0.5?"up":"down");
+
+  // score ring
+  const circumference = 2*Math.PI*74;
+  const ring = document.getElementById("scoreRing");
+  ring.setAttribute("stroke-dasharray", circumference.toFixed(1));
+  const offset = circumference*(1-health.finalScore/100);
+  requestAnimationFrame(()=>{ ring.style.transition="stroke-dashoffset 1s ease"; ring.setAttribute("stroke-dashoffset", offset.toFixed(1)); });
+  ring.setAttribute("stroke", health.finalScore>=70?cssVar("--moss-500"):health.finalScore>=45?cssVar("--brass-400"):cssVar("--rust-500"));
+  document.getElementById("scoreNum").textContent = health.finalScore;
+
+  const bd = document.getElementById("scoreBreakdown");
+  bd.innerHTML = health.scoreParts.map(p=>`
+    <div class="score-row">
+      <span class="label">${p.label}</span>
+      <span class="score-bar"><i style="width:${Math.round(p.pct*100)}%"></i></span>
+      <span class="val">${Math.round(p.pct*100)}%</span>
+    </div>`).join("");
+
+  // runway
+  const runwayMonths = health.avgExp>0 ? state.buffer.balance/health.avgExp : 0;
+  document.getElementById("runwayMonths").textContent = fmt1(runwayMonths);
+  document.getElementById("runwayFill").style.width = Math.min(100,(runwayMonths/12)*100)+"%";
+
+  drawBarLineChart("dashFlowChart", m6);
+
+  // pie chart current month
+  const curKey = currentMonthKey();
+  const catTotals = {};
+  state.expenses.filter(e=>monthKey(e.date)===curKey).forEach(e=>{ catTotals[e.category]=(catTotals[e.category]||0)+Number(e.amount); });
+  const entries = Object.entries(catTotals).map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value);
+  drawPieChart("dashPieChart", entries);
+
+  document.getElementById("dashInsights").innerHTML = generateInsights().slice(0,3).map(insightHTML).join("");
+}
+
+function renderIncome(){
+  const curKey = currentMonthKey();
+  const curEntries = state.income.filter(i=>monthKey(i.date)===curKey);
+  document.getElementById("incMonth").textContent = fmt(curEntries.reduce((a,b)=>a+Number(b.amount),0));
+  document.getElementById("incRetainer").textContent = fmt(curEntries.filter(i=>i.type==="Retainer").reduce((a,b)=>a+Number(b.amount),0));
+  document.getElementById("incProject").textContent = fmt(curEntries.filter(i=>i.type!=="Retainer").reduce((a,b)=>a+Number(b.amount),0));
+
+  const tbody = document.getElementById("incomeTable");
+  const sorted = [...state.income].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  tbody.innerHTML = sorted.map(i=>`
+    <tr>
+      <td>${i.date}</td>
+      <td>${escapeHTML(i.source)}</td>
+      <td><span class="tag">${i.type}</span></td>
+      <td class="num">${fmt(i.amount)}</td>
+      <td class="row-actions"><button class="icon-btn" data-del-income="${i.id}">✕</button></td>
+    </tr>`).join("");
+  document.getElementById("incomeEmpty").style.display = sorted.length? "none":"block";
+
+  tbody.querySelectorAll("[data-del-income]").forEach(b=>b.addEventListener("click",()=>{
+    state.income = state.income.filter(x=>x.id!==b.dataset.delIncome); save(); renderIncome(); renderAllQuiet();
+    toast("Income entry removed");
+  }));
+}
+
+function renderExpenses(){
+  const curKey = currentMonthKey();
+  const curEntries = state.expenses.filter(e=>monthKey(e.date)===curKey);
+  document.getElementById("expMonth").textContent = fmt(curEntries.reduce((a,b)=>a+Number(b.amount),0));
+  document.getElementById("expFixed").textContent = fmt(curEntries.filter(e=>e.freq==="Fixed").reduce((a,b)=>a+Number(b.amount),0));
+  document.getElementById("expVariable").textContent = fmt(curEntries.filter(e=>e.freq==="Variable").reduce((a,b)=>a+Number(b.amount),0));
+
+  // budgets
+  const categories = ["Housing","Software/Tools","Internet/Phone","Food","Transport","Health","Marketing","Taxes","Subscriptions","Other"];
+  const spentByCat = {};
+  curEntries.forEach(e=>{ spentByCat[e.category]=(spentByCat[e.category]||0)+Number(e.amount); });
+  const rows = document.getElementById("budgetRows");
+  rows.innerHTML = categories.map(cat=>{
+    const budget = state.budgets[cat]||0;
+    const spent = spentByCat[cat]||0;
+    const pct = budget>0 ? Math.min(1.2, spent/budget) : (spent>0?1:0);
+    const over = budget>0 && spent>budget;
+    return `<div class="score-row" style="margin-bottom:8px;">
+      <span class="label" style="width:140px;">${cat}</span>
+      <span class="score-bar"><i style="width:${Math.min(100,pct*100)}%; background:${over?'var(--bad)':'var(--accent)'}"></i></span>
+      <span class="val" style="width:auto; font-size:11px;">${fmt(spent)} / <input type="number" data-budget-cat="${cat}" value="${budget}" style="width:64px; padding:2px 4px; font-size:11px; display:inline-block;"></span>
+    </div>`;
+  }).join("");
+  rows.querySelectorAll("[data-budget-cat]").forEach(inp=>{
+    inp.addEventListener("change", ()=>{ state.budgets[inp.dataset.budgetCat]=Number(inp.value)||0; save(); renderExpenses(); toast("Budget updated"); });
+  });
+
+  const tbody = document.getElementById("expenseTable");
+  const sorted = [...state.expenses].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  tbody.innerHTML = sorted.map(e=>`
+    <tr>
+      <td>${e.date}</td>
+      <td>${escapeHTML(e.desc)}</td>
+      <td><span class="tag">${e.category}</span></td>
+      <td>${e.freq}</td>
+      <td class="num">${fmt(e.amount)}</td>
+      <td class="row-actions"><button class="icon-btn" data-del-expense="${e.id}">✕</button></td>
+    </tr>`).join("");
+  document.getElementById("expenseEmpty").style.display = sorted.length? "none":"block";
+
+  tbody.querySelectorAll("[data-del-expense]").forEach(b=>b.addEventListener("click",()=>{
+    state.expenses = state.expenses.filter(x=>x.id!==b.dataset.delExpense); save(); renderExpenses(); renderAllQuiet();
+    toast("Expense entry removed");
+  }));
+}
+
+function renderCashflow(){
+  const m6 = last6();
+  drawTrendChart("cfChart", m6);
+  const incomes = m6.map(d=>d.income);
+  const best = Math.max(...incomes), worst = Math.min(...incomes.filter(v=>v>=0));
+  document.getElementById("cfBest").textContent = fmt(best||0);
+  document.getElementById("cfWorst").textContent = fmt(worst||0);
+  const a = avg(incomes.filter(v=>v>0));
+  const vol = a>0 ? ((best-worst)/a)*100 : 0;
+  document.getElementById("cfVol").textContent = Math.round(vol)+"%";
+
+  document.getElementById("cfTable").innerHTML = m6.map(d=>`
+    <tr><td>${d.label}</td><td class="num">${fmt(d.income)}</td><td class="num">${fmt(d.expense)}</td>
+    <td class="num" style="color:${d.net>=0?'var(--ok)':'var(--bad)'}">${fmt(d.net)}</td></tr>`).join("");
+}
+
+function renderBuffer(){
+  const health = computeHealthScore();
+  document.getElementById("bufCurrent").textContent = fmt(state.buffer.balance);
+  document.getElementById("bufTarget").textContent = fmt(health.bufferTarget);
+  document.getElementById("bufPct").textContent = Math.round(health.bufferPct*100)+"%";
+  document.getElementById("bufBar").style.width = Math.min(100,health.bufferPct*100)+"%";
+  document.getElementById("bufBalance").value = state.buffer.balance;
+  document.getElementById("bufMonthsTarget").value = state.buffer.monthsTarget;
+
+  const remaining = Math.max(0, health.bufferTarget-state.buffer.balance);
+  const suggested = health.avgNet>0 ? Math.min(health.avgNet*0.6, remaining) : remaining*0.05;
+  const monthsToGoal = suggested>0 ? Math.ceil(remaining/suggested) : Infinity;
+
+  document.getElementById("bufHint").textContent = health.bufferPct>=1
+    ? "You've reached your target buffer — consider raising the target or redirecting surplus to goals/investments."
+    : `You need ${fmt(remaining)} more to reach a full ${state.buffer.monthsTarget}-month buffer.`;
+
+  document.getElementById("bufPlan").innerHTML = health.bufferPct>=1
+    ? `<div class="insight good"><b>Target reached</b>Your buffer already covers ${state.buffer.monthsTarget} months of average expenses. Nice work — this is what gives freelancers room to negotiate.</div>`
+    : `<div class="insight">
+        <b>Suggested monthly transfer: ${fmt(suggested)}</b>
+        At this pace, you'd reach your ${fmt(health.bufferTarget)} target in about ${isFinite(monthsToGoal)?monthsToGoal+" months":"— increase net income first"}.
+      </div>`;
+}
+
+document.getElementById("saveBufferBtn").addEventListener("click", ()=>{
+  state.buffer.balance = Number(document.getElementById("bufBalance").value)||0;
+  state.buffer.monthsTarget = Number(document.getElementById("bufMonthsTarget").value)||6;
+  save(); renderBuffer(); renderAllQuiet(); toast("Buffer settings saved");
+});
+
+function renderTax(){
+  const rate = Number(document.getElementById("taxRate").value);
+  document.getElementById("taxRateVal").textContent = rate+"%";
+  state.taxRate = rate;
+
+  const m6 = last6();
+  const avgInc = avg(m6.map(d=>d.income));
+  document.getElementById("taxMonthly").textContent = fmt(avgInc*rate/100);
+
+  const ytd = state.taxMoves.reduce((a,b)=>a+Number(b.amount),0);
+  document.getElementById("taxYtd").textContent = fmt(ytd);
+
+  const dueDates = quarterlyDueDates();
+  const next = dueDates.find(q=>new Date(q.due) >= new Date()) || dueDates[dueDates.length-1];
+  document.getElementById("taxNextDue").textContent = next ? new Date(next.due).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}) : "—";
+
+  document.getElementById("taxTable").innerHTML = dueDates.map(q=>`
+    <tr><td>${q.label}</td><td class="num">${fmt(q.income)}</td><td class="num">${fmt(q.income*rate/100)}</td>
+    <td>${new Date(q.due).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})}</td></tr>`).join("");
+
+  const moveTbody = document.getElementById("taxMoveTable");
+  const sortedMoves = [...state.taxMoves].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  moveTbody.innerHTML = sortedMoves.map(m=>`
+    <tr><td>${m.date}</td><td class="num">${fmt(m.amount)}</td>
+    <td class="row-actions"><button class="icon-btn" data-del-tax="${m.id}">✕</button></td></tr>`).join("");
+  moveTbody.querySelectorAll("[data-del-tax]").forEach(b=>b.addEventListener("click",()=>{
+    state.taxMoves = state.taxMoves.filter(x=>x.id!==b.dataset.delTax); save(); renderTax(); toast("Transfer removed");
+  }));
+  save();
+}
+function quarterlyDueDates(){
+  const year = new Date().getFullYear();
+  const quarters = [
+    {label:"Q1 (Apr–Jun)", due: `${year}-06-15`, months:[3,4,5]},
+    {label:"Q2 (Jul–Sep)", due: `${year}-09-15`, months:[6,7,8]},
+    {label:"Q3 (Oct–Dec)", due: `${year}-12-15`, months:[9,10,11]},
+    {label:"Q4 (Jan–Mar)", due: `${year+1}-03-15`, months:[0,1,2]}
+  ];
+  const incByMonthIdx = {};
+  state.income.forEach(i=>{ const dt=new Date(i.date); if(dt.getFullYear()===year){ incByMonthIdx[dt.getMonth()]=(incByMonthIdx[dt.getMonth()]||0)+Number(i.amount); } });
+  return quarters.map(q=>({...q, income: q.months.reduce((a,m)=>a+(incByMonthIdx[m]||0),0)}));
+}
+
+document.getElementById("taxRate").addEventListener("input", renderTax);
+document.getElementById("addTaxMoveBtn").addEventListener("click", ()=>{
+  const amount = Number(document.getElementById("taxMoveAmount").value);
+  const date = document.getElementById("taxMoveDate").value || new Date().toISOString().slice(0,10);
+  if(!amount || amount<=0){ toast("Enter a valid amount"); return; }
+  state.taxMoves.push({id:uid(), date, amount});
+  document.getElementById("taxMoveAmount").value=""; save(); renderTax(); toast("Transfer logged");
+});
+
+function renderGoals(){
+  const grid = document.getElementById("goalsGrid");
+  document.getElementById("goalsEmpty").style.display = state.goals.length? "none":"block";
+  grid.innerHTML = state.goals.map(g=>{
+    const pct = g.target>0 ? Math.min(1, g.saved/g.target) : 0;
+    const daysLeft = Math.ceil((new Date(g.date)-new Date())/86400000);
+    return `<div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <h3 style="margin-bottom:2px;">${escapeHTML(g.name)}</h3>
+        <button class="icon-btn" data-del-goal="${g.id}">✕</button>
+      </div>
+      <div class="hint">${daysLeft>0? daysLeft+" days remaining" : "Target date passed"} · target ${new Date(g.date).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})}</div>
+      <div class="score-bar" style="height:10px; margin:10px 0 6px;"><i style="width:${Math.round(pct*100)}%"></i></div>
+      <div style="display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:13px;">
+        <span>${fmt(g.saved)} saved</span><span>${fmt(g.target)} goal</span>
+      </div>
+    </div>`;
+  }).join("");
+  grid.querySelectorAll("[data-del-goal]").forEach(b=>b.addEventListener("click",()=>{
+    state.goals = state.goals.filter(x=>x.id!==b.dataset.delGoal); save(); renderGoals(); toast("Goal removed");
+  }));
+}
+document.getElementById("addGoalBtn").addEventListener("click", ()=>{
+  const name = document.getElementById("goalName").value.trim();
+  const target = Number(document.getElementById("goalTarget").value);
+  const savedAmt = Number(document.getElementById("goalSaved").value)||0;
+  const date = document.getElementById("goalDate").value || futureDate(6);
+  if(!name || !target){ toast("Enter a goal name and target"); return; }
+  state.goals.push({id:uid(), name, target, saved:savedAmt, date});
+  document.getElementById("goalName").value=""; document.getElementById("goalTarget").value=""; document.getElementById("goalSaved").value="";
+  save(); renderGoals(); toast("Goal added");
+});
+
+/* ---------------- What-If Lab ---------------- */
+function renderWhatIf(){ runWhatIf(); }
+["wiIncome","wiExpense","wiDrought","wiExtra"].forEach(id=>{
+  document.getElementById(id).addEventListener("input", runWhatIf);
+});
+function runWhatIf(){
+  const incomePct = Number(document.getElementById("wiIncome").value);
+  const expensePct = Number(document.getElementById("wiExpense").value);
+  const drought = Number(document.getElementById("wiDrought").value);
+  const extra = Number(document.getElementById("wiExtra").value);
+
+  document.getElementById("wiIncomeVal").textContent = (incomePct>=0?"+":"")+incomePct+"%";
+  document.getElementById("wiExpenseVal").textContent = (expensePct>=0?"+":"")+expensePct+"%";
+  document.getElementById("wiDroughtVal").textContent = drought+" mo";
+  document.getElementById("wiExtraVal").textContent = fmt(extra);
+
+  const health = computeHealthScore();
+  const newInc = health.avgInc*(1+incomePct/100);
+  const newExp = health.avgExp*(1+expensePct/100);
+  const newNet = newInc-newExp-extra;
+  const newRunway = newExp>0 ? state.buffer.balance/newExp : 0;
+
+  document.getElementById("wiNet").textContent = fmt(newNet);
+  document.getElementById("wiRunway").textContent = fmt1(newRunway)+" mo";
+
+  const remaining = Math.max(0, health.bufferTarget-state.buffer.balance);
+  const monthlyContribution = Math.max(0, newNet*0.6)+extra;
+  const monthsToTarget = monthlyContribution>0 ? Math.ceil(remaining/monthlyContribution) : Infinity;
+  document.getElementById("wiMonthsToTarget").textContent = isFinite(monthsToTarget) ? monthsToTarget+" mo" : "—";
+
+  const droughtCost = newExp*drought;
+  const survives = state.buffer.balance >= droughtCost;
+  const survivesEl = document.getElementById("wiSurvives");
+  survivesEl.textContent = drought===0 ? "N/A" : (survives ? "Yes ✓" : "No ✕");
+  survivesEl.style.color = drought===0 ? "" : (survives ? "var(--ok)" : "var(--bad)");
+
+  const note = document.getElementById("wiNote");
+  if(drought>0 && !survives){
+    note.innerHTML = `<div class="insight bad"><b>Buffer gap</b>A ${drought}-month income drought at this expense level would cost ${fmt(droughtCost)} — ${fmt(droughtCost-state.buffer.balance)} more than your current buffer. Consider growing the buffer before taking on income-concentration risk.</div>`;
+  } else if(newNet<0){
+    note.innerHTML = `<div class="insight warn"><b>Negative net flow</b>Under this scenario your monthly net turns negative — the buffer would be drawn down rather than built.</div>`;
+  } else {
+    note.innerHTML = `<div class="insight good"><b>Looks sustainable</b>This scenario keeps net cash flow positive and, if drought months apply, your buffer would cover them.</div>`;
+  }
+}
+
+/* ---------------- Insights engine ---------------- */
+function insightHTML(i){ return `<div class="insight ${i.tone}"><b>${i.title}</b>${i.body}</div>`; }
+function generateInsights(){
+  const health = computeHealthScore();
+  const m6 = last6();
+  const list = [];
+
+  if(health.bufferPct < 0.5){
+    list.push({tone:"warn", title:"Buffer below halfway", body:`Your buffer covers ${fmt1(state.buffer.balance/(health.avgExp||1))} months of expenses. Aim to reach at least 3 months before taking on riskier or lower-paying projects.`});
+  } else if(health.bufferPct >= 1){
+    list.push({tone:"good", title:"Buffer target reached", body:`You're fully covered for ${state.buffer.monthsTarget} months of expenses. Consider directing extra income toward goals or investments.`});
+  }
+
+  if(health.volatility > 0.6){
+    list.push({tone:"warn", title:"Income is volatile", body:"Your best and worst months differ by a wide margin. A larger buffer and shorter invoice payment terms would reduce the impact of slow months."});
+  } else {
+    list.push({tone:"good", title:"Income is fairly stable", body:"Your monthly income doesn't swing wildly — this makes budgeting and planning easier."});
+  }
+
+  const taxEst = estimateTaxDue();
+  if(taxEst.due - taxEst.setAside > taxEst.due*0.3){
+    list.push({tone:"bad", title:"Tax set-aside is behind", body:`You've set aside ${fmt(taxEst.setAside)} against an estimated ${fmt(taxEst.due)} owed at ${state.taxRate}%. Consider moving money to your tax account with every incoming payment.`});
+  }
+
+  const curKey = currentMonthKey();
+  const catTotals = {};
+  state.expenses.filter(e=>monthKey(e.date)===curKey).forEach(e=>{ catTotals[e.category]=(catTotals[e.category]||0)+Number(e.amount); });
+  Object.entries(catTotals).forEach(([cat,spent])=>{
+    const budget = state.budgets[cat];
+    if(budget && spent>budget){ list.push({tone:"bad", title:cat+" is over budget", body:`Spent ${fmt(spent)} against a ${fmt(budget)} monthly budget this month.`}); }
+  });
+
+  if(m6.length>=2){
+    const lastTwo = m6.slice(-2);
+    if(lastTwo[1].expense > lastTwo[0].expense*1.25){
+      list.push({tone:"warn", title:"Expenses jumped", body:`Spending rose ${Math.round(((lastTwo[1].expense/lastTwo[0].expense)-1)*100)}% versus last month — worth a quick review of what changed.`});
+    }
+  }
+
+  const subsBudget = state.budgets["Software/Tools"]||0;
+  const subsSpend = (catTotals["Software/Tools"]||0);
+  if(subsSpend > 0 && subsBudget>0 && subsSpend/subsBudget > 0.9){
+    list.push({tone:"warn", title:"Tooling costs creeping up", body:"Software/Tools spend is close to or over budget — a quarterly subscription audit could free up cash for the buffer."});
+  }
+
+  if(list.length===0){
+    list.push({tone:"good", title:"Nothing urgent", body:"Your finances look steady this period. Keep logging income and expenses for sharper insights."});
+  }
+  return list;
+}
+function renderInsightsFull(){
+  document.getElementById("fullInsights").innerHTML = generateInsights().map(insightHTML).join("");
+}
+
+/* ---------------- Checklist ---------------- */
+const checklistItems = [
+  "Open a separate account for freelance income",
+  "Open (or designate) a tax set-aside account",
+  "Set your effective tax set-aside rate",
+  "Log at least 3 months of income and expenses",
+  "Set a buffer target (3–6 months of expenses)",
+  "Review and cancel unused subscriptions",
+  "Set calendar reminders for quarterly tax dates",
+  "Define your day-rate or minimum project price",
+  "Create your first savings/purchase goal",
+  "Schedule a monthly 30-minute money review"
+];
+function renderChecklist(){
+  const card = document.getElementById("checklistCard");
+  card.innerHTML = checklistItems.map((item,idx)=>{
+    const checked = !!state.checklist[idx];
+    return `<label><input type="checkbox" data-check="${idx}" ${checked?"checked":""}><span class="${checked?'done':''}">${item}</span></label>`;
+  }).join("");
+  card.querySelectorAll("[data-check]").forEach(cb=>{
+    cb.addEventListener("change", ()=>{
+      state.checklist[cb.dataset.check] = cb.checked;
+      save(); renderChecklist();
+    });
+  });
+}
+
+/* ---------------- Income / Expense forms ---------------- */
+document.getElementById("addIncomeBtn").addEventListener("click", ()=>{
+  const source = document.getElementById("incSource").value.trim();
+  const amount = Number(document.getElementById("incAmount").value);
+  const type = document.getElementById("incType").value;
+  const date = document.getElementById("incDate").value || new Date().toISOString().slice(0,10);
+  if(!source || !amount){ toast("Enter a source and amount"); return; }
+  state.income.push({id:uid(), date, source, type, amount});
+  document.getElementById("incSource").value=""; document.getElementById("incAmount").value="";
+  save(); renderIncome(); renderAllQuiet(); toast("Income logged");
+});
+document.getElementById("addExpenseBtn").addEventListener("click", ()=>{
+  const desc = document.getElementById("expDesc").value.trim();
+  const amount = Number(document.getElementById("expAmount").value);
+  const category = document.getElementById("expCategory").value;
+  const freq = document.getElementById("expFreq").value;
+  const date = document.getElementById("expDate").value || new Date().toISOString().slice(0,10);
+  if(!desc || !amount){ toast("Enter a description and amount"); return; }
+  state.expenses.push({id:uid(), date, desc, category, freq, amount});
+  document.getElementById("expDesc").value=""; document.getElementById("expAmount").value="";
+  save(); renderExpenses(); renderAllQuiet(); toast("Expense logged");
+});
+
+function escapeHTML(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------------- Master render ---------------- */
+function renderAll(){
+  renderDashboard(); renderIncome(); renderExpenses(); renderCashflow();
+  renderBuffer(); renderTax(); renderGoals(); renderWhatIf(); renderInsightsFull(); renderChecklist();
+}
+function renderAllQuiet(){
+  // re-render dashboard + any view whose data might be stale without moving focus
+  renderDashboard();
+}
+window.addEventListener("resize", ()=>{ renderDashboard(); renderCashflow(); });
+
+/* ---------------- Init ---------------- */
+applyTheme();
+document.getElementById("incDate").value = new Date().toISOString().slice(0,10);
+document.getElementById("expDate").value = new Date().toISOString().slice(0,10);
+document.getElementById("taxMoveDate").value = new Date().toISOString().slice(0,10);
+renderAll();
+
+})();
+</script>
+</body>
+</html>
