@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redline — LinkedIn Roast & Rebuild</title>
+<style>
+  :root{
+    --paper:#f2efe6;
+    --ink:#191c22;
+    --ink-soft:#4a4f5c;
+    --red:#c0362c;
+    --red-bright:#e8483a;
+    --gold:#b8863b;
+    --gold-bright:#d9a441;
+    --line:#c9c3b2;
+    --card:#fbfaf6;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+    --serif: 'Source Serif 4', 'Georgia', serif;
+    --stamp: 'Oswald', 'Arial Narrow', sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px);
+    background-size: 100% 42px;
+    color:var(--ink);
+    font-family:var(--serif);
+    min-height:100vh;
+    padding:32px 16px 80px;
+  }
+  .wrap{max-width:880px;margin:0 auto;}
+
+  /* Masthead */
+  .masthead{
+    display:flex; align-items:baseline; justify-content:space-between;
+    border-bottom:3px solid var(--ink); padding-bottom:14px; margin-bottom:8px;
+  }
+  .masthead h1{
+    font-family:var(--stamp); text-transform:uppercase; letter-spacing:1px;
+    font-size:clamp(28px,5vw,44px); margin:0; font-weight:700;
+  }
+  .masthead .tag{font-family:var(--mono); font-size:11px; color:var(--ink-soft); text-align:right; line-height:1.5;}
+  .subhead{font-family:var(--mono); font-size:13px; color:var(--red); margin:6px 0 28px; letter-spacing:.3px;}
+
+  /* Card */
+  .card{
+    background:var(--card); border:1.5px solid var(--ink);
+    box-shadow:6px 6px 0 rgba(25,28,34,0.12);
+    padding:28px 30px; margin-bottom:26px; position:relative;
+  }
+  .card h2{
+    font-family:var(--stamp); text-transform:uppercase; font-size:20px; letter-spacing:.5px;
+    margin:0 0 18px; padding-bottom:10px; border-bottom:2px solid var(--line);
+  }
+  .field{margin-bottom:20px;}
+  .field label{
+    display:block; font-family:var(--mono); font-size:12px; text-transform:uppercase;
+    letter-spacing:.6px; color:var(--ink-soft); margin-bottom:6px;
+  }
+  .field textarea, .field input{
+    width:100%; border:1.5px solid var(--ink); background:#fff;
+    font-family:var(--serif); font-size:15px; padding:10px 12px; color:var(--ink);
+    resize:vertical;
+  }
+  .field textarea{min-height:70px;}
+  .field textarea:focus, .field input:focus{outline:none; border-color:var(--red); box-shadow:0 0 0 3px rgba(192,54,44,0.12);}
+  .hint{font-family:var(--mono); font-size:11px; color:#8b8677; margin-top:4px;}
+
+  .choice-row{display:flex; gap:12px; flex-wrap:wrap;}
+  .choice{
+    font-family:var(--mono); font-size:13px; border:1.5px solid var(--ink);
+    padding:10px 16px; cursor:pointer; background:#fff; transition:.15s;
+  }
+  .choice:hover{background:var(--ink); color:var(--paper);}
+  .choice.selected{background:var(--red); color:#fff; border-color:var(--red);}
+
+  button.primary{
+    font-family:var(--stamp); text-transform:uppercase; letter-spacing:1px; font-weight:700;
+    background:var(--ink); color:var(--paper); border:none; padding:14px 26px;
+    cursor:pointer; font-size:15px; box-shadow:4px 4px 0 var(--red);
+    transition:transform .1s;
+  }
+  button.primary:hover{transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--red);}
+  button.primary:active{transform:translate(0,0); box-shadow:2px 2px 0 var(--red);}
+  button.primary:disabled{opacity:.4; cursor:not-allowed; box-shadow:none;}
+  button.secondary{
+    font-family:var(--mono); font-size:12px; background:none; border:1.5px solid var(--ink-soft);
+    color:var(--ink-soft); padding:8px 14px; cursor:pointer;
+  }
+  button.secondary:hover{border-color:var(--ink); color:var(--ink);}
+
+  .actions{display:flex; justify-content:space-between; align-items:center; margin-top:8px;}
+
+  /* Stamp / score */
+  .stamp{
+    display:inline-block; font-family:var(--stamp); font-weight:700; font-size:13px;
+    border:2px solid var(--red); color:var(--red); padding:3px 10px; transform:rotate(-3deg);
+    text-transform:uppercase; letter-spacing:1px;
+  }
+
+  .score-row{display:flex; align-items:center; gap:14px; margin:10px 0 14px;}
+  .score-big{font-family:var(--stamp); font-size:34px; font-weight:700; color:var(--red);}
+  .score-label{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-transform:uppercase;}
+
+  .roast-block{border-left:3px solid var(--red); padding:4px 0 4px 16px; margin-bottom:20px;}
+  .roast-block .quote{font-style:italic; color:var(--ink-soft); margin:6px 0;}
+  .roast-block p{margin:6px 0; line-height:1.55;}
+  .roast-block .k{font-family:var(--mono); font-weight:700; font-size:12px; color:var(--red);}
+
+  .rebuild-block{border-left:3px solid var(--gold); padding:4px 0 4px 16px; margin-bottom:20px; background:linear-gradient(90deg, rgba(217,164,65,0.06), transparent);}
+  .rebuild-block .k{font-family:var(--mono); font-weight:700; font-size:12px; color:var(--gold);}
+
+  .option{border:1px solid var(--line); padding:14px 16px; margin-bottom:10px; background:#fff;}
+  .option .opt-tag{font-family:var(--mono); font-size:11px; text-transform:uppercase; color:var(--gold); font-weight:700;}
+  .option .opt-text{font-size:16px; margin-top:6px; font-weight:600;}
+
+  .before-after{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;}
+  @media(max-width:600px){.before-after{grid-template-columns:1fr;}}
+  .ba-col{padding:12px 14px; border:1px solid var(--line);}
+  .ba-col.before{background:#f7ede9;}
+  .ba-col.after{background:#f2f6ea;}
+  .ba-col .k{font-family:var(--mono); font-size:11px; text-transform:uppercase; font-weight:700;}
+  .ba-col.before .k{color:var(--red);}
+  .ba-col.after .k{color:#5a7a2e;}
+
+  .scorecard-table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:14px;}
+  .scorecard-table td, .scorecard-table th{padding:10px 8px; border-bottom:1px solid var(--line); text-align:left;}
+  .scorecard-table th{font-family:var(--stamp); text-transform:uppercase; font-size:12px; color:var(--ink-soft);}
+  .delta-pos{color:#5a7a2e; font-weight:700;}
+  .arrow{color:var(--ink-soft);}
+
+  .keyword-pill{display:inline-block; font-family:var(--mono); font-size:11px; background:var(--ink); color:var(--paper); padding:3px 9px; margin:3px 4px 3px 0; border-radius:2px;}
+
+  .skill-cols{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;}
+  @media(max-width:700px){.skill-cols{grid-template-columns:1fr;}}
+  .skill-cols h4{font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.5px; margin:0 0 8px; color:var(--ink-soft);}
+  .skill-cols ol,.skill-cols ul{margin:0; padding-left:18px; font-size:14px; line-height:1.6;}
+
+  .day{border:1px solid var(--line); margin-bottom:12px;}
+  .day-head{
+    display:flex; justify-content:space-between; align-items:center; cursor:pointer;
+    padding:14px 18px; background:#fff;
+  }
+  .day-head:hover{background:#f7f5ef;}
+  .day-title{font-family:var(--stamp); font-weight:700; text-transform:uppercase; font-size:15px;}
+  .day-toggle{font-family:var(--mono); font-size:18px; color:var(--ink-soft);}
+  .day-body{padding:0 18px 18px; display:none; line-height:1.6; font-size:14.5px;}
+  .day.open .day-body{display:block;}
+  .day.open .day-toggle{transform:rotate(45deg); display:inline-block;}
+  .day-body ul{padding-left:20px;}
+  .post-draft{background:#fbf8f0; border-left:3px solid var(--gold); padding:12px 16px; margin-top:10px; white-space:pre-wrap; font-family:var(--serif); font-size:14.5px;}
+
+  /* Summary card */
+  .summary-card{
+    background:var(--ink); color:var(--paper); border:2px solid var(--ink);
+    padding:30px; position:relative; overflow:hidden;
+  }
+  .summary-card::before{
+    content:"REDLINE"; position:absolute; right:-10px; bottom:-30px; font-family:var(--stamp);
+    font-size:110px; font-weight:700; color:rgba(232,72,58,0.08); letter-spacing:2px;
+  }
+  .summary-card h3{font-family:var(--stamp); text-transform:uppercase; font-size:19px; margin:0 0 16px;}
+  .summary-scores{display:flex; gap:24px; margin-bottom:18px;}
+  .summary-scores .s{font-family:var(--stamp); font-size:30px; font-weight:700;}
+  .summary-scores .s.before{color:#e88; }
+  .summary-scores .s.after{color:var(--gold-bright);}
+  .summary-scores .lbl{font-family:var(--mono); font-size:11px; color:#a8aab3; text-transform:uppercase;}
+  .summary-card ol{padding-left:20px; line-height:1.7; font-size:14.5px;}
+  .summary-card .topfix{margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.15); font-size:14.5px;}
+  .summary-card .topfix .k{font-family:var(--mono); color:var(--gold-bright); font-size:11px; text-transform:uppercase; display:block; margin-bottom:6px;}
+
+  .tabs{display:flex; gap:2px; margin-bottom:0; flex-wrap:wrap;}
+  .tab{
+    font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.5px;
+    padding:12px 18px; background:#e8e3d5; border:1.5px solid var(--ink); border-bottom:none;
+    cursor:pointer; color:var(--ink-soft);
+  }
+  .tab.active{background:var(--card); color:var(--ink); font-weight:700;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+  .tabbed-card{border:1.5px solid var(--ink); background:var(--card); box-shadow:6px 6px 0 rgba(25,28,34,0.12); margin-bottom:26px;}
+  .tabbed-card .inner{padding:28px 30px;}
+
+  .loading{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:70px 20px; gap:16px;
+  }
+  .loading .spinner{
+    width:44px; height:44px; border:4px solid var(--line); border-top-color:var(--red);
+    border-radius:50%; animation:spin 0.9s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading .msg{font-family:var(--mono); font-size:13px; color:var(--ink-soft); text-align:center;}
+  .error-box{border:1.5px solid var(--red); background:#fdeceb; padding:16px 18px; color:var(--red); font-family:var(--mono); font-size:13px;}
+
+  .progress-dots{display:flex; gap:6px; margin-bottom:22px;}
+  .dot{width:9px; height:9px; border-radius:50%; background:var(--line);}
+  .dot.active{background:var(--red);}
+  .dot.done{background:var(--ink);}
+
+  .copy-btn{font-family:var(--mono); font-size:11px; background:none; border:1px solid var(--ink-soft); color:var(--ink-soft); padding:4px 10px; cursor:pointer; margin-top:8px;}
+  .copy-btn:hover{border-color:var(--ink); color:var(--ink);}
+
+  .footer-note{font-family:var(--mono); font-size:11px; color:#8b8677; text-align:center; margin-top:40px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <h1>Redline</h1>
+    <div class="tag">LINKEDIN PROFILE<br>ROAST &amp; REBUILD DESK</div>
+  </div>
+  <div class="subhead">// an ex-recruiter marks up your profile in red ink, then hands you the fix</div>
+
+  <div id="app"></div>
+
+  <div class="footer-note">No data leaves this page except to generate your rebuild. Nothing is invented — only what you enter is used.</div>
+</div>
+
+<script>
+const state = {
+  step: 0,
+  hasProfile: null,
+  answers: {},
+  result: null,
+};
+
+const app = document.getElementById('app');
+
+const STEPS_WITH_PROFILE = ['headline','about','experience','skills','goal'];
+const STEPS_NO_PROFILE = ['identity','skills3','achievements','audience','different'];
+
+function render(){
+  if(state.step === 0) return renderIntro();
+  if(state.result) return renderResults();
+  if(state.loading) return renderLoading();
+  if(state.error) return renderError();
+  return renderQuestion();
+}
+
+function renderIntro(){
+  app.innerHTML = `
+    <div class="card">
+      <h2>Case Intake</h2>
+      <p style="line-height:1.6; margin-top:0;">Do you already have a LinkedIn profile live, or are you starting from scratch?</p>
+      <div class="field">
+        <div class="choice-row">
+          <div class="choice" data-val="yes">I have a profile — roast it</div>
+          <div class="choice" data-val="no">No profile yet — build me one</div>
+        </div>
+      </div>
+    </div>
+  `;
+  app.querySelectorAll('.choice').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      state.hasProfile = el.dataset.val === 'yes';
+      state.step = 1;
+      render();
+    });
+  });
+}
+
+const QUESTIONS = {
+  headline: {title:'Q1 — Current Headline', field:'headline', type:'input', placeholder:'Paste your current LinkedIn headline exactly as it appears', hint:'This is the line under your name. Copy-paste it exactly — no cleaning it up first.'},
+  about: {title:'Q2 — About Section', field:'about', type:'textarea', placeholder:'Paste your full About section', hint:'The whole thing, as-is, typos and all. That\'s what recruiters see.'},
+  experience: {title:'Q3 — Most Recent Experience Entry', field:'experience', type:'textarea', placeholder:'Title, company, and the bullet points exactly as written', hint:'Include the job title, company name, and every bullet point.'},
+  skills: {title:'Q4 — Top Skills (5-10)', field:'skills', type:'textarea', placeholder:'e.g. Financial Modeling, Python, Stakeholder Management...', hint:'Comma-separated is fine.'},
+  goal: {title:'Q5 — Target Goal', field:'goal', type:'choice', options:['Land a job','Attract clients','Build thought leadership','Grow my network'], hint:'Pick the one that matters most right now.'},
+
+  identity: {title:'Q1 — Name & Current Role or Student Status', field:'identity', type:'input', placeholder:'e.g. Sabbu, final-year CS student', hint:''},
+  skills3: {title:'Q2 — Top 3 Skills', field:'skills3', type:'input', placeholder:'e.g. Data analysis, public speaking, React', hint:''},
+  achievements: {title:'Q3 — 1-2 Achievements or Projects You\'re Proud Of', field:'achievements', type:'textarea', placeholder:'Describe them with any real numbers or outcomes you have', hint:'Even small or informal achievements count — just be specific.'},
+  audience: {title:'Q4 — Who Do You Want to Attract?', field:'audience', type:'choice', options:['Recruiters','Clients','Collaborators','Mentors / Community'], hint:''},
+  different: {title:'Q5 — One Sentence: What Makes You Different?', field:'different', type:'input', placeholder:'The thing you\'d say if someone asked "why you, and not someone else?"', hint:''},
+};
+
+function currentSteps(){
+  return state.hasProfile ? STEPS_WITH_PROFILE : STEPS_NO_PROFILE;
+}
+
+function renderQuestion(){
+  const steps = currentSteps();
+  const idx = state.step - 1;
+  const key = steps[idx];
+  const q = QUESTIONS[key];
+  const existing = state.answers[q.field] || '';
+
+  let inputHtml = '';
+  if(q.type === 'input'){
+    inputHtml = `<input type="text" id="qfield" placeholder="${q.placeholder}" value="${escapeAttr(existing)}">`;
+  } else if(q.type === 'textarea'){
+    inputHtml = `<textarea id="qfield" placeholder="${q.placeholder}">${escapeHtml(existing)}</textarea>`;
+  } else if(q.type === 'choice'){
+    inputHtml = `<div class="choice-row">${q.options.map(o=>`<div class="choice ${existing===o?'selected':''}" data-val="${escapeAttr(o)}">${o}</div>`).join('')}</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="progress-dots">
+      ${steps.map((s,i)=>`<div class="dot ${i===idx?'active':(i<idx?'done':'')}"></div>`).join('')}
+    </div>
+    <div class="card">
+      <h2>${q.title}</h2>
+      <div class="field">
+        ${inputHtml}
+        ${q.hint ? `<div class="hint">${q.hint}</div>` : ''}
+      </div>
+      <div class="actions">
+        <button class="secondary" id="backBtn" ${idx===0?'style="visibility:hidden"':''}>&larr; Back</button>
+        <button class="primary" id="nextBtn">${idx===steps.length-1 ? 'Generate My Rebuild' : 'Next'}</button>
+      </div>
+    </div>
+  `;
+
+  if(q.type === 'choice'){
+    app.querySelectorAll('.choice').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        app.querySelectorAll('.choice').forEach(c=>c.classList.remove('selected'));
+        el.classList.add('selected');
+        state.answers[q.field] = el.dataset.val;
+      });
+    });
+  }
+
+  document.getElementById('backBtn').addEventListener('click', ()=>{
+    state.step -= 1;
+    if(state.step < 1) state.step = 0;
+    render();
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', ()=>{
+    if(q.type !== 'choice'){
+      const val = document.getElementById('qfield').value.trim();
+      if(!val){ shake(); return; }
+      state.answers[q.field] = val;
+    } else if(!state.answers[q.field]){
+      shake(); return;
+    }
+    if(idx === steps.length - 1){
+      generate();
+    } else {
+      state.step += 1;
+      render();
+    }
+  });
+}
+
+function shake(){
+  const card = app.querySelector('.card');
+  card.style.borderColor = 'var(--red)';
+  setTimeout(()=>{ card.style.borderColor = 'var(--ink)'; }, 350);
+}
+
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s){ return escapeHtml(s); }
+
+function renderLoading(){
+  const msgs = ["Reading your headline like a recruiter would","Timing the 3-second scroll test","Marking up the margins in red ink","Drafting the rebuild","Building your 7-day plan"];
+  app.innerHTML = `
+    <div class="card loading">
+      <div class="spinner"></div>
+      <div class="msg" id="loadMsg">${msgs[0]}</div>
+    </div>
+  `;
+  let i=0;
+  state.loadInterval = setInterval(()=>{
+    i = (i+1)%msgs.length;
+    const el = document.getElementById('loadMsg');
+    if(el) el.textContent = msgs[i];
+  }, 1800);
+}
+
+function renderError(){
+  app.innerHTML = `
+    <div class="card">
+      <div class="error-box">Something went wrong generating your rebuild: ${escapeHtml(state.error)}</div>
+      <div class="actions" style="margin-top:16px;">
+        <button class="secondary" id="retryBtn">&larr; Back to questions</button>
+        <button class="primary" id="regenBtn">Try Again</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('retryBtn').addEventListener('click', ()=>{ state.error=null; render(); });
+  document.getElementById('regenBtn').addEventListener('click', ()=>{ state.error=null; generate(); });
+}
+
+function buildPrompt(){
+  const a = state.answers;
+  let profileBlock = '';
+  if(state.hasProfile){
+    profileBlock = `
+The user HAS an existing LinkedIn profile. Their raw inputs:
+- Current Headline: """${a.headline}"""
+- About Section: """${a.about}"""
+- Most Recent Experience Entry: """${a.experience}"""
+- Top Skills: """${a.skills}"""
+- Target Goal: ${a.goal}
+`;
+  } else {
+    profileBlock = `
+The user does NOT have a LinkedIn profile yet. Their raw inputs:
+- Name / current role or student status: """${a.identity}"""
+- Top 3 skills: """${a.skills3}"""
+- Achievements or projects they're proud of: """${a.achievements}"""
+- Who they want to attract: ${a.audience}
+- What makes them different: """${a.different}"""
+`;
+  }
+
+  return `You are a LinkedIn Optimization Expert, Personal Branding Consultant, and ex-Recruiter who has reviewed 50,000+ profiles. You are honest, specific, and direct — like a brutally honest friend who wants the user to succeed. Never invent achievements, roles, companies, or metrics that were not given to you. If information is missing, note what should be added rather than making it up.
+
+${profileBlock}
+
+Produce a COMPLETE roast-and-rebuild package as a SINGLE JSON object, and NOTHING else — no markdown fences, no preamble, no commentary outside the JSON. Follow this exact schema:
+
+{
+  "before_scores": {"headline": <0-10>, "about_hook": <0-10>, "about_full": <0-10>, "experience": <0-10>, "skills": <0-10>, "overall": <0-100>},
+  "roast": {
+    "headline": {"reaction": "<recruiter's 3-second reaction>", "problem": "<specific problem, quoting their own words>", "why_it_hurts": "<how recruiters interpret it>", "invisible_cost": "<opportunity being lost>"},
+    "about_hook": {"reaction": "...", "problem": "...", "why_it_hurts": "...", "invisible_cost": "..."},
+    "about_full": {"reaction": "...", "problem": "...", "why_it_hurts": "...", "invisible_cost": "..."},
+    "experience": {"reaction": "...", "problem": "...", "why_it_hurts": "...", "invisible_cost": "..."},
+    "skills": {"reaction": "...", "problem": "...", "why_it_hurts": "...", "invisible_cost": "..."}
+  },
+  "headline_options": [
+    {"style": "Keyword-Optimized", "text": "...", "when_to_use": "..."},
+    {"style": "Value-Proposition", "text": "...", "when_to_use": "..."},
+    {"style": "Authority", "text": "...", "when_to_use": "..."}
+  ],
+  "about_rewrite": {"hook": "...", "story": "...", "proof": "...", "cta": "...", "keywords": ["...", "..."]},
+  "experience_rewrite": [ {"before": "...", "after": "..."}, {"before": "...", "after": "..."} ],
+  "skills_plan": {"add": ["...top 10 in priority order..."], "remove": ["..."], "pin": ["...3 skills..."]},
+  "after_scores": {"headline": <0-10>, "about_hook": <0-10>, "about_full": <0-10>, "experience": <0-10>, "skills": <0-10>, "overall": <0-100>},
+  "plan": {
+    "day1": {"checklist": ["...", "..."]},
+    "day2": {"post_draft": "<under 1300 characters, hook that drives comments>"},
+    "day3": {"targets": "<who exactly to target>", "message_template": "<under 300 characters>"},
+    "day4": {"formula_explanation": "<Value Comment formula: Agree + Add Insight + Ask a Question, explained with an example for this user>"},
+    "day5": {"post_draft": "<lessons-learned or hot-take post in their niche>"},
+    "day6": {"instructions": "<engage with comments + send 5 more connection requests, specifics>"},
+    "day7": {"metrics_guidance": "<what profile views / acceptance rate numbers mean and what to adjust>"}
+  },
+  "summary_card": {"before": <0-100>, "after": <0-100>, "mistakes": ["...", "...", "..."], "top_fix": "..."}
+}
+
+Base every score and rewrite strictly on the information given above. Be specific and quote the user's actual words in the roast section where relevant. Return ONLY the JSON object.`;
+}
+
+async function generate(){
+  state.loading = true;
+  state.error = null;
+  render();
+
+  try{
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: buildPrompt() }]
+      })
+    });
+    const data = await response.json();
+    let text = '';
+    if(data.content){
+      text = data.content.map(b => b.text || '').join('\n');
+    }
+    let clean = text.replace(/```json/g,'').replace(/```/g,'').trim();
+    const firstBrace = clean.indexOf('{');
+    const lastBrace = clean.lastIndexOf('}');
+    if(firstBrace >= 0 && lastBrace > firstBrace){
+      clean = clean.substring(firstBrace, lastBrace+1);
+    }
+    const parsed = JSON.parse(clean);
+    state.result = parsed;
+    state.loading = false;
+    clearInterval(state.loadInterval);
+    render();
+  } catch(err){
+    state.loading = false;
+    clearInterval(state.loadInterval);
+    state.error = (err && err.message) ? err.message : 'Unknown error';
+    render();
+  }
+}
+
+function scoreColor(v, max){
+  const pct = v/max;
+  if(pct >= 0.75) return '#5a7a2e';
+  if(pct >= 0.5) return '#b8863b';
+  return '#c0362c';
+}
+
+function renderResults(){
+  const r = state.result;
+  app.innerHTML = `
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-tab="roast">The Roast</div>
+      <div class="tab" data-tab="rebuild">The Rebuild</div>
+      <div class="tab" data-tab="scorecard">Scorecard</div>
+      <div class="tab" data-tab="plan">7-Day Plan</div>
+      <div class="tab" data-tab="summary">Summary Card</div>
+    </div>
+    <div class="tabbed-card">
+      <div class="inner">
+        <div class="tab-panel active" id="panel-roast">${renderRoastPanel(r)}</div>
+        <div class="tab-panel" id="panel-rebuild">${renderRebuildPanel(r)}</div>
+        <div class="tab-panel" id="panel-scorecard">${renderScorecardPanel(r)}</div>
+        <div class="tab-panel" id="panel-plan">${renderPlanPanel(r)}</div>
+        <div class="tab-panel" id="panel-summary">${renderSummaryPanel(r)}</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="secondary" id="startOverBtn">&larr; Start Over</button>
+    </div>
+  `;
+
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      document.getElementById('panel-'+t.dataset.tab).classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.day-head').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      el.parentElement.classList.toggle('open');
+    });
+  });
+
+  document.getElementById('startOverBtn').addEventListener('click', ()=>{
+    state.step = 0; state.hasProfile = null; state.answers = {}; state.result = null;
+    render();
+  });
+
+  document.querySelectorAll('.copy-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const targetId = btn.dataset.target;
+      const text = document.getElementById(targetId).innerText || document.getElementById(targetId).textContent;
+      navigator.clipboard.writeText(text).then(()=>{
+        const orig = btn.textContent;
+        btn.textContent = 'Copied ✓';
+        setTimeout(()=>btn.textContent = orig, 1500);
+      });
+    });
+  });
+}
+
+function renderRoastPanel(r){
+  const overall = r.before_scores.overall;
+  const sections = [
+    ['headline','Headline'],['about_hook','About — First 2 Lines'],['about_full','About — Full Section'],
+    ['experience','Experience'],['skills','Skills & Keywords']
+  ];
+  return `
+    <h2>Profile Report Card <span style="float:right;">Overall — <span style="color:${scoreColor(overall,100)}">${overall}/100</span></span></h2>
+    ${sections.map(([key,label])=>{
+      const s = r.before_scores[key];
+      const rr = r.roast[key];
+      return `
+        <div class="roast-block">
+          <div class="score-row">
+            <div class="score-big" style="color:${scoreColor(s,10)}">${s}/10</div>
+            <div class="score-label">${label}</div>
+          </div>
+          <p class="quote">"${escapeHtml(rr.reaction)}"</p>
+          <p><span class="k">❌ THE PROBLEM</span><br>${escapeHtml(rr.problem)}</p>
+          <p><span class="k">🧠 WHY IT HURTS</span><br>${escapeHtml(rr.why_it_hurts)}</p>
+          <p><span class="k">🔍 INVISIBLE COST</span><br>${escapeHtml(rr.invisible_cost)}</p>
+        </div>
+      `;
+    }).join('')}
+  `;
+}
+
+function renderRebuildPanel(r){
+  const ab = r.about_rewrite;
+  return `
+    <h2>Headline Options</h2>
+    ${r.headline_options.map(o=>`
+      <div class="option">
+        <div class="opt-tag">${escapeHtml(o.style)}</div>
+        <div class="opt-text">${escapeHtml(o.text)}</div>
+        <div class="hint" style="margin-top:8px;">${escapeHtml(o.when_to_use)}</div>
+      </div>
+    `).join('')}
+
+    <h2 style="margin-top:32px;">About Section — Rebuilt</h2>
+    <div class="rebuild-block">
+      <p><span class="k">THE HOOK</span><br>${escapeHtml(ab.hook)}</p>
+      <p><span class="k">THE STORY</span><br>${escapeHtml(ab.story)}</p>
+      <p><span class="k">PROOF</span><br>${escapeHtml(ab.proof)}</p>
+      <p><span class="k">CTA</span><br>${escapeHtml(ab.cta)}</p>
+    </div>
+    <div class="hint" style="margin-bottom:6px;">KEYWORDS EMBEDDED FOR SEARCH:</div>
+    <div>${ab.keywords.map(k=>`<span class="keyword-pill">${escapeHtml(k)}</span>`).join('')}</div>
+
+    <h2 style="margin-top:32px;">Experience — Rewritten Bullets</h2>
+    ${r.experience_rewrite.map(b=>`
+      <div class="before-after">
+        <div class="ba-col before"><div class="k">BEFORE</div>${escapeHtml(b.before)}</div>
+        <div class="ba-col after"><div class="k">AFTER</div>${escapeHtml(b.after)}</div>
+      </div>
+    `).join('')}
+
+    <h2 style="margin-top:32px;">Skills Plan</h2>
+    <div class="skill-cols">
+      <div><h4>Add (Priority Order)</h4><ol>${r.skills_plan.add.map(s=>`<li>${escapeHtml(s)}</li>`).join('')}</ol></div>
+      <div><h4>Remove</h4><ul>${r.skills_plan.remove.map(s=>`<li>${escapeHtml(s)}</li>`).join('')}</ul></div>
+      <div><h4>Pin to Top</h4><ul>${r.skills_plan.pin.map(s=>`<li>${escapeHtml(s)}</li>`).join('')}</ul></div>
+    </div>
+  `;
+}
+
+function renderScorecardPanel(r){
+  const rows = [
+    ['Headline','headline'],['About (Hook)','about_hook'],['About (Full)','about_full'],
+    ['Experience','experience'],['Skills / Keywords','skills']
+  ];
+  return `
+    <h2>Before vs After</h2>
+    <table class="scorecard-table">
+      <tr><th>Section</th><th>Before</th><th></th><th>After</th><th>Change</th></tr>
+      ${rows.map(([label,key])=>{
+        const b = r.before_scores[key], a = r.after_scores[key];
+        return `<tr>
+          <td>${label}</td>
+          <td>${b}/10</td>
+          <td class="arrow">→</td>
+          <td>${a}/10</td>
+          <td class="delta-pos">+${(a-b)}</td>
+        </tr>`;
+      }).join('')}
+      <tr style="border-top:2px solid var(--ink);">
+        <td><strong>OVERALL</strong></td>
+        <td>${r.before_scores.overall}/100</td>
+        <td class="arrow">→</td>
+        <td>${r.after_scores.overall}/100</td>
+        <td class="delta-pos">+${(r.after_scores.overall - r.before_scores.overall)}</td>
+      </tr>
+    </table>
+  `;
+}
+
+function renderPlanPanel(r){
+  const p = r.plan;
+  const days = [
+    {n:1, title:'Make All Profile Changes', body: `<ul>${p.day1.checklist.map(c=>`<li>${escapeHtml(c)}</li>`).join('')}</ul>`},
+    {n:2, title:'Publish Post #1 — "I Just Rebuilt My LinkedIn"', body: `<div class="post-draft" id="post1">${escapeHtml(p.day2.post_draft)}</div><button class="copy-btn" data-target="post1">Copy post</button>`},
+    {n:3, title:'Send 10 Strategic Connection Requests', body: `<p><strong>Who to target:</strong> ${escapeHtml(p.day3.targets)}</p><div class="post-draft" id="msg3">${escapeHtml(p.day3.message_template)}</div><button class="copy-btn" data-target="msg3">Copy message</button>`},
+    {n:4, title:'Comment on 5 Posts in Your Space', body: `<p>${escapeHtml(p.day4.formula_explanation)}</p>`},
+    {n:5, title:'Publish Post #2 — Lessons-Learned / Hot Take', body: `<div class="post-draft" id="post5">${escapeHtml(p.day5.post_draft)}</div><button class="copy-btn" data-target="post5">Copy post</button>`},
+    {n:6, title:'Engage + 5 More Connection Requests', body: `<p>${escapeHtml(p.day6.instructions)}</p>`},
+    {n:7, title:'Review Profile Views & Acceptance Rate', body: `<p>${escapeHtml(p.day7.metrics_guidance)}</p>`},
+  ];
+  return `
+    <h2>7-Day Activation Plan</h2>
+    ${days.map((d,i)=>`
+      <div class="day ${i===0?'open':''}">
+        <div class="day-head"><span class="day-title">Day ${d.n} — ${d.title}</span><span class="day-toggle">+</span></div>
+        <div class="day-body">${d.body}</div>
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderSummaryPanel(r){
+  const s = r.summary_card;
+  return `
+    <div class="summary-card">
+      <span class="stamp" style="color:var(--gold-bright); border-color:var(--gold-bright);">Screenshot This</span>
+      <h3 style="margin-top:16px;">I let AI roast my LinkedIn profile today. Here's what changed:</h3>
+      <div class="summary-scores">
+        <div><div class="s before">${s.before}</div><div class="lbl">Before /100</div></div>
+        <div><div class="s after">${s.after}</div><div class="lbl">After /100</div></div>
+      </div>
+      <div style="font-family:var(--mono); font-size:11px; color:#a8aab3; text-transform:uppercase; margin-bottom:8px;">Top 3 Mistakes I Was Making</div>
+      <ol>${s.mistakes.map(m=>`<li>${escapeHtml(m)}</li>`).join('')}</ol>
+      <div class="topfix">
+        <span class="k">The #1 thing that made the biggest difference</span>
+        ${escapeHtml(s.top_fix)}
+      </div>
+    </div>
+    <div id="summaryText" style="display:none;">I let AI roast my LinkedIn profile today. Here's what changed:
+
+Before: ${s.before}/100
+After: ${s.after}/100
+
+Top 3 mistakes I was making:
+${s.mistakes.map((m,i)=>`${i+1}. ${m}`).join('\n')}
+
+The #1 thing that made the biggest difference: ${s.top_fix}</div>
+    <button class="copy-btn" data-target="summaryText" style="margin-top:14px;">Copy summary text</button>
+  `;
+}
+
+render();
+</script>
+</body>
+</html>
