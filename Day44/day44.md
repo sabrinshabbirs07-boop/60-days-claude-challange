@@ -62,6 +62,6 @@ Create a LinkedIn profile that effectively communicates skills, projects, and ca
 ---
 
 # LinkedIn Profile Optimization:=
-[HTML FILE]()
+[HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day44/redline-linkedin-roast.html)
 
 
