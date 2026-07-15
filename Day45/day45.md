@@ -215,4 +215,4 @@ Creates screenshot-ready cards:
 
 ---
 # AI Decision Strategist:
-[html file]()
+[html file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day45/decision-strategist.html)
