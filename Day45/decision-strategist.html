@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decision Strategist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-main:#0f0f14;
+  --bg-card:#1a1a24;
+  --bg-card-alt:#1e1e2e;
+  --text-primary:#f0f0f5;
+  --text-secondary:#8888a0;
+  --accent-green:#34d399;
+  --accent-red:#f87171;
+  --accent-blue:#60a5fa;
+  --accent-gold:#fbbf24;
+  --accent-purple:#a78bfa;
+  --border-subtle:rgba(255,255,255,0.06);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg-main);
+  color:var(--text-primary);
+  font-family:'Inter','Segoe UI',system-ui,sans-serif;
+  min-height:100vh;
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+}
+.screen{display:none; width:100%; min-height:100vh; padding:24px;}
+.screen.active{display:flex; flex-direction:column; align-items:center;}
+
+/* ---------- LANDING ---------- */
+#landing{justify-content:center; text-align:center;}
+.landing-inner{max-width:640px; animation:fadeIn 0.8s ease both;}
+.eyebrow{
+  font-size:12px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--text-secondary); font-weight:600; margin-bottom:16px;
+}
+.landing-title{
+  font-size:clamp(36px,6vw,56px); font-weight:800; margin:0 0 12px;
+  background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple),var(--accent-gold));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  line-height:1.1;
+}
+.landing-sub{font-size:17px; color:var(--text-secondary); line-height:1.6; margin:0 0 36px;}
+.start-btn{
+  background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple));
+  color:#fff; border:none; padding:16px 36px; font-size:16px; font-weight:700;
+  border-radius:12px; cursor:pointer; font-family:inherit;
+  box-shadow:0 8px 24px rgba(96,165,250,0.25);
+  transition:transform 0.2s ease, box-shadow 0.2s ease;
+}
+.start-btn:hover{transform:translateY(-2px); box-shadow:0 12px 30px rgba(96,165,250,0.35);}
+.start-btn:focus-visible{outline:2px solid var(--accent-gold); outline-offset:3px;}
+.landing-foot{margin-top:28px; font-size:12px; color:var(--text-secondary);}
+
+/* ---------- INTERVIEW ---------- */
+#interview{justify-content:flex-start; padding-top:60px;}
+.interview-wrap{max-width:640px; width:100%;}
+.progress-label{
+  font-size:12px; letter-spacing:1px; text-transform:uppercase;
+  color:var(--text-secondary); font-weight:600; text-align:center; margin-bottom:10px;
+}
+.progress-track{
+  width:100%; height:6px; background:rgba(255,255,255,0.06); border-radius:6px;
+  overflow:hidden; margin-bottom:48px;
+}
+.progress-fill{
+  height:100%; border-radius:6px;
+  background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple),var(--accent-gold));
+  transition:width 0.5s ease;
+}
+.question-card{
+  background:var(--bg-card); border:1px solid var(--border-subtle);
+  border-radius:16px; padding:32px; box-shadow:0 4px 24px rgba(0,0,0,0.3);
+  animation:slideUp 0.5s ease both;
+}
+.question-text{font-size:20px; font-weight:700; line-height:1.5; margin:0 0 22px;}
+textarea{
+  width:100%; min-height:120px; background:rgba(255,255,255,0.03);
+  border:1px solid var(--border-subtle); border-radius:10px; color:var(--text-primary);
+  font-family:inherit; font-size:15px; padding:14px; line-height:1.6; resize:vertical;
+}
+textarea:focus{outline:none; border-color:var(--accent-blue);}
+textarea:focus-visible{outline:2px solid var(--accent-blue); outline-offset:2px;}
+.q-actions{display:flex; justify-content:space-between; align-items:center; margin-top:20px;}
+.hint{font-size:12px; color:var(--text-secondary);}
+.next-btn{
+  background:var(--accent-blue); color:#0f0f14; border:none; padding:12px 28px;
+  border-radius:10px; font-weight:700; font-size:14px; cursor:pointer; font-family:inherit;
+  transition:transform 0.2s ease, opacity 0.2s ease;
+}
+.next-btn:disabled{opacity:0.35; cursor:not-allowed;}
+.next-btn:not(:disabled):hover{transform:translateY(-2px);}
+.next-btn:focus-visible{outline:2px solid var(--accent-gold); outline-offset:2px;}
+
+/* ---------- LOADING ---------- */
+#loading{justify-content:center; align-items:center; text-align:center;}
+.spinner{
+  width:52px; height:52px; border-radius:50%;
+  border:3px solid rgba(255,255,255,0.08);
+  border-top-color:var(--accent-gold);
+  animation:spin 0.9s linear infinite;
+  margin:0 auto 28px;
+}
+.loading-msg{font-size:15px; color:var(--text-secondary); min-height:20px; transition:opacity 0.3s ease;}
+
+/* ---------- REPORT ---------- */
+#report{align-items:center;}
+.report-wrap{max-width:720px; width:100%;}
+.report-header{
+  text-align:center; padding:20px 0 24px;
+  animation:fadeIn 0.6s ease both;
+}
+.report-title{font-size:28px; font-weight:800; margin:0 0 6px; letter-spacing:0.5px;}
+.report-sub{font-size:16px; color:var(--text-secondary); margin:0 0 4px;}
+.report-date{font-size:12px; color:var(--text-secondary);}
+.gradient-divider{
+  height:2px; width:100%; margin:20px 0 32px; border-radius:2px;
+  background:linear-gradient(90deg,var(--accent-blue),var(--accent-purple),var(--accent-gold));
+}
+.toolbar{
+  display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:8px;
+}
+.tool-btn{
+  background:rgba(255,255,255,0.04); color:var(--text-primary);
+  border:1px solid var(--border-subtle); padding:9px 16px; border-radius:8px;
+  font-size:12px; font-weight:600; cursor:pointer; font-family:inherit;
+  transition:background 0.2s ease, transform 0.2s ease;
+}
+.tool-btn:hover{background:rgba(255,255,255,0.08); transform:translateY(-1px);}
+.tool-btn:focus-visible{outline:2px solid var(--accent-blue); outline-offset:2px;}
+
+.card{
+  background:var(--bg-card); border:1px solid var(--border-subtle);
+  border-radius:16px; padding:28px; box-shadow:0 4px 24px rgba(0,0,0,0.3);
+  margin:14px 0 24px; border-left:4px solid var(--accent-blue);
+  transition:transform 0.2s ease;
+  animation:fadeIn 0.6s ease both;
+}
+.card:hover{transform:translateY(-2px);}
+.section-title{
+  font-size:20px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
+  margin:0 0 18px;
+}
+.section-title .num{opacity:0.5; font-weight:600; margin-right:8px;}
+.body-text{font-size:15px; line-height:1.7; color:var(--text-primary); margin:0 0 10px;}
+.label{font-size:12px; font-weight:600; text-transform:uppercase; color:var(--text-secondary); letter-spacing:0.5px; margin:14px 0 4px;}
+.label:first-child{margin-top:0;}
+
+/* section accents */
+.card.sec1{border-left-color:var(--accent-blue);}
+.card.sec1 .section-title{color:var(--accent-blue);}
+.card.sec2{border-left-color:var(--accent-green);}
+.card.sec2 .section-title{color:var(--accent-green);}
+.card.sec3{border-left-color:var(--accent-purple);}
+.card.sec3 .section-title{color:var(--accent-purple);}
+.card.sec4{border-left-color:var(--accent-blue);}
+.card.sec4 .section-title{color:var(--accent-blue);}
+.card.sec5{border-left-color:var(--accent-red);}
+.card.sec5 .section-title{color:var(--accent-red);}
+.card.sec6{border-left-color:var(--accent-green);}
+.card.sec6 .section-title{color:var(--accent-green);}
+.card.sec7{border-left-color:var(--accent-gold); background:var(--bg-card-alt); padding:34px; box-shadow:0 0 20px rgba(251,191,36,0.15);}
+.card.sec7 .section-title{color:var(--accent-gold);}
+.card.sec8{border-left-color:var(--accent-gold);}
+.card.sec8 .section-title{color:var(--accent-gold);}
+
+/* option cards */
+.option-card{
+  background:var(--bg-card-alt); border:1px solid var(--border-subtle);
+  border-radius:12px; padding:20px; margin-bottom:16px;
+}
+.option-card:last-child{margin-bottom:0;}
+.option-name{font-size:16px; font-weight:700; margin:0 0 10px;}
+.option-name .tagA{color:var(--accent-blue);}
+.option-name .tagB{color:var(--accent-green);}
+.option-name .tagC{color:var(--accent-purple);}
+
+/* biases */
+.bias-pill{
+  display:inline-block; background:rgba(167,139,250,0.12); color:var(--accent-purple);
+  border:1px solid rgba(167,139,250,0.3); padding:4px 12px; border-radius:20px;
+  font-size:12px; font-weight:600; margin:4px 6px 4px 0;
+}
+
+/* matrix */
+.matrix-row{display:flex; align-items:center; gap:12px; margin-bottom:10px;}
+.matrix-label{width:40%; font-size:13px; color:var(--text-secondary); font-weight:500;}
+.matrix-bars{width:60%; display:flex; flex-direction:column; gap:6px;}
+.bar-container{height:26px; background:rgba(255,255,255,0.05); border-radius:8px; overflow:hidden; position:relative;}
+.bar-fill{
+  height:100%; border-radius:8px; display:flex; align-items:center; justify-content:flex-end;
+  padding-right:8px; color:#fff; font-weight:700; font-size:12px;
+  width:0; animation:growBar 0.8s ease forwards;
+}
+.bar-fill.optA{background:linear-gradient(90deg,#60a5fa,#3b82f6);}
+.bar-fill.optB{background:linear-gradient(90deg,#34d399,#10b981);}
+.bar-fill.optC{background:linear-gradient(90deg,#a78bfa,#8b5cf6);}
+.matrix-total-row{
+  display:flex; justify-content:space-between; align-items:center;
+  background:rgba(255,255,255,0.04); border-radius:10px; padding:14px 16px; margin-top:14px;
+  font-weight:700; font-size:14px;
+}
+.matrix-legend{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px; font-size:12px; color:var(--text-secondary);}
+.legend-dot{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:middle;}
+.winner-badge{
+  display:inline-block; background:rgba(251,191,36,0.15); color:var(--accent-gold);
+  border:1px solid rgba(251,191,36,0.4); padding:3px 10px; border-radius:6px;
+  font-size:11px; font-weight:700; margin-left:8px; text-transform:uppercase;
+}
+
+/* premortem */
+.premortem-block{margin-bottom:20px;}
+.premortem-block:last-child{margin-bottom:0;}
+.premortem-title{font-size:15px; font-weight:700; margin-bottom:8px;}
+ul.reasons{margin:0 0 10px; padding-left:20px;}
+ul.reasons li{font-size:14px; line-height:1.6; color:var(--text-primary); margin-bottom:4px;}
+
+/* 7 day plan */
+.day-row{display:flex; gap:14px; padding:10px 0; border-bottom:1px solid var(--border-subtle);}
+.day-row:last-child{border-bottom:none;}
+.day-num{
+  flex-shrink:0; width:56px; font-size:12px; font-weight:700; color:var(--accent-green);
+  text-transform:uppercase; padding-top:2px;
+}
+.day-text{font-size:14px; line-height:1.6;}
+
+/* verdict */
+.verdict-option{font-size:30px; font-weight:800; color:var(--accent-gold); margin:0 0 14px;}
+.hard-truth{font-style:italic; color:var(--text-secondary); font-size:14px; margin-top:16px; border-top:1px solid var(--border-subtle); padding-top:16px;}
+
+/* shareable */
+.mini-cards{display:flex; gap:14px; flex-wrap:wrap;}
+.mini-card{
+  flex:1 1 200px; background:var(--bg-card-alt); border:1px solid var(--border-subtle);
+  border-radius:12px; padding:18px; display:flex; flex-direction:column; justify-content:space-between;
+  min-height:170px;
+}
+.mini-title{font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-secondary); letter-spacing:0.5px; margin-bottom:10px;}
+.mini-body{font-size:13px; line-height:1.6; flex-grow:1;}
+.mini-watermark{font-size:10px; color:var(--text-secondary); text-align:right; margin-top:10px; opacity:0.6;}
+
+.footer-note{text-align:center; color:var(--text-secondary); font-size:12px; margin:40px 0 20px;}
+
+/* animations */
+@keyframes fadeIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+@keyframes slideUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes growBar{from{width:0;} to{width:var(--target-width);}}
+
+@media (max-width:600px){
+  .card{padding:20px; border-radius:14px;}
+  .question-card{padding:22px;}
+  .landing-title{font-size:32px;}
+  .matrix-row{flex-direction:column; align-items:flex-start; gap:6px;}
+  .matrix-label{width:100%;}
+  .matrix-bars{width:100%;}
+  .mini-cards{flex-direction:column;}
+  .section-title{font-size:17px;}
+  body{font-size:14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= LANDING ================= -->
+<section id="landing" class="screen active">
+  <div class="landing-inner">
+    <div class="eyebrow">Decision Strategist</div>
+    <h1 class="landing-title">Think Clearly.<br>Decide Confidently.</h1>
+    <p class="landing-sub">A short guided interview, then a full decision report built entirely from your own answers — trade-offs, biases, a scored matrix, and a verdict.</p>
+    <button class="start-btn" id="startBtn">Start Decision Interview</button>
+    <div class="landing-foot">4 questions · about 2 minutes</div>
+  </div>
+</section>
+
+<!-- ================= INTERVIEW ================= -->
+<section id="interview" class="screen">
+  <div class="interview-wrap">
+    <div class="progress-label" id="progressLabel">Question 1 of 4</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:25%;"></div></div>
+    <div class="question-card" id="questionCard">
+      <p class="question-text" id="questionText"></p>
+      <textarea id="answerInput" placeholder="Type your answer here..." aria-label="Your answer"></textarea>
+      <div class="q-actions">
+        <span class="hint">Press Enter (with Shift for newline) or click Next</span>
+        <button class="next-btn" id="nextBtn" disabled>Next →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LOADING ================= -->
+<section id="loading" class="screen">
+  <div class="spinner"></div>
+  <div class="loading-msg" id="loadingMsg">Analyzing trade-offs...</div>
+</section>
+
+<!-- ================= REPORT ================= -->
+<section id="report" class="screen">
+  <div class="report-wrap">
+    <div class="toolbar">
+      <button class="tool-btn" id="editBtn">✎ Edit Answers</button>
+      <button class="tool-btn" id="restartBtn">↺ Restart Interview</button>
+      <button class="tool-btn" id="printBtn">🖨 Print Report</button>
+      <button class="tool-btn" id="downloadBtn">⬇ Download Report</button>
+    </div>
+    <div class="report-header">
+      <div class="report-title">DECISION REPORT</div>
+      <div class="report-sub" id="reportSub"></div>
+      <div class="report-date" id="reportDate"></div>
+    </div>
+    <div class="gradient-divider"></div>
+    <div id="reportBody"></div>
+    <div class="footer-note">Built with Claude AI | ABTalks 60-Day Challenge</div>
+  </div>
+</section>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = "decisionStrategistAnswers_v1";
+
+  var questions = [
+    "What's the decision you're stuck on? Tell me the options and why it's hard right now.",
+    "What's your goal — and what's the timeline for this decision?",
+    "What does your gut say is the right choice — and what's stopping you from going with it?",
+    "What's the ONE thing you're most scared of getting wrong — and can you undo this decision if it doesn't work out?"
+  ];
+
+  var state = {
+    step: 0,
+    answers: ["", "", "", ""]
+  };
+
+  // ---------- element refs ----------
+  var screens = {
+    landing: document.getElementById("landing"),
+    interview: document.getElementById("interview"),
+    loading: document.getElementById("loading"),
+    report: document.getElementById("report")
+  };
+  var startBtn = document.getElementById("startBtn");
+  var progressLabel = document.getElementById("progressLabel");
+  var progressFill = document.getElementById("progressFill");
+  var questionText = document.getElementById("questionText");
+  var answerInput = document.getElementById("answerInput");
+  var nextBtn = document.getElementById("nextBtn");
+  var questionCard = document.getElementById("questionCard");
+  var loadingMsg = document.getElementById("loadingMsg");
+  var reportBody = document.getElementById("reportBody");
+  var reportSub = document.getElementById("reportSub");
+  var reportDate = document.getElementById("reportDate");
+
+  function showScreen(name){
+    Object.keys(screens).forEach(function(k){
+      screens[k].classList.toggle("active", k === name);
+    });
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+
+  function saveAnswers(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state.answers)); }catch(e){}
+  }
+  function loadAnswers(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        var parsed = JSON.parse(raw);
+        if(Array.isArray(parsed) && parsed.length === 4){ state.answers = parsed; }
+      }
+    }catch(e){}
+  }
+  loadAnswers();
+
+  // ---------- interview flow ----------
+  startBtn.addEventListener("click", function(){
+    state.step = 0;
+    renderQuestion();
+    showScreen("interview");
+  });
+
+  function renderQuestion(){
+    questionCard.style.animation = "none";
+    void questionCard.offsetWidth;
+    questionCard.style.animation = "slideUp 0.4s ease both";
+
+    var qNum = state.step + 1;
+    progressLabel.textContent = "Question " + qNum + " of 4";
+    progressFill.style.width = (qNum/4*100) + "%";
+    questionText.textContent = questions[state.step];
+    answerInput.value = state.answers[state.step] || "";
+    nextBtn.disabled = answerInput.value.trim().length === 0;
+    nextBtn.textContent = state.step === 3 ? "Build My Report →" : "Next →";
+    answerInput.focus();
+  }
+
+  answerInput.addEventListener("input", function(){
+    nextBtn.disabled = answerInput.value.trim().length === 0;
+  });
+
+  answerInput.addEventListener("keydown", function(e){
+    if(e.key === "Enter" && !e.shiftKey){
+      e.preventDefault();
+      if(!nextBtn.disabled){ nextBtn.click(); }
+    }
+  });
+
+  nextBtn.addEventListener("click", function(){
+    if(answerInput.value.trim().length === 0) return;
+    state.answers[state.step] = answerInput.value.trim();
+    saveAnswers();
+    if(state.step < 3){
+      state.step += 1;
+      renderQuestion();
+    } else {
+      runAnalysis();
+    }
+  });
+
+  // ---------- loading ----------
+  var loadingMessages = [
+    "Analyzing trade-offs...",
+    "Finding hidden assumptions...",
+    "Scoring options...",
+    "Building decision report..."
+  ];
+
+  function runAnalysis(){
+    showScreen("loading");
+    var i = 0;
+    loadingMsg.textContent = loadingMessages[0];
+    var interval = setInterval(function(){
+      i += 1;
+      if(i < loadingMessages.length){
+        loadingMsg.style.opacity = 0;
+        setTimeout(function(){
+          loadingMsg.textContent = loadingMessages[i];
+          loadingMsg.style.opacity = 1;
+        }, 200);
+      }
+    }, 750);
+
+    setTimeout(function(){
+      clearInterval(interval);
+      var report = analyze(state.answers);
+      renderReport(report);
+      showScreen("report");
+    }, 3000);
+  }
+
+  // ================================================================
+  // DETERMINISTIC ANALYSIS ENGINE
+  // ================================================================
+
+  function analyze(answers){
+    var a1 = answers[0] || "";
+    var a2 = answers[1] || "";
+    var a3 = answers[2] || "";
+    var a4 = answers[3] || "";
+    var fullText = (a1 + " " + a2 + " " + a3 + " " + a4).toLowerCase();
+
+    var options = extractOptions(a1);
+    var gutOption = detectGutOption(a3, options);
+    var reversible = detectReversibility(a4);
+
+    // scoring
+    var dims = [
+      "Life/Career Upside", "Financial Safety", "Growth & Learning",
+      "Stress Level", "Reversibility", "Long-Term Alignment", "Regret Risk"
+    ];
+
+    var scores = options.map(function(opt, idx){
+      return scoreOption(opt, idx, options.length, fullText, a1, a2, a3, a4, gutOption, reversible);
+    });
+
+    var totals = scores.map(function(s){ return sumScores(s); });
+    var winnerIdx = totals.indexOf(Math.max.apply(null, totals));
+
+    var biases = detectBiases(fullText, a3, a4);
+    var assumptions = buildAssumptions(a1, a2, a3, a4, options);
+    var ignoring = buildIgnoring(a4, reversible, biases);
+
+    return {
+      options: options,
+      dims: dims,
+      scores: scores,
+      totals: totals,
+      winnerIdx: winnerIdx,
+      gutOption: gutOption,
+      reversible: reversible,
+      biases: biases,
+      assumptions: assumptions,
+      ignoring: ignoring,
+      raw: {a1:a1, a2:a2, a3:a3, a4:a4}
+    };
+  }
+
+  // ---- extract 2-3 options from answer 1 ----
+  function extractOptions(text){
+    if(!text) return ["Option A", "Option B"];
+    var t = text;
+
+    // try splitting on " vs " / " vs. " / " versus "
+    var vsMatch = t.split(/\s+vs\.?\s+|\s+versus\s+/i);
+    if(vsMatch.length >= 2){
+      return cleanOptions(vsMatch);
+    }
+
+    // try " or "
+    var orMatch = t.split(/\s+or\s+/i);
+    if(orMatch.length >= 2 && orMatch.length <= 3){
+      return cleanOptions(orMatch);
+    }
+
+    // fallback: just two generic labels drawn from first sentence fragments
+    var sentence = t.split(/[.?!]/)[0];
+    var parts = sentence.split(",");
+    if(parts.length >= 2){
+      return cleanOptions(parts.slice(0,3));
+    }
+
+    return ["Option A", "Option B"];
+  }
+
+  function cleanOptions(arr){
+    var cleaned = arr.map(function(s){
+      var trimmed = s.trim();
+      // strip leading connector words / punctuation
+      trimmed = trimmed.replace(/^(and|or|whether to|whether i should|should i|i'm deciding between|deciding between|choosing between|between)\s+/i, "");
+      trimmed = trimmed.replace(/[:;,.]+$/, "");
+      // truncate long fragments to a short label
+      var words = trimmed.split(/\s+/);
+      if(words.length > 6){ trimmed = words.slice(0,6).join(" ") + "…"; }
+      // capitalize first letter
+      trimmed = trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+      return trimmed;
+    }).filter(function(s){ return s.length > 0; });
+
+    // dedupe & limit to 3
+    var unique = [];
+    cleaned.forEach(function(c){
+      if(unique.indexOf(c) === -1) unique.push(c);
+    });
+    if(unique.length < 2) return ["Option A", "Option B"];
+    return unique.slice(0,3);
+  }
+
+  function detectGutOption(a3, options){
+    var lower = (a3||"").toLowerCase();
+    for(var i=0;i<options.length;i++){
+      var optWords = options[i].toLowerCase().split(/\s+/).filter(function(w){return w.length>3;});
+      for(var j=0;j<optWords.length;j++){
+        if(lower.indexOf(optWords[j]) !== -1){ return i; }
+      }
+    }
+    // heuristic: first option mentioned tends to be "safe" default, second is often the gut pick if "but" language used
+    if(/but|however|yet|even though/.test(lower)) return options.length > 1 ? 1 : 0;
+    return 0;
+  }
+
+  function detectReversibility(a4){
+    var lower = (a4||"").toLowerCase();
+    if(/\b(no|not really|can't undo|cannot undo|permanent|one[- ]way|no going back|irreversible)\b/.test(lower)){
+      return "low";
+    }
+    if(/\b(yes|can undo|reversible|can go back|can switch back|easily undo)\b/.test(lower)){
+      return "high";
+    }
+    return "medium";
+  }
+
+  // ---- scoring heuristics ----
+  function scoreOption(optName, idx, totalOptions, fullText, a1, a2, a3, a4, gutOption, reversible){
+    var lower = fullText;
+    var isGut = (idx === gutOption);
+    var isSafe = idx === 0; // convention: first-mentioned option treated as incumbent/status-quo leaning
+
+    function base(n){ return n; }
+    function clamp(n){ return Math.max(2, Math.min(10, Math.round(n))); }
+
+    var stressWords = (a1+a2+a3+a4).toLowerCase();
+    var stressSignal = /scared|anxious|stress|overwhelm|worried|afraid|fear/.test(stressWords) ? 1 : 0;
+    var growthSignal = /learn|growth|skill|new|challenge|develop/.test(lower) ? 1 : 0;
+    var financeSignal = /money|financ|salary|income|pay|debt|save|budget|afford/.test(lower) ? 1 : 0;
+    var timelineUrgent = /week|asap|urgent|soon|days|immediately/.test(a2.toLowerCase());
+
+    var lifeUpside = clamp(6 + (isGut?1:0) + (growthSignal && !isSafe ? 1:0) - (isSafe? 0:0));
+    var financialSafety = clamp(isSafe ? 7 + (financeSignal?0:1) : 5 - (financeSignal?1:0));
+    var growth = clamp(isSafe ? 5 : 7 + growthSignal);
+    var stressLevel = clamp(isSafe ? 7 - (stressSignal?1:0) : 5 - (stressSignal?2:0) + (isGut?1:0));
+    var reversibilityScore;
+    if(isSafe){
+      reversibilityScore = clamp(8);
+    } else {
+      reversibilityScore = reversible === "high" ? clamp(7) : (reversible === "low" ? clamp(3) : clamp(5));
+    }
+    var longTermAlignment = clamp(isGut ? 8 : 5);
+    var regretRisk = clamp(isGut ? 7 : 5 - (stressSignal?1:0));
+
+    // small deterministic variety for 3rd option if present
+    if(totalOptions === 3 && idx === 2){
+      lifeUpside = clamp(lifeUpside - 1 + (isGut?2:0));
+      financialSafety = clamp(financialSafety - 1);
+    }
+
+    return {
+      "Life/Career Upside": lifeUpside,
+      "Financial Safety": financialSafety,
+      "Growth & Learning": growth,
+      "Stress Level": stressLevel,
+      "Reversibility": reversibilityScore,
+      "Long-Term Alignment": longTermAlignment,
+      "Regret Risk": regretRisk
+    };
+  }
+
+  function sumScores(scoreObj){
+    var total = 0;
+    Object.keys(scoreObj).forEach(function(k){ total += scoreObj[k]; });
+    return total;
+  }
+
+  function detectBiases(fullText, a3, a4){
+    var found = [];
+    var checks = [
+      {name:"Sunk Cost Fallacy", re:/already (invested|spent|put in)|time i've (put|invested)|so far|don't want to waste/},
+      {name:"Loss Aversion", re:/scared of losing|afraid to lose|don't want to lose|risk losing/},
+      {name:"Status Quo Bias", re:/comfortable|used to|stay where i am|familiar|safe option|don't want to change/},
+      {name:"Confirmation Bias", re:/i know i should|everyone (says|thinks)|i already believe|convinced/},
+      {name:"Availability Bias", re:/heard (a|about) story|friend of mine|someone i know|read about/},
+      {name:"Optimism Bias", re:/will work out|sure it('ll| will) be fine|i'm confident|it'll be great/},
+      {name:"Present Bias", re:/right now|can't wait|need it now|immediate|short[- ]term/},
+      {name:"Endowment Effect", re:/built this|my (job|company|team)|worked hard for|earned this/},
+      {name:"Planning Fallacy", re:/quickly|fast|easy transition|shouldn't take long|no big deal/}
+    ];
+    var lower = fullText;
+    checks.forEach(function(c){
+      if(c.re.test(lower)) found.push(c.name);
+    });
+    // ensure at least 2
+    var defaults = ["Loss Aversion", "Status Quo Bias", "Sunk Cost Fallacy", "Present Bias"];
+    var i = 0;
+    while(found.length < 2 && i < defaults.length){
+      if(found.indexOf(defaults[i]) === -1) found.push(defaults[i]);
+      i++;
+    }
+    return found.slice(0,2);
+  }
+
+  function buildAssumptions(a1,a2,a3,a4,options){
+    var list = [];
+    list.push("That the option you're not choosing disappears forever, rather than possibly resurfacing later.");
+    if(/scared|afraid|worried/.test((a4||"").toLowerCase())){
+      list.push("That the worst-case outcome you're picturing is the most likely one, not just the loudest one.");
+    } else {
+      list.push("That the outcome will be as clean and predictable as it feels right now.");
+    }
+    if(options.length >= 2){
+      list.push("That " + options[0] + " and " + options[1] + " are your only real paths — a hybrid or delayed version may exist.");
+    } else {
+      list.push("That there are only two real paths here, with no middle option.");
+    }
+    return list.slice(0,3);
+  }
+
+  function buildIgnoring(a4, reversible, biases){
+    if(reversible === "high"){
+      return "You're likely underweighting how low-stakes this actually is — you said this can be undone, which means the 'right' answer matters less than just deciding and moving.";
+    }
+    if(reversible === "low"){
+      return "You're likely underweighting how permanent this is — since it's hard to undo, the cost of moving too fast may be higher than the cost of moving too slow.";
+    }
+    return "You're likely underweighting the cost of staying stuck in indecision itself — every week undecided is also a choice, just an unexamined one.";
+  }
+
+  // ================================================================
+  // RENDER REPORT
+  // ================================================================
+
+  function esc(str){
+    var div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function renderReport(r){
+    var optClasses = ["optA","optB","optC"];
+    var tagClasses = ["tagA","tagB","tagC"];
+    var legendColors = ["#60a5fa","#34d399","#a78bfa"];
+
+    var today = new Date();
+    var dateStr = today.toLocaleDateString(undefined, {year:"numeric", month:"long", day:"numeric"});
+    reportSub.textContent = r.options.join(" vs ");
+    reportDate.textContent = dateStr;
+
+    var html = "";
+
+    // SECTION 1 — REAL DECISION
+    html += '<div class="card sec1">' +
+      '<h2 class="section-title"><span class="num">01</span>The Real Decision</h2>' +
+      '<p class="body-text">You\'re choosing between <strong>' + esc(r.options.join("</strong> and <strong>")) + '</strong>. ' +
+      'The real trade-off is between the stability of what you know and the upside of what you don\'t yet. ' +
+      'It\'s hard because your gut and your fear are pointing in different directions, and you can\'t fully know which one is right until after you\'ve chosen.</p>' +
+      '</div>';
+
+    // SECTION 2 — CASE FOR EACH OPTION
+    var optionCardsHtml = r.options.map(function(opt, idx){
+      var isGut = idx === r.gutOption;
+      return '<div class="option-card">' +
+        '<div class="option-name"><span class="' + tagClasses[idx] + '">' + esc(opt) + '</span>' +
+        (isGut ? ' <span class="hint" style="color:var(--text-secondary); font-size:12px;">— your gut pick</span>' : '') + '</div>' +
+        '<div class="label">Strongest case for it</div>' +
+        '<p class="body-text">' + (idx===0 ?
+          'It preserves what\'s already working and keeps your financial footing steady while you keep options open.' :
+          'It moves you toward growth and the goal you actually described wanting, even if it feels less certain today.') + '</p>' +
+        '<div class="label">Hidden upside most people miss</div>' +
+        '<p class="body-text">' + (idx===0 ?
+          'Staying gives you more data and leverage — you can watch how the other path plays out for others before committing.' :
+          'Acting now means you skip months of the indecision cost you\'re already paying — the stress of not choosing.') + '</p>' +
+        '<div class="label">Biggest weakness</div>' +
+        '<p class="body-text">' + (idx===0 ?
+          'Comfort can quietly become inertia — "not deciding" is still a decision, and it has a cost.' :
+          'It carries more short-term uncertainty, and if reversibility is low, mistakes are more expensive to fix.') + '</p>' +
+        '<div class="label">Best if you value</div>' +
+        '<p class="body-text">' + (idx===0 ? 'Stability, predictability, and protecting what you\'ve already built.' : 'Growth, momentum, and acting on conviction over certainty.') + '</p>' +
+        '</div>';
+    }).join("");
+    html += '<div class="card sec2">' +
+      '<h2 class="section-title"><span class="num">02</span>The Case For Each Option</h2>' +
+      optionCardsHtml +
+      '</div>';
+
+    // SECTION 3 — ASSUMPTION BUSTER
+    var biasPills = r.biases.map(function(b){ return '<span class="bias-pill">' + esc(b) + '</span>'; }).join("");
+    var assumptionsHtml = r.assumptions.map(function(a){ return '<li>' + esc(a) + '</li>'; }).join("");
+    html += '<div class="card sec3">' +
+      '<h2 class="section-title"><span class="num">03</span>Assumption Buster</h2>' +
+      '<div class="label">Assumptions you may be making</div>' +
+      '<ul class="reasons">' + assumptionsHtml + '</ul>' +
+      '<div class="label">Biases at play</div>' +
+      '<div>' + biasPills + '</div>' +
+      '<div class="label" style="margin-top:16px;">What you\'re probably ignoring</div>' +
+      '<p class="body-text">' + esc(r.ignoring) + '</p>' +
+      '</div>';
+
+    // SECTION 4 — DECISION MATRIX
+    var legendHtml = r.options.map(function(opt, idx){
+      return '<span><span class="legend-dot" style="background:' + legendColors[idx] + ';"></span>' + esc(opt) + '</span>';
+    }).join("");
+
+    var matrixRows = r.dims.map(function(dim, dimIdx){
+      var barsHtml = r.options.map(function(opt, idx){
+        var val = r.scores[idx][dim];
+        var pct = (val/10*100);
+        var delay = (dimIdx*0.06 + idx*0.08).toFixed(2);
+        return '<div class="bar-container"><div class="bar-fill ' + optClasses[idx] +
+          '" style="--target-width:' + pct + '%; animation-delay:' + delay + 's;">' + val + '/10</div></div>';
+      }).join("");
+      return '<div class="matrix-row"><div class="matrix-label">' + esc(dim) + '</div><div class="matrix-bars">' + barsHtml + '</div></div>';
+    }).join("");
+
+    var totalsHtml = r.options.map(function(opt, idx){
+      var isWinner = idx === r.winnerIdx;
+      return esc(opt) + ': ' + r.totals[idx] + '/70' + (isWinner ? '<span class="winner-badge">Winner</span>' : '');
+    }).join(" &nbsp;|&nbsp; ");
+
+    html += '<div class="card sec4">' +
+      '<h2 class="section-title"><span class="num">04</span>Decision Matrix</h2>' +
+      '<div class="matrix-legend">' + legendHtml + '</div>' +
+      matrixRows +
+      '<div class="matrix-total-row">' + totalsHtml + '</div>' +
+      '</div>';
+
+    // SECTION 5 — PREMORTEM (top two options by total score)
+    var sortedIdx = r.options.map(function(_,i){return i;}).sort(function(a,b){ return r.totals[b]-r.totals[a]; });
+    var topTwo = sortedIdx.slice(0, Math.min(2, r.options.length));
+    var premortemHtml = topTwo.map(function(idx){
+      var opt = r.options[idx];
+      var isSafe = idx === 0;
+      return '<div class="premortem-block">' +
+        '<div class="premortem-title">If ' + esc(opt) + ' fails after 12 months…</div>' +
+        '<ul class="reasons">' +
+        '<li>' + (isSafe ? 'You stayed too long and the window for the alternative closed.' : 'The transition took longer and cost more than expected.') + '</li>' +
+        '<li>' + (isSafe ? 'The comfort turned into quiet resentment or stagnation.' : 'You underestimated the stress of the change itself.') + '</li>' +
+        '<li>' + (isSafe ? 'You realize you optimized for safety over the goal you actually stated.' : 'Support you expected (financial or otherwise) didn\'t materialize as planned.') + '</li>' +
+        '</ul>' +
+        '<div class="label">Early warning sign</div>' +
+        '<p class="body-text">' + (isSafe ? 'You keep saying "not yet" every time the topic comes up.' : 'Three months in, the excitement has faded and only the hard parts remain.') + '</p>' +
+        '<div class="label">Prevention action</div>' +
+        '<p class="body-text">' + (isSafe ? 'Set a real deadline for reassessment — put a date on the calendar, not "someday."' : 'Build a small financial or logistical buffer before committing fully.') + '</p>' +
+        '</div>';
+    }).join("");
+    html += '<div class="card sec5">' +
+      '<h2 class="section-title"><span class="num">05</span>Premortem</h2>' +
+      premortemHtml +
+      '</div>';
+
+    // SECTION 6 — 7-DAY TEST PLAN
+    var winnerName = r.options[r.winnerIdx];
+    var days = [
+      ["Day 1-2","Research the practical details of " + winnerName + " — costs, requirements, and what "+ (r.options[1-Math.min(1,r.winnerIdx)] !== undefined ? "the alternative" : "staying") +" actually looks like month to month."],
+      ["Day 1-2","List exactly what you'd need to be true for " + winnerName + " to feel safe enough to try."],
+      ["Day 3-4","Run one small, low-stakes experiment that tests a piece of " + winnerName + " without full commitment."],
+      ["Day 3-4","Track how you feel during and after the experiment — note it somewhere you'll actually reread."],
+      ["Day 5-6","Have one honest conversation with someone directly affected by this decision."],
+      ["Day 5-6","Ask them the one question you've been avoiding."],
+      ["Day 7","Decide using this criteria: if the experiment felt more energizing than draining, and the conversation didn't surface a dealbreaker, move forward with " + winnerName + "."]
+    ];
+    // collapse to exactly 7 single lines (one per day) as spec requires - use first 7
+    var dayLines = [
+      "Research the concrete details — cost, time, and requirements — of " + winnerName + ".",
+      "Write down exactly what would need to be true for this to feel safe.",
+      "Design one small, low-stakes experiment that tests part of " + winnerName + ".",
+      "Run the experiment and note, in writing, how it actually felt.",
+      "Have one honest conversation with someone this decision affects.",
+      "Ask them the question you've been avoiding — and listen to the answer.",
+      "Decide: if the experiment energized more than it drained, and no dealbreaker surfaced, move forward with " + winnerName + "."
+    ];
+    var dayRowsHtml = dayLines.map(function(line, idx){
+      return '<div class="day-row"><div class="day-num">Day ' + (idx+1) + '</div><div class="day-text">' + esc(line) + '</div></div>';
+    }).join("");
+    html += '<div class="card sec6">' +
+      '<h2 class="section-title"><span class="num">06</span>7-Day Test Plan</h2>' +
+      dayRowsHtml +
+      '</div>';
+
+    // SECTION 7 — VERDICT
+    var runnerUpIdx = sortedIdx.length > 1 ? sortedIdx[1] : null;
+    var scoreDiff = runnerUpIdx !== null ? r.totals[r.winnerIdx] - r.totals[runnerUpIdx] : 0;
+    var flipText = runnerUpIdx !== null ?
+      ('If your financial safety margin drops, or ' + esc(r.options[runnerUpIdx]) + ' suddenly becomes much lower-risk, the recommendation could flip.') :
+      'If your circumstances change materially, revisit this.';
+    var hardTruth = r.reversible === "low" ?
+      "The hard truth: you're stalling partly because this one's hard to undo, not because the answer is unclear." :
+      "The hard truth: you already know the answer — you're asking for permission, not analysis.";
+    html += '<div class="card sec7">' +
+      '<h2 class="section-title"><span class="num">07</span>The Verdict</h2>' +
+      '<p class="verdict-option">' + esc(winnerName) + '</p>' +
+      '<p class="body-text">It wins on total score (' + r.totals[r.winnerIdx] + '/70' +
+      (runnerUpIdx !== null ? ', ' + scoreDiff + ' points ahead of ' + esc(r.options[runnerUpIdx]) : '') +
+      '), and it\'s also the option your gut already leaned toward. The matrix mostly confirms what you already felt.</p>' +
+      '<div class="label">What could flip it</div>' +
+      '<p class="body-text">' + flipText + '</p>' +
+      '<p class="hard-truth">' + hardTruth + '</p>' +
+      '</div>';
+
+    // SECTION 8 — SHAREABLE CARDS
+    var matrixSummary = r.options.map(function(opt, idx){ return esc(opt) + ': ' + r.totals[idx] + '/70'; }).join('<br>');
+    html += '<div class="card sec8">' +
+      '<h2 class="section-title"><span class="num">08</span>Shareable Cards</h2>' +
+      '<div class="mini-cards">' +
+        '<div class="mini-card"><div class="mini-title">Matrix Summary</div><div class="mini-body">' + matrixSummary + '</div><div class="mini-watermark">Built with Claude AI</div></div>' +
+        '<div class="mini-card"><div class="mini-title">Verdict</div><div class="mini-body"><strong style="color:var(--accent-gold); font-size:16px;">' + esc(winnerName) + '</strong><br>Highest scored option, and matched your gut instinct.</div><div class="mini-watermark">Built with Claude AI</div></div>' +
+        '<div class="mini-card"><div class="mini-title">LinkedIn Post</div><div class="mini-body">Stuck on a big decision? I ran mine through a 7-dimension scoring matrix instead of just vibes.<br><br>Turns out the data agreed with my gut — but I wouldn\'t have trusted it without checking.<br><br>Try mapping your next hard call before you make it.</div><div class="mini-watermark">Built with Claude AI</div></div>' +
+      '</div>' +
+      '</div>';
+
+    reportBody.innerHTML = html;
+  }
+
+  // ---------- toolbar actions ----------
+  document.getElementById("editBtn").addEventListener("click", function(){
+    state.step = 0;
+    renderQuestion();
+    showScreen("interview");
+  });
+
+  document.getElementById("restartBtn").addEventListener("click", function(){
+    if(confirm("Restart the interview? Your current answers will be cleared.")){
+      state.answers = ["","","",""];
+      saveAnswers();
+      state.step = 0;
+      renderQuestion();
+      showScreen("interview");
+    }
+  });
+
+  document.getElementById("printBtn").addEventListener("click", function(){
+    window.print();
+  });
+
+  document.getElementById("downloadBtn").addEventListener("click", function(){
+    var htmlContent = "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Decision Report</title>" +
+      "<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap\" rel=\"stylesheet\">" +
+      "<style>" + document.querySelector("style").textContent + "</style></head><body style='background:var(--bg-main);'>" +
+      "<div class='report-wrap' style='margin:0 auto; padding:24px;'>" +
+      document.querySelector(".report-header").outerHTML +
+      "<div class='gradient-divider'></div>" +
+      reportBody.innerHTML +
+      "<div class='footer-note'>Built with Claude AI | ABTalks 60-Day Challenge</div>" +
+      "</div></body></html>";
+    var blob = new Blob([htmlContent], {type:"text/html"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "decision-report.html";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  // resume if answers already exist
+  if(state.answers.some(function(a){return a && a.length>0;})){
+    // leave user on landing; they can hit Start and Edit will pick up saved answers
+  }
+
+})();
+</script>
+</body>
+</html>
