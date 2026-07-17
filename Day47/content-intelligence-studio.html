@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Intelligence Studio</title>
+<style>
+  :root{
+    --ink:#12172B;
+    --ink-2:#1B2140;
+    --ink-3:#242B4F;
+    --paper:#F6F3EC;
+    --paper-dim:#E7E2D4;
+    --gold:#B08D57;
+    --gold-bright:#D4AF74;
+    --sage:#6E8F6C;
+    --rose:#C1443C;
+    --muted:#9098B8;
+    --line:rgba(246,243,236,0.12);
+    --serif: Georgia, 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --mono: 'Courier New', monospace;
+  }
+  *{box-sizing:border-box;}
+  body.light{
+    --ink:#F6F3EC;
+    --ink-2:#FFFFFF;
+    --ink-3:#EFEBDF;
+    --paper:#181D33;
+    --paper-dim:#2A2F4D;
+    --line:rgba(18,23,43,0.12);
+    --muted:#6B7290;
+  }
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);font-family:var(--sans);min-height:100vh;transition:background .3s,color .3s;}
+  ::selection{background:var(--gold);color:var(--ink);}
+  a{color:var(--gold-bright);}
+
+  .app{max-width:1180px;margin:0 auto;padding:32px 24px 100px;}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:40px;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand-mark{width:38px;height:38px;border-radius:50%;background:conic-gradient(var(--gold),var(--rose),var(--sage),var(--gold));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .brand-mark span{width:26px;height:26px;border-radius:50%;background:var(--ink);display:block;}
+  .brand h1{font-family:var(--serif);font-size:20px;font-weight:600;margin:0;letter-spacing:.2px;}
+  .brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;}
+  .toggle-mode{background:var(--ink-2);border:1px solid var(--line);color:var(--paper);padding:8px 14px;border-radius:20px;cursor:pointer;font-size:13px;transition:.2s;}
+  .toggle-mode:hover{border-color:var(--gold);}
+
+  .card{background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:28px;margin-bottom:24px;}
+  .eyebrow{color:var(--gold-bright);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+  h2.title{font-family:var(--serif);font-size:28px;margin:0 0 8px;font-weight:600;}
+  p.sub{color:var(--muted);font-size:15px;line-height:1.6;margin:0 0 22px;}
+
+  label.field-label{display:block;font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:600;letter-spacing:.3px;}
+  textarea, input[type=text]{width:100%;background:var(--ink-3);border:1px solid var(--line);color:var(--paper);border-radius:10px;padding:14px 16px;font-family:var(--sans);font-size:14.5px;line-height:1.6;resize:vertical;}
+  textarea:focus,input:focus{outline:none;border-color:var(--gold);}
+  textarea{min-height:220px;}
+
+  .upload-zone{border:1.5px dashed var(--line);border-radius:10px;padding:22px;text-align:center;cursor:pointer;transition:.2s;background:var(--ink-3);}
+  .upload-zone:hover{border-color:var(--gold);}
+  .upload-zone.has-file{border-style:solid;border-color:var(--sage);}
+  .upload-zone input{display:none;}
+  .upload-zone .hint{color:var(--muted);font-size:13px;}
+  .preview-thumb{max-width:100%;max-height:220px;border-radius:8px;margin-top:12px;border:1px solid var(--line);}
+
+  .btn{background:var(--gold);color:var(--ink);border:none;padding:14px 26px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:.2s;letter-spacing:.3px;}
+  .btn:hover{background:var(--gold-bright);transform:translateY(-1px);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+  .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--paper);}
+  .btn-ghost:hover{border-color:var(--gold);background:transparent;}
+  .btn-row{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:820px){.grid2{grid-template-columns:1fr;}}
+
+  /* Pipeline / processing */
+  .pipeline{display:flex;flex-direction:column;gap:10px;}
+  .stage-row{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--ink-3);border-radius:10px;border:1px solid var(--line);transition:.3s;}
+  .stage-row.active{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset;}
+  .stage-row.done{border-color:var(--sage);}
+  .stage-row.error{border-color:var(--rose);}
+  .stage-dot{width:12px;height:12px;border-radius:50%;background:var(--muted);flex-shrink:0;}
+  .stage-row.active .stage-dot{background:var(--gold);animation:pulse 1.1s infinite;}
+  .stage-row.done .stage-dot{background:var(--sage);}
+  .stage-row.error .stage-dot{background:var(--rose);}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+  .stage-meta strong{display:block;font-size:14.5px;}
+  .stage-meta span{color:var(--muted);font-size:12.5px;}
+  .stage-status{margin-left:auto;font-size:12px;color:var(--muted);font-family:var(--mono);}
+
+  .log{background:#0B0E1D;border-radius:10px;padding:16px;font-family:var(--mono);font-size:12.5px;max-height:220px;overflow-y:auto;color:#8FE9A8;border:1px solid var(--line);}
+  body.light .log{background:#10142B;}
+  .log div{padding:2px 0;opacity:0;animation:fadein .4s forwards;}
+  @keyframes fadein{to{opacity:1;}}
+  .log .t{color:var(--muted);margin-right:8px;}
+
+  /* Score ring */
+  .score-hero{display:flex;align-items:center;gap:32px;flex-wrap:wrap;}
+  .ring-wrap{position:relative;width:170px;height:170px;flex-shrink:0;}
+  .ring-wrap svg{transform:rotate(-90deg);}
+  .ring-bg{fill:none;stroke:var(--ink-3);stroke-width:14;}
+  .ring-fg{fill:none;stroke:var(--gold);stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1);}
+  .ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .ring-label .num{font-family:var(--serif);font-size:44px;font-weight:700;}
+  .ring-label .lbl{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;}
+
+  .cat-bars{display:flex;flex-direction:column;gap:14px;flex:1;min-width:240px;}
+  .cat-bar-row .top{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .cat-bar-row .top strong{color:var(--paper);}
+  .cat-bar-track{background:var(--ink-3);height:8px;border-radius:6px;overflow:hidden;}
+  .cat-bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--gold),var(--gold-bright));transition:width 1s ease;}
+
+  .tag{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;}
+  .tag.strength{background:rgba(110,143,108,.18);color:var(--sage);}
+  .tag.weakness{background:rgba(193,68,60,.18);color:var(--rose);}
+  .tag.opp{background:rgba(176,141,87,.18);color:var(--gold-bright);}
+
+  .list-block{margin:0;padding-left:0;list-style:none;}
+  .list-block li{padding:12px 0;border-bottom:1px solid var(--line);font-size:14.5px;line-height:1.6;display:flex;gap:12px;}
+  .list-block li:last-child{border-bottom:none;}
+  .list-block li .bullet{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--ink-3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:2px;}
+
+  .tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:20px;flex-wrap:wrap;}
+  .tab-btn{background:none;border:none;color:var(--muted);padding:10px 16px;font-size:14px;cursor:pointer;border-bottom:2px solid transparent;font-weight:600;}
+  .tab-btn.active{color:var(--gold-bright);border-color:var(--gold);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;animation:fadein .3s;}
+
+  .before-after{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media(max-width:760px){.before-after{grid-template-columns:1fr;}}
+  .ba-col{background:var(--ink-3);border-radius:10px;padding:18px;border:1px solid var(--line);}
+  .ba-col h4{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
+  .ba-col.after h4{color:var(--sage);}
+  .ba-col p{font-size:14.5px;line-height:1.65;white-space:pre-wrap;}
+
+  .hook-card{background:var(--ink-3);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:10px;font-size:14.5px;line-height:1.6;position:relative;}
+  .hook-card .num{color:var(--gold-bright);font-weight:700;margin-right:8px;}
+
+  .checklist li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px;}
+  .checklist li:last-child{border-bottom:none;}
+  .checklist input{margin-top:3px;accent-color:var(--gold);}
+
+  .disclaimer{background:rgba(176,141,87,.1);border:1px solid rgba(176,141,87,.3);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--gold-bright);margin-top:16px;}
+
+  .analytics-preview{max-width:100%;border-radius:10px;border:1px solid var(--line);margin-top:10px;}
+
+  .spinner{width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .error-box{background:rgba(193,68,60,.12);border:1px solid var(--rose);border-radius:10px;padding:16px;color:var(--paper);font-size:14px;}
+  .error-box button{margin-top:10px;}
+
+  footer.credit{text-align:center;color:var(--muted);font-size:12px;margin-top:40px;}
+
+  .prompt-chip{background:var(--ink-3);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:10px;font-size:13.5px;cursor:pointer;transition:.2s;}
+  .prompt-chip:hover{border-color:var(--gold);}
+
+  .section-title{font-family:var(--serif);font-size:19px;margin:0 0 16px;font-weight:600;display:flex;align-items:center;gap:10px;}
+  .section-title .swatch{width:8px;height:8px;border-radius:2px;background:var(--gold);display:inline-block;}
+
+  @media(prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STATE = {
+    screen: 'intake', // intake -> processing -> report
+    articleText: '',
+    imageBase64: null,
+    imageMedia: null,
+    imageName: null,
+    stageResults: {},
+    log: [],
+    stages: [
+      {key:'hook', name:'Hook & Structure Analyst', desc:'Opening lines, formatting, scan-ability'},
+      {key:'authority', name:'Authority & Credibility Reviewer', desc:'Thought-leadership signal, evidence, tone'},
+      {key:'engagement', name:'LinkedIn Algorithm Strategist', desc:'Dwell time, comment bait, distribution'},
+      {key:'analytics', name:'Analytics Interpreter', desc:'Reading your performance screenshot'},
+      {key:'rewrite', name:'Rewrite & Optimization Coach', desc:'Hooks, titles, rewritten opening'},
+      {key:'editor', name:'Executive Editor', desc:'Synthesizing the final report'}
+    ],
+    stageStatus: {}, // key -> 'pending'|'active'|'done'|'error'
+    activeTab: 'overview',
+    errorMsg: null
+  };
+
+  document.body.classList.add('dark');
+
+  function el(tag, attrs, children){
+    var e = document.createElement(tag);
+    attrs = attrs || {};
+    for(var k in attrs){
+      if(k === 'class') e.className = attrs[k];
+      else if(k === 'html') e.innerHTML = attrs[k];
+      else if(k.indexOf('on') === 0) e.addEventListener(k.slice(2), attrs[k]);
+      else e.setAttribute(k, attrs[k]);
+    }
+    (children||[]).forEach(function(c){ if(c) e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return e;
+  }
+
+  function render(){
+    var app = document.getElementById('app');
+    app.innerHTML = '';
+    app.appendChild(topbar());
+    if(STATE.screen === 'intake') app.appendChild(intakeScreen());
+    if(STATE.screen === 'processing') app.appendChild(processingScreen());
+    if(STATE.screen === 'report') app.appendChild(reportScreen());
+    app.appendChild(el('div',{class:'footer credit'},['Content Intelligence Studio — AI analysis powered by Claude. Estimates are directional, not guarantees.']));
+  }
+
+  function topbar(){
+    var bar = el('div',{class:'topbar'});
+    var brand = el('div',{class:'brand'},[
+      el('div',{class:'brand-mark'},[el('span')]),
+      el('div',{},[
+        el('h1',{},['Content Intelligence Studio']),
+        el('small',{},['LinkedIn Article Consultant'])
+      ])
+    ]);
+    var toggle = el('button',{class:'toggle-mode', onclick:function(){
+      document.body.classList.toggle('light');
+      toggle.textContent = document.body.classList.contains('light') ? '☀ Light' : '● Dark';
+    }},['● Dark']);
+    bar.appendChild(brand);
+    bar.appendChild(toggle);
+    return bar;
+  }
+
+  // ---------------- INTAKE SCREEN ----------------
+  function intakeScreen(){
+    var wrap = el('div',{});
+    var card = el('div',{class:'card'});
+    card.appendChild(el('div',{class:'eyebrow'},['Step 1 of 2']));
+    card.appendChild(el('h2',{class:'title'},['Upload your LinkedIn article']));
+    card.appendChild(el('p',{class:'sub'},['Paste your article text and drop in an analytics screenshot. A panel of specialist AI reviewers will assess it for authority, structure, and algorithmic reach, then hand you a rewrite kit.']));
+
+    var grid = el('div',{class:'grid2'});
+
+    var leftCol = el('div',{});
+    leftCol.appendChild(el('label',{class:'field-label'},['Article text']));
+    var ta = el('textarea',{placeholder:'Paste the full text of your LinkedIn article here...'});
+    ta.value = STATE.articleText;
+    ta.addEventListener('input', function(e){ STATE.articleText = e.target.value; updateStartBtn(); });
+    leftCol.appendChild(ta);
+
+    var rightCol = el('div',{});
+    rightCol.appendChild(el('label',{class:'field-label'},['Analytics screenshot (optional but recommended)']));
+    var zone = el('div',{class:'upload-zone' + (STATE.imageBase64 ? ' has-file':'')});
+    var fileInput = el('input',{type:'file', accept:'image/*'});
+    fileInput.addEventListener('change', function(e){
+      var f = e.target.files[0];
+      if(!f) return;
+      var reader = new FileReader();
+      reader.onload = function(ev){
+        var result = ev.target.result;
+        STATE.imageBase64 = result.split(',')[1];
+        STATE.imageMedia = f.type || 'image/png';
+        STATE.imageName = f.name;
+        render();
+      };
+      reader.readAsDataURL(f);
+    });
+    zone.appendChild(fileInput);
+    if(STATE.imageBase64){
+      zone.appendChild(el('div',{class:'hint'},['✓ ' + STATE.imageName + ' attached — click to replace']));
+      var img = el('img',{class:'preview-thumb', src:'data:'+STATE.imageMedia+';base64,'+STATE.imageBase64});
+      zone.appendChild(img);
+    } else {
+      zone.appendChild(el('div',{class:'hint'},['Click to upload a screenshot of your post analytics (impressions, engagement, etc.)']));
+    }
+    zone.addEventListener('click', function(e){
+      if(e.target.tagName !== 'INPUT') fileInput.click();
+    });
+    rightCol.appendChild(zone);
+
+    grid.appendChild(leftCol);
+    grid.appendChild(rightCol);
+    card.appendChild(grid);
+
+    var btnRow = el('div',{class:'btn-row'});
+    var startBtn = el('button',{class:'btn', id:'startBtn', onclick:startAnalysis},['Run Content Intelligence Review →']);
+    btnRow.appendChild(startBtn);
+    card.appendChild(btnRow);
+
+    if(STATE.errorMsg){
+      card.appendChild(el('div',{class:'error-box'},[STATE.errorMsg]));
+    }
+
+    wrap.appendChild(card);
+    setTimeout(updateStartBtn, 0);
+    return wrap;
+  }
+
+  function updateStartBtn(){
+    var btn = document.getElementById('startBtn');
+    if(!btn) return;
+    btn.disabled = STATE.articleText.trim().length < 40;
+  }
+
+  // ---------------- PROCESSING SCREEN ----------------
+  function processingScreen(){
+    var wrap = el('div',{});
+    var card = el('div',{class:'card'});
+    card.appendChild(el('div',{class:'eyebrow'},['Step 2 of 2']));
+    card.appendChild(el('h2',{class:'title'},['Review panel at work']));
+    card.appendChild(el('p',{class:'sub'},['Each reviewer works in sequence, building on the last. This usually takes under a minute.']));
+
+    var pipeline = el('div',{class:'pipeline'});
+    STATE.stages.forEach(function(s){
+      var status = STATE.stageStatus[s.key] || 'pending';
+      var row = el('div',{class:'stage-row ' + status});
+      row.appendChild(el('div',{class:'stage-dot'}));
+      row.appendChild(el('div',{class:'stage-meta'},[
+        el('strong',{},[s.name]),
+        el('span',{},[s.desc])
+      ]));
+      var statusText = status === 'pending' ? 'Queued' : status === 'active' ? 'Analyzing…' : status === 'done' ? 'Complete' : 'Error';
+      row.appendChild(el('div',{class:'stage-status'},[statusText]));
+      pipeline.appendChild(row);
+    });
+    card.appendChild(pipeline);
+
+    var logBox = el('div',{class:'log', id:'logBox'});
+    STATE.log.forEach(function(entry){
+      logBox.appendChild(el('div',{},[el('span',{class:'t'},[entry.t]), entry.msg]));
+    });
+    card.appendChild(el('div',{class:'field-label', style:'margin-top:20px;'},['Live activity log']));
+    card.appendChild(logBox);
+
+    if(STATE.errorMsg){
+      var errBox = el('div',{class:'error-box'},[STATE.errorMsg]);
+      var retryBtn = el('button',{class:'btn', onclick:function(){ STATE.errorMsg=null; startAnalysis(); }},['Retry']);
+      errBox.appendChild(retryBtn);
+      card.appendChild(errBox);
+    }
+
+    wrap.appendChild(card);
+    setTimeout(function(){ logBox.scrollTop = logBox.scrollHeight; }, 0);
+    return wrap;
+  }
+
+  function logMsg(msg){
+    var t = new Date().toLocaleTimeString();
+    STATE.log.push({t:t, msg:msg});
+    render();
+  }
+
+  function setStageStatus(key, status){
+    STATE.stageStatus[key] = status;
+    render();
+  }
+
+  // ---------------- API HELPERS ----------------
+  function callClaude(systemPrompt, userContent, retries){
+    retries = retries === undefined ? 2 : retries;
+    var body = {
+      model: 'claude-sonnet-4-6',
+      max_tokens: 2000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userContent }]
+    };
+    return fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body)
+    }).then(function(res){
+      if(!res.ok){
+        throw new Error('API responded with status ' + res.status);
+      }
+      return res.json();
+    }).then(function(data){
+      var textParts = (data.content || []).filter(function(b){ return b.type === 'text'; }).map(function(b){ return b.text; });
+      return textParts.join('\n');
+    }).catch(function(err){
+      if(retries > 0){
+        logMsg('Retrying after transient error: ' + err.message);
+        return new Promise(function(resolve){ setTimeout(resolve, 900); }).then(function(){
+          return callClaude(systemPrompt, userContent, retries - 1);
+        });
+      }
+      throw err;
+    });
+  }
+
+  // Parses @@FIELD_NAME@@ ... content ... until next @@ or end
+  function parseFields(text){
+    var out = {};
+    if(!text) return out;
+    var regex = /@@([A-Z_]+)@@/g;
+    var matches = [];
+    var m;
+    while((m = regex.exec(text)) !== null){
+      matches.push({key: m[1], index: m.index, end: m.index + m[0].length});
+    }
+    for(var i=0;i<matches.length;i++){
+      var start = matches[i].end;
+      var stop = (i+1 < matches.length) ? matches[i+1].index : text.length;
+      out[matches[i].key] = text.slice(start, stop).trim();
+    }
+    return out;
+  }
+
+  function parseNumberedList(text){
+    if(!text) return [];
+    return text.split(/\n+/).map(function(l){ return l.replace(/^\s*[\d]+[\.\)]\s*/, '').replace(/^\s*[-•]\s*/, '').trim(); }).filter(function(l){ return l.length > 0; });
+  }
+
+  // ---------------- ANALYSIS PIPELINE ----------------
+  function startAnalysis(){
+    STATE.errorMsg = null;
+    STATE.screen = 'processing';
+    STATE.log = [];
+    STATE.stageResults = {};
+    STATE.stageStatus = {};
+    render();
+    logMsg('Initializing review panel…');
+
+    runPipeline().catch(function(err){
+      STATE.errorMsg = 'Something went wrong reaching the AI reviewers: ' + err.message + '. Your text was not lost — you can retry.';
+      render();
+    });
+  }
+
+  function runPipeline(){
+    var article = STATE.articleText;
+
+    return Promise.resolve()
+      .then(function(){ return runHookStage(article); })
+      .then(function(){ return runAuthorityStage(article); })
+      .then(function(){ return runEngagementStage(article); })
+      .then(function(){ return runAnalyticsStage(); })
+      .then(function(){ return runRewriteStage(article); })
+      .then(function(){ return runEditorStage(article); })
+      .then(function(){
+        STATE.screen = 'report';
+        STATE.activeTab = 'overview';
+        render();
+      });
+  }
+
+  function runHookStage(article){
+    setStageStatus('hook','active');
+    logMsg('Hook & Structure Analyst reading opening lines and formatting…');
+    var sys = "You are a veteran LinkedIn content editor who has reviewed thousands of high-performing articles. You specialize in opening hooks, scan-ability, paragraph rhythm, and mobile-feed formatting. Be balanced and professional: fair, specific, constructive, not harsh, not sycophantic. Respond ONLY using this exact field format, nothing else, no markdown, no JSON: \n@@SCORE@@\n<a number 0-100>\n@@HOOK_ANALYSIS@@\n<2-4 sentences on the opening hook's effectiveness>\n@@STRUCTURE_ANALYSIS@@\n<2-4 sentences on structure, formatting, paragraph length, scannability>\n@@READABILITY_NOTES@@\n<1-3 sentences>\n@@STRENGTHS@@\n<one strength per line>\n@@WEAKNESSES@@\n<one weakness per line>";
+    var user = "Analyze this LinkedIn article's hook and structure:\n\n" + article;
+    return callClaude(sys, user).then(function(text){
+      STATE.stageResults.hook = parseFields(text);
+      setStageStatus('hook','done');
+      logMsg('Hook & Structure Analyst complete. Score: ' + (STATE.stageResults.hook.SCORE || '—'));
+    }).catch(function(err){ setStageStatus('hook','error'); throw err; });
+  }
+
+  function runAuthorityStage(article){
+    setStageStatus('authority','active');
+    logMsg('Authority & Credibility Reviewer evaluating expertise signals…');
+    var sys = "You are a thought-leadership strategist who coaches executives on building credibility through written content. You evaluate evidence use, specificity, original insight, tone of authority (versus generic advice), and trustworthiness signals. Be balanced and professional. Respond ONLY using this exact field format, nothing else, no markdown, no JSON: \n@@SCORE@@\n<a number 0-100>\n@@AUTHORITY_ANALYSIS@@\n<2-4 sentences on how well this builds the author's authority>\n@@EVIDENCE_ANALYSIS@@\n<2-4 sentences on use of evidence, examples, data, specificity>\n@@TONE_ANALYSIS@@\n<1-3 sentences on tone>\n@@STRENGTHS@@\n<one strength per line>\n@@WEAKNESSES@@\n<one weakness per line>";
+    var user = "Analyze this LinkedIn article for authority-building and thought-leadership quality:\n\n" + article;
+    return callClaude(sys, user).then(function(text){
+      STATE.stageResults.authority = parseFields(text);
+      setStageStatus('authority','done');
+      logMsg('Authority & Credibility Reviewer complete. Score: ' + (STATE.stageResults.authority.SCORE || '—'));
+    }).catch(function(err){ setStageStatus('authority','error'); throw err; });
+  }
+
+  function runEngagementStage(article){
+    setStageStatus('engagement','active');
+    logMsg('LinkedIn Algorithm Strategist assessing distribution mechanics…');
+    var sys = "You are a LinkedIn growth strategist who understands the platform's feed algorithm, dwell time signals, comment-bait mechanics, and hashtag/posting best practices circa now. Be balanced and professional. Respond ONLY using this exact field format, nothing else, no markdown, no JSON: \n@@SCORE@@\n<a number 0-100>\n@@ENGAGEMENT_ANALYSIS@@\n<2-4 sentences on likely engagement and dwell time>\n@@ALGORITHM_TIPS@@\n<one concrete tip per line>\n@@HASHTAG_SUGGESTIONS@@\n<3-5 relevant hashtags, one per line, include the # symbol>\n@@STRENGTHS@@\n<one strength per line>\n@@WEAKNESSES@@\n<one weakness per line>";
+    var user = "Analyze this LinkedIn article for algorithmic reach and engagement potential:\n\n" + article;
+    return callClaude(sys, user).then(function(text){
+      STATE.stageResults.engagement = parseFields(text);
+      setStageStatus('engagement','done');
+      logMsg('LinkedIn Algorithm Strategist complete. Score: ' + (STATE.stageResults.engagement.SCORE || '—'));
+    }).catch(function(err){ setStageStatus('engagement','error'); throw err; });
+  }
+
+  function runAnalyticsStage(){
+    if(!STATE.imageBase64){
+      setStageStatus('analytics','done');
+      logMsg('No analytics screenshot provided — skipping analytics interpretation.');
+      STATE.stageResults.analytics = {ANALYTICS_SUMMARY:'No analytics screenshot was provided for this review.', PERFORMANCE_DIAGNOSIS:'', CORRELATION_INSIGHTS:''};
+      return Promise.resolve();
+    }
+    setStageStatus('analytics','active');
+    logMsg('Analytics Interpreter reading your performance screenshot…');
+    var sys = "You are a LinkedIn analytics specialist. You read screenshots of post performance dashboards (impressions, reactions, comments, reposts, follower conversion, etc.) and translate the numbers into plain-English diagnosis. Be balanced and professional, and be explicit that any performance judgment is an estimate based on the screenshot alone. Respond ONLY using this exact field format, nothing else, no markdown, no JSON: \n@@ANALYTICS_SUMMARY@@\n<2-4 sentences describing what the screenshot shows>\n@@PERFORMANCE_DIAGNOSIS@@\n<2-4 sentences diagnosing what the numbers suggest about how the post performed>\n@@CORRELATION_INSIGHTS@@\n<2-4 sentences connecting the metrics to likely content issues (hook, structure, or authority) based on the article text also provided>";
+    var content = [
+      {type:'image', source:{type:'base64', media_type: STATE.imageMedia, data: STATE.imageBase64}},
+      {type:'text', text: "This is the analytics screenshot for the following LinkedIn article. Article text:\n\n" + STATE.articleText}
+    ];
+    return callClaude(sys, content).then(function(text){
+      STATE.stageResults.analytics = parseFields(text);
+      setStageStatus('analytics','done');
+      logMsg('Analytics Interpreter complete.');
+    }).catch(function(err){ setStageStatus('analytics','error'); throw err; });
+  }
+
+  function runRewriteStage(article){
+    setStageStatus('rewrite','active');
+    logMsg('Rewrite & Optimization Coach drafting improvements…');
+    var priorContext = summarizePrior();
+    var sys = "You are an elite LinkedIn ghostwriter and rewrite coach. Using the reviewer notes provided, you produce a rewritten opening, alternative hooks and titles, missed opportunities, and a publishing checklist. Be balanced and professional, and make outputs concrete and usable, not generic. Respond ONLY using this exact field format, nothing else, no markdown, no JSON: \n@@REWRITTEN_OPENING@@\n<a rewritten opening paragraph or two, ready to use>\n@@ALT_HOOKS@@\n<5 alternative opening lines, one per line, no numbering>\n@@ALT_TITLES@@\n<5 alternative titles, one per line, no numbering>\n@@MISSED_OPPORTUNITIES@@\n<one missed opportunity per line>\n@@PUBLISHING_CHECKLIST@@\n<6-8 concrete pre-publish checklist items, one per line, no numbering>";
+    var user = "Original article:\n\n" + article + "\n\nReviewer notes so far:\n" + priorContext;
+    return callClaude(sys, user).then(function(text){
+      STATE.stageResults.rewrite = parseFields(text);
+      setStageStatus('rewrite','done');
+      logMsg('Rewrite & Optimization Coach complete.');
+    }).catch(function(err){ setStageStatus('rewrite','error'); throw err; });
+  }
+
+  function runEditorStage(article){
+    setStageStatus('editor','active');
+    logMsg('Executive Editor synthesizing the final report…');
+    var priorContext = summarizePrior(true);
+    var sys = "You are the executive editor overseeing a panel of specialist LinkedIn content reviewers. You synthesize all prior reviewer findings into one cohesive final report for the author, whose goal is building thought-leadership authority. Be balanced and professional. Clearly label any performance prediction as an AI estimate, not a guarantee. Respond ONLY using this exact field format, nothing else, no markdown, no JSON: \n@@OVERALL_SCORE@@\n<a single number 0-100 synthesizing all reviewer scores>\n@@CATEGORY_SCORES@@\n<format exactly as: Hook:NN, Authority:NN, Engagement:NN — using the reviewer scores given>\n@@EXEC_SUMMARY@@\n<3-5 sentence executive summary of the article's overall quality and readiness>\n@@HEALTH_REPORT@@\n<3-5 sentences on the overall content health: what's working structurally and strategically>\n@@HIGH_IMPACT_IMPROVEMENTS@@\n<the 3-4 highest-impact changes the author should make, one per line, ordered by impact>\n@@PREDICTED_PERFORMANCE@@\n<2-3 sentences giving a directional AI estimate of performance potential if improvements are made, explicitly caveated as an estimate>\n@@BEFORE_AFTER@@\n<2-3 sentences summarizing the core difference between the original and the improved version>\n@@FURTHER_PROMPTS@@\n<4-5 follow-up prompts the author could ask an AI assistant to go deeper, one per line, no numbering>";
+    var user = "Original article:\n\n" + article + "\n\nAll reviewer findings:\n" + priorContext;
+    return callClaude(sys, user).then(function(text){
+      STATE.stageResults.editor = parseFields(text);
+      setStageStatus('editor','done');
+      logMsg('Executive Editor complete. Final report ready.');
+    }).catch(function(err){ setStageStatus('editor','error'); throw err; });
+  }
+
+  function summarizePrior(includeAnalytics){
+    var r = STATE.stageResults;
+    var out = '';
+    if(r.hook) out += 'HOOK/STRUCTURE (score ' + r.hook.SCORE + '): ' + r.hook.HOOK_ANALYSIS + ' ' + r.hook.STRUCTURE_ANALYSIS + ' Strengths: ' + r.hook.STRENGTHS + ' Weaknesses: ' + r.hook.WEAKNESSES + '\n\n';
+    if(r.authority) out += 'AUTHORITY (score ' + r.authority.SCORE + '): ' + r.authority.AUTHORITY_ANALYSIS + ' ' + r.authority.EVIDENCE_ANALYSIS + ' Strengths: ' + r.authority.STRENGTHS + ' Weaknesses: ' + r.authority.WEAKNESSES + '\n\n';
+    if(r.engagement) out += 'ENGAGEMENT (score ' + r.engagement.SCORE + '): ' + r.engagement.ENGAGEMENT_ANALYSIS + ' Weaknesses: ' + r.engagement.WEAKNESSES + '\n\n';
+    if(includeAnalytics && r.analytics) out += 'ANALYTICS: ' + r.analytics.ANALYTICS_SUMMARY + ' ' + r.analytics.PERFORMANCE_DIAGNOSIS + ' ' + r.analytics.CORRELATION_INSIGHTS + '\n\n';
+    return out;
+  }
+
+  // ---------------- REPORT SCREEN ----------------
+  function reportScreen(){
+    var wrap = el('div',{});
+    var r = STATE.stageResults;
+    var ed = r.editor || {};
+    var overallScore = parseInt(ed.OVERALL_SCORE, 10);
+    if(isNaN(overallScore)) overallScore = 70;
+
+    // Hero card: score ring + category bars
+    var heroCard = el('div',{class:'card'});
+    heroCard.appendChild(el('div',{class:'eyebrow'},['Final Report']));
+    heroCard.appendChild(el('h2',{class:'title'},['Content Health Overview']));
+    var hero = el('div',{class:'score-hero'});
+    hero.appendChild(scoreRing(overallScore));
+
+    var catScores = parseCategoryScores(ed.CATEGORY_SCORES);
+    var catBars = el('div',{class:'cat-bars'});
+    catScores.forEach(function(c){
+      var row = el('div',{class:'cat-bar-row'});
+      row.appendChild(el('div',{class:'top'},[el('span',{},[c.name]), el('strong',{},[c.score + '/100'])]));
+      var track = el('div',{class:'cat-bar-track'});
+      var fill = el('div',{class:'cat-bar-fill', style:'width:0%'});
+      track.appendChild(fill);
+      row.appendChild(track);
+      catBars.appendChild(row);
+      setTimeout(function(){ fill.style.width = c.score + '%'; }, 60);
+    });
+    hero.appendChild(catBars);
+    heroCard.appendChild(hero);
+    heroCard.appendChild(el('p',{class:'sub', style:'margin-top:18px;'},[ed.EXEC_SUMMARY || '']));
+    wrap.appendChild(heroCard);
+
+    // Tabs card
+    var tabCard = el('div',{class:'card'});
+    var tabs = ['overview','strengths','rewrite','analytics','checklist','prompts'];
+    var tabLabels = {overview:'Health Report', strengths:'Strengths & Gaps', rewrite:'Rewrite Kit', analytics:'Analytics', checklist:'Publishing Checklist', prompts:'Go Deeper'};
+    var tabBar = el('div',{class:'tabs'});
+    tabs.forEach(function(t){
+      var b = el('button',{class:'tab-btn' + (STATE.activeTab===t?' active':''), onclick:(function(t){ return function(){ STATE.activeTab = t; render(); }; })(t)},[tabLabels[t]]);
+      tabBar.appendChild(b);
+    });
+    tabCard.appendChild(tabBar);
+
+    tabCard.appendChild(tabPanel('overview', overviewPanel(ed)));
+    tabCard.appendChild(tabPanel('strengths', strengthsPanel(r)));
+    tabCard.appendChild(tabPanel('rewrite', rewritePanel(r.rewrite || {}, ed)));
+    tabCard.appendChild(tabPanel('analytics', analyticsPanel(r.analytics || {})));
+    tabCard.appendChild(tabPanel('checklist', checklistPanel(r.rewrite || {})));
+    tabCard.appendChild(tabPanel('prompts', promptsPanel(ed)));
+
+    wrap.appendChild(tabCard);
+
+    var actions = el('div',{class:'btn-row'});
+    actions.appendChild(el('button',{class:'btn btn-ghost', onclick:function(){ STATE.screen='intake'; STATE.errorMsg=null; render(); }},['← Start a new review']));
+    wrap.appendChild(actions);
+
+    return wrap;
+  }
+
+  function tabPanel(key, content){
+    var panel = el('div',{class:'tab-panel' + (STATE.activeTab===key?' active':'')});
+    panel.appendChild(content);
+    return panel;
+  }
+
+  function scoreRing(score){
+    var wrap = el('div',{class:'ring-wrap'});
+    var r = 68, c = 2*Math.PI*r;
+    var offset = c - (score/100)*c;
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(svgNS,'svg');
+    svg.setAttribute('width','170'); svg.setAttribute('height','170'); svg.setAttribute('viewBox','0 0 170 170');
+    var bg = document.createElementNS(svgNS,'circle');
+    bg.setAttribute('class','ring-bg'); bg.setAttribute('cx','85'); bg.setAttribute('cy','85'); bg.setAttribute('r',r);
+    var fg = document.createElementNS(svgNS,'circle');
+    fg.setAttribute('class','ring-fg'); fg.setAttribute('cx','85'); fg.setAttribute('cy','85'); fg.setAttribute('r',r);
+    fg.setAttribute('stroke-dasharray', c);
+    fg.setAttribute('stroke-dashoffset', c);
+    svg.appendChild(bg); svg.appendChild(fg);
+    wrap.appendChild(svg);
+    var label = el('div',{class:'ring-label'},[
+      el('div',{class:'num'},[String(score)]),
+      el('div',{class:'lbl'},['Overall Score'])
+    ]);
+    wrap.appendChild(label);
+    setTimeout(function(){ fg.style.strokeDashoffset = offset; }, 80);
+    return wrap;
+  }
+
+  function parseCategoryScores(str){
+    var out = [];
+    if(!str) return [{name:'Hook',score:70},{name:'Authority',score:70},{name:'Engagement',score:70}];
+    var parts = str.split(',');
+    parts.forEach(function(p){
+      var kv = p.split(':');
+      if(kv.length===2){
+        var n = parseInt(kv[1].replace(/\D/g,''),10);
+        out.push({name: kv[0].trim(), score: isNaN(n)?70:n});
+      }
+    });
+    return out.length ? out : [{name:'Hook',score:70},{name:'Authority',score:70},{name:'Engagement',score:70}];
+  }
+
+  function overviewPanel(ed){
+    var d = el('div',{});
+    d.appendChild(el('div',{class:'section-title'},[el('span',{class:'swatch'}), 'Health Report']));
+    d.appendChild(el('p',{class:'sub'},[ed.HEALTH_REPORT || '']));
+    d.appendChild(el('div',{class:'section-title'},[el('span',{class:'swatch'}), 'Highest-Impact Improvements']));
+    var list = el('ul',{class:'list-block'});
+    parseNumberedList(ed.HIGH_IMPACT_IMPROVEMENTS).forEach(function(item, i){
+      list.appendChild(el('li',{},[el('div',{class:'bullet'},[String(i+1)]), item]));
+    });
+    d.appendChild(list);
+    d.appendChild(el('div',{class:'section-title', style:'margin-top:20px;'},[el('span',{class:'swatch'}), 'Predicted Performance Potential']));
+    var pp = el('div',{class:'disclaimer'},['⚡ AI estimate — directional only, not a guarantee. ' + (ed.PREDICTED_PERFORMANCE || '')]);
+    d.appendChild(pp);
+    d.appendChild(el('div',{class:'section-title', style:'margin-top:20px;'},[el('span',{class:'swatch'}), 'Before vs After']));
+    d.appendChild(el('p',{class:'sub'},[ed.BEFORE_AFTER || '']));
+    return d;
+  }
+
+  function strengthsPanel(r){
+    var d = el('div',{});
+    [
+      {stage:'hook', label:'Hook & Structure'},
+      {stage:'authority', label:'Authority & Credibility'},
+      {stage:'engagement', label:'Engagement & Algorithm'}
+    ].forEach(function(s){
+      var data = r[s.stage];
+      if(!data) return;
+      d.appendChild(el('div',{class:'section-title'},[el('span',{class:'swatch'}), s.label + ' — Score ' + (data.SCORE||'—')]));
+      var row = el('div',{style:'display:flex;gap:20px;flex-wrap:wrap;margin-bottom:14px;'});
+      var strengthsCol = el('div',{style:'flex:1;min-width:220px;'});
+      strengthsCol.appendChild(el('span',{class:'tag strength'},['Strengths']));
+      var sl = el('ul',{class:'list-block'});
+      parseNumberedList(data.STRENGTHS).forEach(function(item){ sl.appendChild(el('li',{},[el('div',{class:'bullet'},['+']), item])); });
+      strengthsCol.appendChild(sl);
+      var weaknessCol = el('div',{style:'flex:1;min-width:220px;'});
+      weaknessCol.appendChild(el('span',{class:'tag weakness'},['Weaknesses']));
+      var wl = el('ul',{class:'list-block'});
+      parseNumberedList(data.WEAKNESSES).forEach(function(item){ wl.appendChild(el('li',{},[el('div',{class:'bullet'},['−']), item])); });
+      weaknessCol.appendChild(wl);
+      row.appendChild(strengthsCol); row.appendChild(weaknessCol);
+      d.appendChild(row);
+    });
+    if(r.rewrite && r.rewrite.MISSED_OPPORTUNITIES){
+      d.appendChild(el('div',{class:'section-title'},[el('span',{class:'swatch'}), 'Missed Opportunities']));
+      var ml = el('ul',{class:'list-block'});
+      parseNumberedList(r.rewrite.MISSED_OPPORTUNITIES).forEach(function(item){
+        ml.appendChild(el('li',{},[el('div',{class:'bullet'},['◇']), item]));
+      });
+      d.appendChild(ml);
+    }
+    return d;
+  }
+
+  function rewritePanel(rw, ed){
+    var d = el('div',{});
+    d.appendChild(el('div',{class:'section-title'},[el('span',{class:'swatch'}), 'Before vs After — Opening']));
+    var ba = el('div',{class:'before-after'});
+    var beforeCol = el('div',{class:'ba-col'},[el('h4',{},['Original Opening']), el('p',{},[(STATE.articleText||'').slice(0,320) + ((STATE.articleText||'').length>320?'…':'')])]);
+    var afterCol = el('div',{class:'ba-col after'},[el('h4',{},['Rewritten Opening']), el('p',{},[rw.REWRITTEN_OPENING || ''])]);
+    ba.appendChild(beforeCol); ba.appendChild(afterCol);
+    d.appendChild(ba);
+
+    d.appendChild(el('div',{class:'section-title', style:'margin-top:24px;'},[el('span',{class:'swatch'}), 'Alternative Hooks']));
+    parseNumberedList(rw.ALT_HOOKS).forEach(function(h, i){
+      d.appendChild(el('div',{class:'hook-card'},[el('span',{class:'num'},['0'+(i+1)]), h]));
+    });
+
+    d.appendChild(el('div',{class:'section-title', style:'margin-top:24px;'},[el('span',{class:'swatch'}), 'Alternative Titles']));
+    parseNumberedList(rw.ALT_TITLES).forEach(function(h, i){
+      d.appendChild(el('div',{class:'hook-card'},[el('span',{class:'num'},['0'+(i+1)]), h]));
+    });
+    return d;
+  }
+
+  function analyticsPanel(an){
+    var d = el('div',{});
+    if(STATE.imageBase64){
+      d.appendChild(el('img',{class:'analytics-preview', src:'data:'+STATE.imageMedia+';base64,'+STATE.imageBase64}));
+    }
+    d.appendChild(el('div',{class:'section-title', style:'margin-top:18px;'},[el('span',{class:'swatch'}), 'What the screenshot shows']));
+    d.appendChild(el('p',{class:'sub'},[an.ANALYTICS_SUMMARY || 'No analytics screenshot was provided.']));
+    if(an.PERFORMANCE_DIAGNOSIS){
+      d.appendChild(el('div',{class:'section-title'},[el('span',{class:'swatch'}), 'Performance Diagnosis']));
+      d.appendChild(el('p',{class:'sub'},[an.PERFORMANCE_DIAGNOSIS]));
+    }
+    if(an.CORRELATION_INSIGHTS){
+      d.appendChild(el('div',{class:'section-title'},[el('span',{class:'swatch'}), 'Content ↔ Metric Correlation']));
+      d.appendChild(el('p',{class:'sub'},[an.CORRELATION_INSIGHTS]));
+    }
+    return d;
+  }
+
+  function checklistPanel(rw){
+    var d = el('div',{});
+    d.appendChild(el('div',{class:'section-title'},[el('span',{class:'swatch'}), 'Publishing Checklist']));
+    var ul = el('ul',{class:'list-block checklist'});
+    parseNumberedList(rw.PUBLISHING_CHECKLIST).forEach(function(item, i){
+      var cb = el('input',{type:'checkbox', id:'chk'+i});
+      ul.appendChild(el('li',{},[cb, item]));
+    });
+    d.appendChild(ul);
+    return d;
+  }
+
+  function promptsPanel(ed){
+    var d = el('div',{});
+    d.appendChild(el('div',{class:'section-title'},[el('span',{class:'swatch'}), 'Further Prompts for Deeper Optimization']));
+    d.appendChild(el('p',{class:'sub'},['Copy any of these into a new chat with Claude to go further.']));
+    parseNumberedList(ed.FURTHER_PROMPTS).forEach(function(p){
+      d.appendChild(el('div',{class:'prompt-chip'},[p]));
+    });
+    return d;
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
