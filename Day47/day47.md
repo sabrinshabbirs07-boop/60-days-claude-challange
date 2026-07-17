@@ -96,5 +96,5 @@ Through this project, I gained hands-on experience with:
 ---
 
 ## Content Intelligence Studio:
-[html file]()
+[html file](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day47/content-intelligence-studio.htm)
 
