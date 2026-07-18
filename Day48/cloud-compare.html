@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledger: Cloud Host Compare for Side Projects</title>
+<style>
+  :root{
+    --paper:#F5F3EE;
+    --paper-raised:#FCFBF7;
+    --ink:#1B2430;
+    --ink-soft:#57626D;
+    --line:#DAD4C6;
+    --teal:#2B7A6F;
+    --teal-dark:#1C5850;
+    --amber:#B8790A;
+    --amber-bg:#FBF0DA;
+    --coral:#B14A34;
+    --coral-bg:#FBE7E1;
+    font-size:16px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+  }
+  .mono{font-family:"IBM Plex Mono","SF Mono",Menlo,Consolas,monospace;}
+
+  header.masthead{
+    border-bottom:2px solid var(--ink);
+    padding:28px 24px 18px;
+    background:
+      repeating-linear-gradient(180deg, transparent, transparent 27px, rgba(27,36,48,0.035) 27px, rgba(27,36,48,0.035) 28px);
+  }
+  .masthead-inner{max-width:1180px;margin:0 auto;}
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--teal-dark);
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:10px;
+  }
+  .eyebrow::before{content:"";width:8px;height:8px;background:var(--teal);border-radius:50%;display:inline-block;}
+  h1.title{
+    font-family:Georgia,"Iowan Old Style","Times New Roman",serif;
+    font-size:clamp(1.9rem,4vw,2.9rem);
+    margin:0 0 8px;
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+  .dek{max-width:660px;color:var(--ink-soft);font-size:1.02rem;margin:0;}
+  .dek b{color:var(--ink);}
+
+  main{max-width:1180px;margin:0 auto;padding:28px 24px 80px;}
+
+  .layout{display:grid;grid-template-columns:300px 1fr;gap:28px;align-items:start;}
+  @media (max-width:880px){.layout{grid-template-columns:1fr;}}
+
+  .panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:4px;}
+
+  .weights-panel{position:sticky;top:16px;padding:20px 18px 22px;}
+  .weights-title{font-family:"IBM Plex Mono",monospace;font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-soft);margin:0 0 4px;}
+  .weights-sub{font-size:.82rem;color:var(--ink-soft);margin:0 0 16px;}
+  .slider-row{margin-bottom:16px;}
+  .slider-row label{display:flex;justify-content:space-between;align-items:baseline;font-size:.86rem;font-weight:600;margin-bottom:4px;}
+  .slider-row .val{font-family:"IBM Plex Mono",monospace;color:var(--teal-dark);font-weight:700;font-size:.82rem;}
+  input[type=range]{-webkit-appearance:none;width:100%;height:4px;background:var(--line);border-radius:2px;outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--teal);border:2px solid var(--paper-raised);box-shadow:0 0 0 1px var(--teal);cursor:pointer;}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--teal);border:2px solid var(--paper-raised);box-shadow:0 0 0 1px var(--teal);cursor:pointer;}
+  .reset-btn{width:100%;margin-top:6px;padding:9px;border:1px solid var(--ink);background:transparent;color:var(--ink);font-family:"IBM Plex Mono",monospace;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;border-radius:3px;cursor:pointer;transition:all .15s;}
+  .reset-btn:hover{background:var(--ink);color:var(--paper);}
+  .priority-note{margin-top:14px;padding:10px 12px;background:var(--amber-bg);border-left:3px solid var(--amber);font-size:.78rem;color:#6b4c07;border-radius:0 3px 3px 0;}
+
+  .results-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+  .results-title{font-family:Georgia,serif;font-size:1.4rem;margin:0;}
+  .results-count{font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--ink-soft);}
+
+  .card{background:var(--paper-raised);border:1px solid var(--line);border-radius:5px;margin-bottom:14px;overflow:hidden;transition:box-shadow .2s;}
+  .card.rank-1{border-color:var(--teal);box-shadow:0 2px 14px rgba(43,122,111,0.15);}
+  .card-top{display:flex;align-items:stretch;}
+  .rank-badge{width:64px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--ink);color:var(--paper);font-family:"IBM Plex Mono",monospace;}
+  .card.rank-1 .rank-badge{background:var(--teal);}
+  .rank-badge .num{font-size:1.6rem;font-weight:700;line-height:1;}
+  .rank-badge .lbl{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;margin-top:3px;opacity:.8;}
+
+  .card-body{flex:1;padding:16px 18px;}
+  .card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+  .card-name{font-family:Georgia,serif;font-size:1.2rem;font-weight:700;margin:0;}
+  .card-tag{font-size:.78rem;color:var(--ink-soft);margin-top:2px;}
+  .score-chip{font-family:"IBM Plex Mono",monospace;background:var(--teal-dark);color:#fff;padding:5px 10px;border-radius:20px;font-size:.82rem;font-weight:700;white-space:nowrap;}
+  .card.rank-1 .score-chip{background:var(--teal);}
+
+  .bars{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px 14px;margin-top:10px;}
+  .bar-item{font-size:.72rem;}
+  .bar-item .bar-lbl{display:flex;justify-content:space-between;color:var(--ink-soft);margin-bottom:2px;}
+  .bar-item .bar-lbl .est{color:var(--amber);font-weight:700;}
+  .bar-track{height:5px;background:var(--line);border-radius:3px;overflow:hidden;}
+  .bar-fill{height:100%;background:var(--teal);border-radius:3px;transition:width .3s ease;}
+
+  .detail-toggle{margin-top:12px;background:none;border:none;color:var(--teal-dark);font-size:.8rem;font-weight:600;cursor:pointer;padding:0;font-family:inherit;text-decoration:underline;text-underline-offset:2px;}
+  .detail-panel{display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);font-size:.85rem;}
+  .detail-panel.open{display:block;}
+  .fact-row{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid rgba(218,212,198,0.6);}
+  .fact-row:last-child{border-bottom:none;}
+  .fact-k{width:160px;flex-shrink:0;color:var(--ink-soft);font-weight:600;font-size:.78rem;}
+  .fact-v{flex:1;font-size:.83rem;}
+  .cite{font-family:"IBM Plex Mono",monospace;font-size:.68rem;color:var(--teal-dark);}
+  .flag-estimate{display:inline-block;margin-left:6px;font-size:.65rem;font-family:"IBM Plex Mono",monospace;background:var(--amber-bg);color:var(--amber);padding:1px 6px;border-radius:3px;border:1px solid var(--amber);text-transform:uppercase;letter-spacing:.03em;}
+  .flag-conflict{display:inline-block;margin-left:6px;font-size:.65rem;font-family:"IBM Plex Mono",monospace;background:var(--coral-bg);color:var(--coral);padding:1px 6px;border-radius:3px;border:1px solid var(--coral);text-transform:uppercase;letter-spacing:.03em;}
+
+  .collapsible{margin-top:22px;}
+  .collapsible summary{cursor:pointer;list-style:none;padding:14px 18px;font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between;align-items:center;color:var(--ink);}
+  .collapsible summary::-webkit-details-marker{display:none;}
+  .collapsible summary::after{content:"+";font-size:1.2rem;font-weight:400;color:var(--teal);}
+  .collapsible[open] summary::after{content:"–";}
+  .collapsible-inner{padding:0 18px 18px;font-size:.88rem;color:var(--ink-soft);}
+  .collapsible-inner p{margin:0 0 10px;}
+  .collapsible-inner h4{color:var(--ink);font-size:.85rem;margin:14px 0 6px;font-family:inherit;}
+
+  .source-list{list-style:none;margin:0;padding:0;}
+  .source-list li{padding:9px 0;border-bottom:1px solid var(--line);display:flex;gap:10px;font-size:.83rem;}
+  .source-list li:last-child{border-bottom:none;}
+  .source-num{font-family:"IBM Plex Mono",monospace;color:var(--teal-dark);font-weight:700;flex-shrink:0;width:30px;}
+  .source-list a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line);}
+  .source-list a:hover{border-color:var(--ink);}
+  .source-meta{color:var(--ink-soft);font-size:.76rem;display:block;margin-top:2px;}
+
+  .conflict-box{background:var(--coral-bg);border-left:3px solid var(--coral);padding:10px 12px;border-radius:0 3px 3px 0;margin:10px 0;font-size:.82rem;color:#6b2c1c;}
+
+  footer{max-width:1180px;margin:0 auto;padding:20px 24px 40px;color:var(--ink-soft);font-size:.76rem;border-top:1px solid var(--line);}
+  .empty-state{padding:40px 20px;text-align:center;color:var(--ink-soft);}
+  .loading{padding:40px;text-align:center;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace;font-size:.85rem;}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="eyebrow">Compare &amp; Decide — Field Report No. 07</div>
+    <h1 class="title">Which cloud host earns a side project?</h1>
+    <p class="dek">Four cloud providers, seven measured criteria, one adjustable ranking. Built for <b>students and hobbyists picking a host for a side project</b> — drag the weights until the ranking matches what actually matters to you.</p>
+  </div>
+</header>
+
+<main>
+  <div id="app" class="layout">
+    <div class="loading" style="grid-column:1/-1;">Loading ledger…</div>
+  </div>
+
+  <details class="collapsible panel" style="margin-top:24px;">
+    <summary><span>Sources — everything cited in this ledger</span></summary>
+    <div class="collapsible-inner">
+      <p>Every figure below traces to a named, dated source. Where reports disagreed — which happens often in cloud pricing — both figures are shown rather than averaged away.</p>
+      <ol class="source-list" id="sourceList"></ol>
+    </div>
+  </details>
+
+  <details class="collapsible panel" style="margin-top:14px;">
+    <summary><span>How this was researched</span></summary>
+    <div class="collapsible-inner" id="researchNotes"></div>
+  </details>
+</main>
+
+<footer>
+  Built as a research aid, not professional advice. Cloud free-tier terms change often (DigitalOcean changed its new-account offer the week this was written). Verify current terms on each provider's site before signing up. Data compiled July 2026.
+</footer>
+
+<script>
+/* ============================================================
+   DATA — every fact below is sourced. "estimate:true" flags
+   figures that are editorial synthesis rather than one directly
+   cited measurement. "conflict:true" flags points where sources
+   disagreed and both figures are preserved rather than averaged.
+   ============================================================ */
+
+const CRITERIA = [
+  {key:'freetier',  label:'Free tier generosity',    unit:'/100', invert:false, desc:'Higher is better — breadth and durability of no-cost usage.'},
+  {key:'ease',       label:'Ease of setup',           unit:'/100', invert:false, desc:'Higher is better — time and complexity to first deploy.'},
+  {key:'docs',       label:'Documentation quality',   unit:'/100', invert:false, desc:'Higher is better — clarity, currency, and depth of official docs.'},
+  {key:'community',  label:'Community support',       unit:'/100', invert:false, desc:'Higher is better — tutorials, forums, third-party guides.'},
+  {key:'regions',    label:'Global availability',     unit:'regions', invert:false, desc:'Higher is better — number of geographic regions.'},
+  {key:'lockin',     label:'Vendor lock-in risk',     unit:'/100', invert:true,  desc:'Lower is better — this criterion is inverted: a low score means LOW risk (good).'},
+  {key:'services',   label:'Range of services',       unit:'services', invert:false, desc:'Higher is better — breadth of the managed-service catalog.'},
+];
+
+const PROVIDERS = [
+  {
+    id:'aws', name:'Amazon Web Services', tag:'Market leader · widest catalog · steepest learning curve',
+    facts:{
+      freetier:  {v:62, label:'Since Jul 15, 2025: new accounts get $100–$200 in credits (auto-closes after ~6 months) plus 30+ "Always Free" services with permanent monthly caps (e.g. Lambda 1M requests, DynamoDB 25GB). Aurora PostgreSQL Serverless added to the free tier in Mar 2026.', cite:[1,2,3], estimate:true},
+      ease:      {v:35, label:'Widely described as the steepest learning curve of the four — "requires a nuanced understanding of hundreds of service configurations;" console can overwhelm first-time users', cite:[4,5], estimate:true},
+      docs:      {v:70, label:'Deepest documentation of any provider by volume, but officially described by competitors and reviewers as "fragmented" and quick to go stale as services multiply', cite:[4]},
+      community:  {v:88, label:'Largest developer community and enterprise support ecosystem of the four; forums, re:Post, and third-party tutorials are extensive', cite:[4,9], estimate:true},
+      regions:   {v:33, label:'33 geographic regions, 105 availability zones, data centers on every continent except Antarctica', cite:[6,10]},
+      lockin:    {v:80, label:'High risk: deep proprietary services (Lambda, DynamoDB, SageMaker, CloudFormation) create migration costs that compound the longer you build on them', cite:[11,12], estimate:true},
+      services:  {v:240, label:'240+ managed services — broadest catalog of any provider tracked here', cite:[9]},
+    }
+  },
+  {
+    id:'gcp', name:'Google Cloud Platform', tag:'Best always-free tier · strong for data/AI · smallest footprint of the Big Three',
+    facts:{
+      freetier:  {v:88, label:'The only one of the four with a genuinely permanent free VM (1 e2-micro instance), plus $300 in credit for 90 days and 20+ Always Free products (Cloud Run 2M requests/mo, BigQuery 1TB queries/mo) that never expire', cite:[13,14,17], estimate:false},
+      ease:      {v:45, label:'Console described as "intimidating" for first-timers — "over 100 enterprise-grade products" on first login — though the Always Free products themselves are simple to use once found', cite:[15]},
+      docs:      {v:75, label:'Official docs are current and product-specific (cloud.google.com/free is kept up to date); reviewers note GCP requires explicit per-service API activation, adding a learning step', cite:[13,15]},
+      community:  {v:65, label:'Smaller community than AWS but strong in data/ML circles given BigQuery, TensorFlow, and Vertex AI adoption', cite:[9], estimate:true},
+      regions:   {v:40, label:'≈40 regions, 121+ availability zones as of early 2026 — smallest footprint of the Big Three cloud providers', cite:[7,8]},
+      lockin:    {v:55, label:'Moderate risk: BigQuery, Firestore, and Spanner are proprietary, but GCP\'s catalog is somewhat smaller and its free products (Cloud Run, Cloud Storage) lean on more portable/containerized patterns than AWS equivalents', cite:[11], estimate:true},
+      services:  {v:150, label:'Broad catalog, though reviewers note it lacks some AWS categories (e.g. dedicated robotics, end-user computing); figure is a rough estimate, not an official count', cite:[7], estimate:true},
+    }
+  },
+  {
+    id:'azure', name:'Microsoft Azure', tag:'Most regions · deepest enterprise/.NET integration',
+    facts:{
+      freetier:  {v:70, label:'$200 credit for the first 30 days, 12 months of free popular services (B1S VMs, SQL Database, Managed Disks), plus 55–65+ Always Free services including Azure Functions (1M executions) and a lifetime-free Cosmos DB tier (1,000 RU/s + 25GB) unmatched by AWS or GCP', cite:[18,19,20]},
+      ease:      {v:40, label:'Enterprise-focused service catalog and layered pricing "can make it challenging to predict costs or move quickly" for newcomers', cite:[21], estimate:true},
+      docs:      {v:72, label:'Microsoft Learn documentation is extensive and integrates directly with certification paths; strongest for .NET and Windows-adjacent workflows', cite:[18], estimate:true},
+      community:  {v:70, label:'Large enterprise-oriented community; strong Stack Overflow and Microsoft Q&A presence, somewhat less hobbyist-tutorial-dense than AWS or DigitalOcean', cite:[9], estimate:true},
+      regions:   {v:60, label:'60+ regions and 300+ data centers — the most of any provider compared here, including presence in Norway and Germany where AWS has none', cite:[6,10]},
+      lockin:    {v:65, label:'Moderate-high risk: deep integration with Active Directory, .NET, and Office 365 is a major draw for Microsoft shops but raises switching costs for anyone built into that ecosystem', cite:[20], estimate:true},
+      services:  {v:200, label:'200+ services, on par with AWS breadth, with particular strength in compliance/sovereign-cloud offerings', cite:[22], estimate:true},
+    }
+  },
+  {
+    id:'do', name:'DigitalOcean', tag:'Simplest onboarding · smallest free tier · no perpetual free compute',
+    facts:{
+      freetier:  {v:40, label:'Changed Jul 15, 2026 (three days before this report): new accounts now get a $5 credit for 90 days, down from the earlier $200/60-day offer. Still includes 3 free static sites on App Platform and 25,000 GiB-seconds/month of Functions — but no perpetual free compute tier like GCP\'s e2-micro', cite:[24,25], conflict:true, estimate:false},
+      ease:      {v:90, label:'Consistently rated the easiest of the four to start with — "deploy in under a minute," clean dashboard, 100+ one-click apps; reviewers call it "the best when it comes to ease of use"', cite:[23,27,28]},
+      docs:      {v:85, label:'Documentation and tutorials built with end-users as the primary focus; described as less fragmented and more current than AWS\'s, with "thousands of helpful tutorials"', cite:[26]},
+      community:  {v:80, label:'Known for a strong, tutorial-heavy developer community ("many guides are written by engineers solving real problems"), though smaller in absolute size than AWS', cite:[29]},
+      regions:   {v:8, label:'≈15 data centers across roughly 8 regions in North America, Europe, Asia, and Australia — far fewer than the Big Three, but adequate for most small side projects', cite:[25,30]},
+      lockin:    {v:20, label:'Lowest risk of the four: Droplets are standard Linux VMs, Managed Databases use plain PostgreSQL/MySQL/Redis, Spaces uses an S3-compatible API — no proprietary APIs required for core functionality', cite:[31]},
+      services:  {v:20, label:'A deliberately narrow catalog (Droplets, App Platform, Managed Databases, Spaces, Functions, Kubernetes) — a fraction of AWS/Azure/GCP\'s breadth, traded for simplicity', cite:[24,32], estimate:true},
+    }
+  },
+];
+
+const SOURCES = {
+  1:{t:"AWS Free Tier Explained: What's Actually Free in 2026 (and What Isn't)", u:'https://spot.rackspace.com/blog/aws-free-tier', d:'Rackspace Spot, Jul 2026'},
+  2:{t:'AWS Free Tier Complete Guide 2026 — Every Free Service, Real Limits, and Hidden Costs', u:'https://agentdeals.dev/aws-free-tier-2026', d:'AgentDeals.dev, Jul 2026'},
+  3:{t:'AWS Free Tier in 2026: Credits, Limits, and Hidden Costs', u:'https://cloudwebschool.com/docs/aws/fundamentals/aws-free-tier/', d:'CloudWebSchool, Mar 2026'},
+  4:{t:'Why is AWS Complicated for Devs? Understanding Major Factors', u:'https://www.digitalocean.com/resources/articles/aws-complicated', d:'DigitalOcean resources'},
+  5:{t:'AWS vs DigitalOcean: Comparison of Pricing, and Features', u:'https://kuberns.com/blogs/best-cloud-platform-digitalocean-vs-aws/', d:'Kuberns, Mar 2026'},
+  6:{t:'AWS vs Azure vs Google Cloud in 2026: Cloud Comparison', u:'https://www.cloudwards.net/aws-vs-azure-vs-google/', d:'Cloudwards, Jul 2026'},
+  7:{t:'Comparing AWS, Azure, and GCP for Startups in 2026', u:'https://www.digitalocean.com/resources/articles/comparing-aws-azure-gcp', d:'DigitalOcean resources, Feb 2026'},
+  8:{t:'AWS vs Azure vs GCP: Comparing The Big 3 Cloud Platforms', u:'https://www.bmc.com/blogs/aws-vs-azure-vs-google-cloud-platforms/', d:'BMC Software'},
+  9:{t:'Top Cloud Service Providers 2026 | AWS vs Azure vs GCP', u:'https://www.usage.ai/blogs/top-cloud-service-providers-2026/', d:'Usage.ai, May 2026'},
+  10:{t:'Best Cloud Platform to Choose in 2026: AWS vs Azure vs GCP', u:'https://acropolium.com/blog/adopting-cloud-computing-aws-vs-azure-vs-google-cloud-what-platform-is-your-bet/', d:'Acropolium'},
+  11:{t:'AWS vs DigitalOcean: Which cloud platform is the best fit for you?', u:'https://www.digitalocean.com/blog/aws-vs-digitalocean-cloud-platform', d:'DigitalOcean blog'},
+  12:{t:'AWS vs DigitalOcean: Comparison of Pricing, and Features', u:'https://kuberns.com/blogs/best-cloud-platform-digitalocean-vs-aws/', d:'Kuberns, Mar 2026'},
+  13:{t:'Free Trial and Free Tier Services and Products | Google Cloud', u:'https://cloud.google.com/free', d:'Google Cloud (official)'},
+  14:{t:'The Google Cloud Free Tier: 20+ Products You Can Use for $0', u:'https://thebestblogever.co/technology/google-cloud-free-tier-products', d:'TheBestBlogEver, Jun 2026'},
+  15:{t:'Google Cloud for Beginners: Free Tier, Pricing & How to Start in 2026', u:'https://gturanker.org/articles/google-cloud-for-beginners/', d:'GTurAnker.org, Jun 2026'},
+  17:{t:'Google Cloud Free Trial FAQs', u:'https://cloud.google.com/signup-faqs', d:'Google Cloud (official)'},
+  18:{t:'Azure Free Tier Complete Guide 2026 — Every Free Service, Real Limits, and Hidden Costs', u:'https://agentdeals.dev/azure-free-tier-2026', d:'AgentDeals.dev, Jul 2026'},
+  19:{t:'Free Azure Credits 2026: Founders Hub, Free Account, Visual Studio, Students', u:'https://klymentiev.com/blog/free-azure-credits', d:'Dmytro Klymentiev, Apr 2026'},
+  20:{t:"Azure Free Account USA: How to Get $200 Credit + Free", u:'https://clickusanews.com/news/azure-free-account-usa-how-to-get-200-credit-free-services-in-2026/', d:'ClickUSANews, Jan 2026'},
+  21:{t:'Comparing AWS, Azure, and GCP for Startups in 2026', u:'https://www.digitalocean.com/resources/articles/comparing-aws-azure-gcp', d:'DigitalOcean resources, Feb 2026'},
+  22:{t:'Top AWS Alternatives 2026 - Azure, GCP, DigitalOcean Compared', u:'https://www.metacto.com/blogs/aws-competitors-alternatives-a-comprehensive-deep-dive', d:'MetaCTO, May 2026'},
+  23:{t:'DigitalOcean Review 2026: $200 Free Credit, Simple Pricing, and Cloud That Actually Makes Sense', u:'https://gist.github.com/yri883/2d63c835893456672a27b4374c1b1ec7', d:'GitHub Gist review, 2026'},
+  24:{t:'DigitalOcean Free Tier 2026: Limits, Pricing & What Changed', u:'https://agentdeals.dev/vendor/digitalocean', d:'AgentDeals.dev, Jul 2026'},
+  25:{t:'DigitalOcean Free Tier Complete Guide 2026 — Pricing, Free Credits, and Hidden Costs', u:'https://agentdeals.dev/digitalocean-free-tier-2026', d:'AgentDeals.dev, Jul 2026'},
+  26:{t:'Why is AWS Complicated for Devs? Understanding Major Factors', u:'https://www.digitalocean.com/resources/articles/aws-complicated', d:'DigitalOcean resources'},
+  27:{t:'DigitalOcean Free Trial [$200 Credit + 60 Days] Jul 2026', u:'https://problogguru.com/digitalocean-free-trial/', d:'ProBlogGuru, Apr 2026'},
+  28:{t:'DigitalOcean vs AWS Lightsail: Which Cloud is Right?', u:'https://www.digitalocean.com/resources/articles/digitalocean-vs-awslightsail', d:'DigitalOcean resources'},
+  29:{t:'DigitalOcean vs AWS: Which Cloud Platform Should You Choose?', u:'https://visionvix.com/digitalocean-vs-aws-comparison/', d:'VisionVix, Apr 2026'},
+  30:{t:'Top AWS Alternatives 2026 - Azure, GCP, DigitalOcean Compared', u:'https://www.metacto.com/blogs/aws-competitors-alternatives-a-comprehensive-deep-dive', d:'MetaCTO, May 2026'},
+  31:{t:'AWS vs DigitalOcean: Which cloud platform is the best fit for you?', u:'https://www.digitalocean.com/blog/aws-vs-digitalocean-cloud-platform', d:'DigitalOcean blog'},
+  32:{t:'DigitalOcean Pricing 2026: Plans, Costs and Alternatives', u:'https://kuberns.com/blogs/digitalocean-pricing/', d:'Kuberns, Jun 2026'},
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let weights = {};
+CRITERIA.forEach(c => weights[c.key] = 5);
+
+/* ============================================================
+   SCORING
+   ============================================================ */
+function normalize(key){
+  const vals = PROVIDERS.map(p => p.facts[key].v);
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const invert = CRITERIA.find(c=>c.key===key).invert;
+  const out = {};
+  PROVIDERS.forEach(p=>{
+    const v = p.facts[key].v;
+    let score;
+    if(max === min){ score = 100; }
+    else {
+      score = ((v - min) / (max - min)) * 100;
+      if(invert) score = 100 - score;
+    }
+    out[p.id] = Math.round(score*10)/10;
+  });
+  return out;
+}
+
+function computeRanking(){
+  const normByKey = {};
+  CRITERIA.forEach(c => normByKey[c.key] = normalize(c.key));
+  const totalWeight = CRITERIA.reduce((s,c)=>s+weights[c.key],0) || 1;
+
+  return PROVIDERS.map(p=>{
+    let weighted = 0;
+    const subScores = {};
+    CRITERIA.forEach(c=>{
+      const n = normByKey[c.key][p.id];
+      subScores[c.key] = n;
+      weighted += n * weights[c.key];
+    });
+    return { provider:p, total: Math.round((weighted/totalWeight)*10)/10, subScores };
+  }).sort((a,b)=>b.total-a.total);
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function fmtVal(key, v){
+  const c = CRITERIA.find(c=>c.key===key);
+  if(c.unit === 'regions') return v+' regions';
+  if(c.unit === 'services') return v+'+ services';
+  if(c.unit === '/100') return Math.round(v)+'/100';
+  return v;
+}
+
+function renderApp(){
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+
+  const weightsPanel = document.createElement('div');
+  weightsPanel.className = 'panel weights-panel';
+  weightsPanel.innerHTML = `
+    <p class="weights-title">Your priorities</p>
+    <p class="weights-sub">Drag to weight what matters most to you. Ranking updates live.</p>
+  `;
+  CRITERIA.forEach(c=>{
+    const row = document.createElement('div');
+    row.className = 'slider-row';
+    row.innerHTML = `
+      <label>${c.label} <span class="val" id="val-${c.key}">${weights[c.key]}</span></label>
+      <input type="range" min="0" max="10" step="1" value="${weights[c.key]}" id="slider-${c.key}" aria-label="${c.label} weight">
+    `;
+    weightsPanel.appendChild(row);
+  });
+  const resetBtn = document.createElement('button');
+  resetBtn.className = 'reset-btn';
+  resetBtn.textContent = 'Reset to equal weights';
+  resetBtn.onclick = ()=>{ CRITERIA.forEach(c=>weights[c.key]=5); renderApp(); };
+  weightsPanel.appendChild(resetBtn);
+
+  const note = document.createElement('div');
+  note.className = 'priority-note';
+  note.textContent = 'Set every slider to 0 and there\'s nothing to rank on — you\'ll see an empty state instead of a guess. "Vendor lock-in risk" is inverted: a provider scores well here by having LOW risk.';
+  weightsPanel.appendChild(note);
+
+  app.appendChild(weightsPanel);
+
+  const resultsWrap = document.createElement('div');
+  const head = document.createElement('div');
+  head.className = 'results-head';
+  head.innerHTML = `<h2 class="results-title">Ranked for you</h2><span class="results-count">${PROVIDERS.length} providers · 7 weighted criteria</span>`;
+  resultsWrap.appendChild(head);
+
+  const allZero = CRITERIA.every(c=>weights[c.key]===0);
+  if(allZero){
+    const empty = document.createElement('div');
+    empty.className = 'panel empty-state';
+    empty.innerHTML = `<strong>No priorities set.</strong><br>Move at least one slider above zero to see a ranking.`;
+    resultsWrap.appendChild(empty);
+  } else {
+    computeRanking().forEach((r, idx)=> resultsWrap.appendChild(renderCard(r, idx)));
+  }
+  app.appendChild(resultsWrap);
+
+  CRITERIA.forEach(c=>{
+    const el = document.getElementById('slider-'+c.key);
+    el.addEventListener('input', e=>{
+      weights[c.key] = parseInt(e.target.value,10);
+      document.getElementById('val-'+c.key).textContent = weights[c.key];
+      refreshResultsOnly();
+    });
+  });
+}
+
+function refreshResultsOnly(){
+  const app = document.getElementById('app');
+  const resultsWrap = app.children[1];
+  const allZero = CRITERIA.every(c=>weights[c.key]===0);
+  resultsWrap.innerHTML = '';
+
+  const head = document.createElement('div');
+  head.className = 'results-head';
+  head.innerHTML = `<h2 class="results-title">Ranked for you</h2><span class="results-count">${PROVIDERS.length} providers · 7 weighted criteria</span>`;
+  resultsWrap.appendChild(head);
+
+  if(allZero){
+    const empty = document.createElement('div');
+    empty.className = 'panel empty-state';
+    empty.innerHTML = `<strong>No priorities set.</strong><br>Move at least one slider above zero to see a ranking.`;
+    resultsWrap.appendChild(empty);
+    return;
+  }
+  computeRanking().forEach((r, idx)=> resultsWrap.appendChild(renderCard(r, idx)));
+}
+
+function renderCard(r, idx){
+  const card = document.createElement('div');
+  card.className = 'card' + (idx===0 ? ' rank-1' : '');
+
+  const top = document.createElement('div');
+  top.className = 'card-top';
+
+  const badge = document.createElement('div');
+  badge.className = 'rank-badge';
+  badge.innerHTML = `<span class="num mono">${idx+1}</span><span class="lbl">rank</span>`;
+  top.appendChild(badge);
+
+  const body = document.createElement('div');
+  body.className = 'card-body';
+
+  const cHead = document.createElement('div');
+  cHead.className = 'card-head';
+  cHead.innerHTML = `
+    <div>
+      <p class="card-name">${r.provider.name}</p>
+      <p class="card-tag">${r.provider.tag}</p>
+    </div>
+    <span class="score-chip mono">${r.total} / 100</span>
+  `;
+  body.appendChild(cHead);
+
+  const bars = document.createElement('div');
+  bars.className = 'bars';
+  CRITERIA.forEach(c=>{
+    const fact = r.provider.facts[c.key];
+    const score = r.subScores[c.key];
+    const item = document.createElement('div');
+    item.className = 'bar-item';
+    item.innerHTML = `
+      <div class="bar-lbl"><span>${c.label}${fact.estimate ? ' <span class="est">•</span>' : ''}</span><span class="mono">${fmtVal(c.key, fact.v)}</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${score}%"></div></div>
+    `;
+    bars.appendChild(item);
+  });
+  body.appendChild(bars);
+
+  const toggle = document.createElement('button');
+  toggle.className = 'detail-toggle';
+  toggle.textContent = 'Show sourced data ▾';
+  const detail = document.createElement('div');
+  detail.className = 'detail-panel';
+  CRITERIA.forEach(c=>{
+    const fact = r.provider.facts[c.key];
+    const row = document.createElement('div');
+    row.className = 'fact-row';
+    const citeStr = fact.cite && fact.cite.length ? fact.cite.map(n=>'['+n+']').join(' ') : '[unsourced]';
+    row.innerHTML = `
+      <div class="fact-k">${c.label}</div>
+      <div class="fact-v">${fact.label}
+        ${fact.estimate ? '<span class="flag-estimate">estimate</span>' : ''}
+        ${fact.conflict ? '<span class="flag-conflict">sources disagree</span>' : ''}
+        <br><span class="cite">${citeStr}</span>
+      </div>
+    `;
+    detail.appendChild(row);
+  });
+  toggle.onclick = ()=>{
+    detail.classList.toggle('open');
+    toggle.textContent = detail.classList.contains('open') ? 'Hide sourced data ▴' : 'Show sourced data ▾';
+  };
+  body.appendChild(toggle);
+  body.appendChild(detail);
+
+  top.appendChild(body);
+  card.appendChild(top);
+  return card;
+}
+
+function renderSources(){
+  const list = document.getElementById('sourceList');
+  const usedIds = new Set();
+  PROVIDERS.forEach(p=>Object.values(p.facts).forEach(f=>(f.cite||[]).forEach(n=>usedIds.add(n))));
+  const ids = Array.from(usedIds).sort((a,b)=>a-b);
+  list.innerHTML = ids.map(id=>{
+    const s = SOURCES[id];
+    if(!s) return '';
+    return `<li><span class="source-num mono">[${id}]</span><span><a href="${s.u}" target="_blank" rel="noopener">${s.t}</a><span class="source-meta">${s.d}</span></span></li>`;
+  }).join('');
+}
+
+function renderResearchNotes(){
+  const el = document.getElementById('researchNotes');
+  el.innerHTML = `
+    <p>Every free-tier limit, region count, and service-catalog figure in this ledger traces to a named source — linked in the Sources panel above. Nothing was invented to fill a gap; where no reliable figure existed, the data point is marked <strong>estimate</strong> and explained below.</p>
+
+    <h4>Where sources disagreed</h4>
+    <div class="conflict-box"><strong>DigitalOcean's free-tier offer changed mid-research.</strong> Most 2026 sources describe a $200 credit valid for 60 days. But DigitalOcean's own community forum notes that as of July 15, 2026 — three days before this report was compiled — new accounts instead receive a $5 credit valid for 90 days. Both figures are shown in DigitalOcean's sourced-data panel; the ranking uses the newer, smaller offer since it is the current state as of publication.</div>
+    <div class="conflict-box"><strong>Region and data-center counts</strong> vary by source depending on whether "region," "availability zone," and "data center" are counted separately. Azure is described as having "60+ regions" in some sources and "over 60" with 300+ data centers in others; these are treated as consistent rather than conflicting. AWS and GCP region counts were more consistent across sources and are used as reported.</div>
+
+    <h4>Where a criterion is editorial rather than a direct measurement</h4>
+    <p><strong>Ease of setup</strong>, <strong>documentation quality</strong>, and <strong>community support</strong> have no standardized industry benchmark — no one publishes a numeric "ease of use score" for cloud platforms. These figures synthesize repeated, consistent qualitative judgments across multiple independent reviews (e.g. AWS's console being called "overwhelming" by several unrelated sources, DigitalOcean being called "the best when it comes to ease of use"). Where multiple sources converged on the same verdict, confidence is higher; these are still directional, not measured.</p>
+    <p><strong>Vendor lock-in risk</strong> is similarly qualitative, based on how many proprietary (non-portable) APIs and services a typical user would depend on. DigitalOcean's low score (good — low risk) is the most directly sourced, since DigitalOcean's own technical documentation explicitly lists why its services avoid proprietary lock-in. AWS's high score (bad — high risk) draws on multiple independent write-ups naming the same proprietary services (Lambda, DynamoDB, SageMaker, CloudFormation) as the source of switching costs.</p>
+    <p><strong>Range of services</strong> uses each provider's own or a third party's rough published count where available (AWS: 240+, per a 2026 market analysis) and an editorial estimate elsewhere (GCP, Azure, DigitalOcean) where no single authoritative count was found — these are flagged as estimates.</p>
+
+    <h4>Scoring method</h4>
+    <p>Each raw value is normalized to a 0–100 scale within this set of four providers (the most generous free tier gets 100, the least generous gets 0, and so on), then combined using your slider weights. "Vendor lock-in risk" is inverted before combining, so a provider with genuinely low lock-in risk still contributes positively to its total score. Scores are relative to these four specific providers, not an absolute industry scale.</p>
+  `;
+}
+
+renderApp();
+renderSources();
+renderResearchNotes();
+</script>
+</body>
+</html>
