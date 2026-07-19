@@ -202,5 +202,5 @@ Your data stays on your device.
 ---
 
 # Personal AI Playbook:
-[HTML FILE]()
+[HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day%2049/ai-playbook.html)
 
