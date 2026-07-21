@@ -103,7 +103,7 @@ Throughout this planning phase, I explored:
 ---
 
 ## Pitch_Deck.html
-[HTML FILE]()
+[HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day51/Pitch_Deck.html)
 
 ## Blueprint_Days2to10.html
 [HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day51/Blueprint_Days2to10.html)
