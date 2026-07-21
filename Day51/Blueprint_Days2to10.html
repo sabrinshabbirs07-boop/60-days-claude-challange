@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Implementation Blueprint — Defend Your Experience</title>
+<style>
+  :root{
+    --bg:#0b0d12; --panel:#12151c; --panel2:#171b24; --border:#252a35;
+    --text:#e7e9ee; --muted:#9aa3b2; --accent:#7c9cff; --accent2:#57e0c8; --warn:#ffb454;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.6}
+  .wrap{max-width:960px;margin:0 auto;padding:48px 24px 100px}
+  h1{font-size:2.2rem;margin-bottom:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);margin-bottom:20px}
+  .toc{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 24px;margin-bottom:40px}
+  .toc a{color:var(--accent2);text-decoration:none;font-size:.92rem}
+  .toc li{margin-bottom:4px}
+  .day{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:26px 28px;margin:34px 0;scroll-margin-top:20px}
+  .day h2{margin-top:0;font-size:1.4rem;color:var(--accent)}
+  .day h3{color:var(--accent2);font-size:1rem;margin:18px 0 6px}
+  .day p, .day li{color:#cfd3dc;font-size:.94rem}
+  .day ul{padding-left:20px;margin-top:4px}
+  code, pre{background:var(--panel2);border:1px solid var(--border);border-radius:6px;color:#eaeaea;font-family:Consolas,monospace;font-size:.85rem}
+  code{padding:1px 6px}
+  pre{padding:12px;overflow-x:auto;margin:8px 0}
+  .badge{display:inline-block;font-size:.78rem;background:var(--panel2);border:1px solid var(--border);color:var(--warn);padding:2px 10px;border-radius:6px;margin-left:8px}
+  .footer{margin-top:60px;color:var(--muted);font-size:.85rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Implementation Blueprint</h1>
+  <div class="sub">"Defend Your Experience" · Days 2–10 · Single source of truth for the remainder of this capstone</div>
+
+  <div class="toc">
+    <strong>Jump to:</strong>
+    <ul>
+      <li><a href="#day2">Day 2 — Project Setup & Architecture Skeleton</a></li>
+      <li><a href="#day3">Day 3 — Claim Extraction Engine</a></li>
+      <li><a href="#day4">Day 4 — Adaptive Interview Chat Engine</a></li>
+      <li><a href="#day5">Day 5 — Scoring System</a></li>
+      <li><a href="#day6">Day 6 — Defense Report & Dashboard</a></li>
+      <li><a href="#day7">Day 7 — Local History, PDF/DOCX Upload (stretch)</a></li>
+      <li><a href="#day8">Day 8 — UI Polish & Responsiveness</a></li>
+      <li><a href="#day9">Day 9 — Testing & Debugging</a></li>
+      <li><a href="#day10">Day 10 — Deployment & Documentation</a></li>
+    </ul>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day" id="day2">
+    <h2>Day 2 — Project Setup &amp; Architecture Skeleton</h2>
+    <h3>🎯 Objective</h3><p>Stand up the full-stack skeleton: frontend shell, backend server, and a working (test) call to the AI API end-to-end.</p>
+    <h3>📖 What I'll learn</h3><ul><li>Structuring a frontend+backend project cleanly</li><li>Keeping API keys server-side via environment variables</li><li>Basic Express/Flask routing</li></ul>
+    <h3>🛠 Features to build</h3><ul><li>Landing/onboarding screen with resume paste textarea</li><li>Backend server with one test endpoint that calls the AI API and returns a response</li></ul>
+    <h3>📝 Step-by-step plan</h3>
+    <ul>
+      <li>Choose stack today: Node.js/Express (recommended, matches JS comfort) <em>or</em> Python/Flask</li>
+      <li>Create repo structure (see Files below)</li>
+      <li>Initialize backend project, install web framework + AI SDK + dotenv/cors</li>
+      <li>Create <code>.env</code> with AI API key; add <code>.env</code> to <code>.gitignore</code></li>
+      <li>Build one route, e.g. <code>POST /api/test</code>, that sends a hardcoded prompt to the AI API and returns the text response</li>
+      <li>Build the frontend shell: header, hero, "Paste your resume" textarea, "Start Interview" button (disabled until text entered)</li>
+      <li>Wire a simple <code>fetch()</code> from frontend to <code>/api/test</code> to confirm connectivity</li>
+    </ul>
+    <h3>📂 Files/folders</h3>
+    <pre>defend-your-experience/
+  backend/
+    server.js (or app.py)
+    routes/
+    .env
+    package.json
+  frontend/
+    index.html
+    styles.css
+    app.js
+  README.md</pre>
+    <h3>🔗 Integrations</h3><ul><li>AI API SDK (Claude/OpenAI/Gemini — whichever key you have)</li><li>cors, dotenv (Node) or python-dotenv, flask-cors (Flask)</li></ul>
+    <h3>🧪 Testing</h3><ul><li>Confirm backend starts without errors</li><li>Confirm test endpoint returns real AI text in browser console/network tab</li><li>Confirm API key is not visible in any frontend network request</li></ul>
+    <h3>🐞 Common issues</h3><ul><li>CORS errors → enable CORS middleware on backend</li><li>API key not loading → confirm <code>.env</code> path and restart server after changes</li><li>Port conflicts → confirm frontend/backend run on different ports (e.g. 5500 / 3000)</li></ul>
+    <h3>✅ End-of-day checklist</h3><ul><li>☐ Backend running locally</li><li>☐ Frontend running locally</li><li>☐ Test AI call succeeds end-to-end</li><li>☐ API key confirmed hidden from frontend</li><li>☐ Repo initialized with .gitignore</li></ul>
+    <h3>📸 Capture</h3><ul><li>Screenshot of terminal showing backend running</li><li>Screenshot of browser showing test AI response</li><li>Screenshot of folder structure</li></ul>
+    <h3>➡️ Handoff to Day 3</h3><p>Working full-stack skeleton with a confirmed frontend→backend→AI round trip. Day 3 builds the real claim-extraction endpoint on top of this skeleton — no architecture decisions remain, just feature-building.</p>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="day" id="day3">
+    <h2>Day 3 — Claim Extraction Engine</h2>
+    <h3>🎯 Objective</h3><p>Turn pasted resume text into a structured list of "defensible claims" the interview engine will use.</p>
+    <h3>📖 What I'll learn</h3><ul><li>Prompt engineering for structured JSON output</li><li>Parsing/validating AI JSON responses safely</li></ul>
+    <h3>🛠 Features to build</h3><ul><li><code>POST /api/extract-claims</code> backend endpoint</li><li>Frontend flow: paste → "Analyze Resume" → loading state → claims preview screen</li></ul>
+    <h3>📝 Step-by-step plan</h3>
+    <ul>
+      <li>Write a system prompt instructing the AI to act as a resume analyst and output ONLY JSON: array of claims, each with <code>id</code>, <code>text</code>, <code>category</code> (project/skill/internship/certification/academic/behavioral), <code>priority</code> (1–3)</li>
+      <li>Backend route sends resume text + system prompt to AI API, strips markdown fences, <code>JSON.parse()</code>s the result with try/catch fallback</li>
+      <li>Cap extraction to top 8 claims by priority (matches the 5–8 question session)</li>
+      <li>Frontend: on receiving claims, render them as a simple review list ("Here's what we'll ask you about") before starting the interview</li>
+      <li>Add a "Start Interview" button on this review screen that passes the claims array into the chat session (Day 4)</li>
+    </ul>
+    <h3>📂 Files/folders</h3><pre>backend/routes/extractClaims.js
+backend/prompts/claimExtraction.js
+frontend/claimsReview.js (or section in app.js)</pre>
+    <h3>🔗 Integrations</h3><ul><li>Same AI API as Day 2, new prompt/endpoint</li></ul>
+    <h3>🧪 Testing</h3><ul><li>Test with 3 different real resumes (short/long/technical-heavy)</li><li>Confirm JSON parsing doesn't crash on malformed AI output (add fallback retry)</li><li>Confirm claim count is capped at 8</li></ul>
+    <h3>🐞 Common issues</h3><ul><li>AI wraps JSON in ```json fences → strip fences before parsing</li><li>AI returns prose instead of JSON → strengthen system prompt with "Respond with ONLY valid JSON, no explanation"</li><li>Empty/garbage resume text → add minimum character length validation on frontend</li></ul>
+    <h3>✅ End-of-day checklist</h3><ul><li>☐ Extraction endpoint returns clean structured claims</li><li>☐ Claims review screen renders correctly</li><li>☐ Tested with 3+ different resumes</li></ul>
+    <h3>📸 Capture</h3><ul><li>Screenshot of claims review screen with real extracted claims</li></ul>
+    <h3>➡️ Handoff to Day 4</h3><p>You now have a claims array (id, text, category, priority) available in the frontend, ready to feed into the interview chat session. Day 4 builds the actual conversational interview engine using these claims as its question source.</p>
+  </div>
+
+  <!-- DAY 4 -->
+  <div class="day" id="day4">
+    <h2>Day 4 — Adaptive Interview Chat Engine</h2>
+    <h3>🎯 Objective</h3><p>Build the core product experience: a live, adaptive chat-style AI interview covering 5–8 claims.</p>
+    <h3>📖 What I'll learn</h3><ul><li>Maintaining multi-turn conversation context with an AI API</li><li>Designing an AI "persona" system prompt</li><li>Managing chat UI state</li></ul>
+    <h3>🛠 Features to build</h3><ul><li>Chat UI (message bubbles, input box, send button, typing indicator)</li><li><code>POST /api/interview-turn</code> — takes conversation history + claims + current progress, returns next AI message</li><li>Session state tracking (question count, which claims covered)</li></ul>
+    <h3>📝 Step-by-step plan</h3>
+    <ul>
+      <li>Design the persona system prompt: "You are a skeptical but fair technical interviewer... reference the candidate's previous answer... escalate depth... never ask more than 8 questions total"</li>
+      <li>Backend endpoint accepts: full message history array + claims list + question count so far</li>
+      <li>Each backend call sends full conversation history to the AI so it has context (no need for the AI to "remember" — you resend history each turn)</li>
+      <li>Backend enforces hard cap: if question count ≥ 8, instruct AI to close the interview instead of asking another question</li>
+      <li>Frontend: on user send, append user message to chat, show typing indicator, call backend, append AI reply</li>
+      <li>Track session data in a JS object: <code>{claims, messages, questionCount, startedAt}</code></li>
+    </ul>
+    <h3>📂 Files/folders</h3><pre>backend/routes/interviewTurn.js
+backend/prompts/interviewerPersona.js
+frontend/chat.js
+frontend/chatUI.css</pre>
+    <h3>🔗 Integrations</h3><ul><li>Same AI API, conversational endpoint with history management</li></ul>
+    <h3>🧪 Testing</h3><ul><li>Run a full 8-question mock interview end-to-end</li><li>Confirm follow-ups reference previous answers (not generic/repeated)</li><li>Confirm session correctly stops at question 8</li></ul>
+    <h3>🐞 Common issues</h3><ul><li>AI keeps asking after 8 questions → enforce cap in backend logic, not just prompt instruction</li><li>Questions feel repetitive/generic → include the specific claim text + previous answer explicitly in each prompt, not just chat history</li><li>Long response latency → add a visible "AI is thinking..." indicator</li></ul>
+    <h3>✅ End-of-day checklist</h3><ul><li>☐ Full chat UI functional</li><li>☐ 8-question session runs end-to-end without crashing</li><li>☐ Follow-up questions feel adaptive, not scripted</li></ul>
+    <h3>📸 Capture</h3><ul><li>Screenshot of mid-conversation chat with 3–4 exchanged messages</li></ul>
+    <h3>➡️ Handoff to Day 5</h3><p>You now have a complete chat transcript (array of user/AI messages) at the end of each session. Day 5 adds background scoring — each user answer gets scored on 4 axes without interrupting the chat flow.</p>
+  </div>
+
+  <!-- DAY 5 -->
+  <div class="day" id="day5">
+    <h2>Day 5 — Scoring System</h2>
+    <h3>🎯 Objective</h3><p>Score each user answer in the background on 4 axes, without disrupting the live chat experience.</p>
+    <h3>📖 What I'll learn</h3><ul><li>Running a "silent" secondary AI call alongside a user-facing one</li><li>Designing simple weighted scoring rubrics</li></ul>
+    <h3>🛠 Features to build</h3><ul><li><code>POST /api/score-answer</code> — scores one Q&A pair on Confidence, Technical Depth, Communication, Evidence Strength (0–100 each)</li><li>Frontend calls this silently after each user message (fire-and-forget, doesn't block chat)</li></ul>
+    <h3>📝 Step-by-step plan</h3>
+    <ul>
+      <li>Write a scoring system prompt: given the claim + question + user's answer, return ONLY JSON with 4 numeric scores + one-line reasoning per axis</li>
+      <li>Backend endpoint calls AI with this scoring prompt, parses JSON response with fallback defaults if parsing fails</li>
+      <li>Frontend: after each user answer is sent to the interview-turn endpoint, also fire a parallel call to score-answer (don't await before continuing chat)</li>
+      <li>Store all scores in session state array: <code>{claimId, question, answer, scores:{confidence, depth, communication, evidence}, reasoning}</code></li>
+      <li>Compute simple weighted overall Readiness % as the average of all 4 axes across all answers</li>
+    </ul>
+    <h3>📂 Files/folders</h3><pre>backend/routes/scoreAnswer.js
+backend/prompts/scoringRubric.js
+frontend/scoring.js</pre>
+    <h3>🔗 Integrations</h3><ul><li>Same AI API, scoring-specific prompt</li></ul>
+    <h3>🧪 Testing</h3><ul><li>Confirm scores generate for every answer without blocking the chat UI</li><li>Test with a deliberately weak answer and a strong answer — confirm scores differ meaningfully</li><li>Confirm fallback scores apply if AI JSON parsing fails (never crash the session)</li></ul>
+    <h3>🐞 Common issues</h3><ul><li>Scoring calls slow down perceived chat speed → ensure it's truly async/non-blocking</li><li>Inconsistent score scales → constrain prompt to explicit 0–100 integer range</li><li>All answers scoring similarly → sharpen the rubric prompt with concrete criteria per axis</li></ul>
+    <h3>✅ End-of-day checklist</h3><ul><li>☐ Every answer gets scored in background</li><li>☐ Scores stored correctly per claim</li><li>☐ Overall Readiness % calculates correctly</li></ul>
+    <h3>📸 Capture</h3><ul><li>Screenshot/console log showing a scored session object with numeric scores</li></ul>
+    <h3>➡️ Handoff to Day 6</h3><p>You now have a full session object: messages + per-answer scores + claims. Day 6 turns this raw data into the user-facing Defense Report UI.</p>
+  </div>
+
+  <!-- DAY 6 -->
+  <div class="day" id="day6">
+    <h2>Day 6 — Defense Report &amp; Dashboard</h2>
+    <h3>🎯 Objective</h3><p>Build the Defense Report screen: Readiness Dashboard + claim-by-claim analysis + AI Coaching Summary.</p>
+    <h3>📖 What I'll learn</h3><ul><li>Turning scored data into meaningful visual dashboards</li><li>Prompting an AI to generate structured coaching narrative from structured data</li></ul>
+    <h3>🛠 Features to build</h3><ul><li><code>POST /api/generate-report</code> — takes full session (claims, messages, scores) and returns coaching summary text</li><li>Defense Report UI: score dashboard (bars/rings), claim cards, coaching summary section</li></ul>
+    <h3>📝 Step-by-step plan</h3>
+    <ul>
+      <li>Compute dashboard numbers client-side from Day 5 scores: overall Readiness %, and averages for each of the 4 axes</li>
+      <li>Build simple CSS/SVG progress bars or ring charts for these 4 scores + overall %</li>
+      <li>For each claim, render a card: claim text, defense strength score, "what was convincing," "what was weak," "missing evidence," "suggested improvement" — pull the per-answer <code>reasoning</code> from Day 5, or make one more AI call to synthesize it cleanly</li>
+      <li>Backend <code>generate-report</code> endpoint: send the full session transcript + scores to AI, ask for JSON with <code>strongestAreas</code>, <code>biggestRisks</code>, <code>storiesToPrepare</code>, <code>conceptsToRevise</code></li>
+      <li>Render this as the "AI Coaching Summary" section at the bottom of the report</li>
+    </ul>
+    <h3>📂 Files/folders</h3><pre>backend/routes/generateReport.js
+backend/prompts/coachingSummary.js
+frontend/report.js
+frontend/report.css</pre>
+    <h3>🔗 Integrations</h3><ul><li>Same AI API, report-synthesis prompt</li></ul>
+    <h3>🧪 Testing</h3><ul><li>Run a full session start-to-finish and confirm report renders with real data (no placeholder/lorem ipsum)</li><li>Confirm dashboard percentages match the underlying scores</li><li>Test edge case: a very short/weak session still produces a coherent report</li></ul>
+    <h3>🐞 Common issues</h3><ul><li>Report generation call times out on large transcripts → trim to essential summary data before sending, not full raw text</li><li>Numbers don't visually update → confirm dashboard re-renders after data changes, not just on page load</li></ul>
+    <h3>✅ End-of-day checklist</h3><ul><li>☐ Full Defense Report renders after a session</li><li>☐ Dashboard scores accurate</li><li>☐ Claim cards populated correctly</li><li>☐ Coaching summary reads coherently</li></ul>
+    <h3>📸 Capture</h3><ul><li>Screenshot of complete Defense Report screen</li></ul>
+    <h3>➡️ Handoff to Day 7</h3><p>Core product loop (paste → interview → report) is now fully functional end-to-end. Day 7 adds local session history persistence and, if time allows, PDF/DOCX upload as a stretch enhancement.</p>
+  </div>
+
+  <!-- DAY 7 -->
+  <div class="day" id="day7">
+    <h2>Day 7 — Local History &amp; Upload Support <span class="badge">stretch: PDF/DOCX</span></h2>
+    <h3>🎯 Objective</h3><p>Persist sessions locally so users can revisit past reports; add optional file upload if time allows.</p>
+    <h3>📖 What I'll learn</h3><ul><li>Structuring localStorage as a lightweight database</li><li>Client-side PDF/DOCX text extraction (stretch)</li></ul>
+    <h3>🛠 Features to build</h3><ul><li>Save each completed session (profile snippet, claims, scores, report) to localStorage keyed by timestamp/ID</li><li>"Past Sessions" list screen to reopen any previous report</li><li><em>Stretch:</em> PDF/DOCX upload with text extraction, falling back to manual paste on failure</li></ul>
+    <h3>📝 Step-by-step plan</h3>
+    <ul>
+      <li>Define a localStorage schema: <code>dye_sessions</code> = array of session objects</li>
+      <li>On report generation completion, push the session object into this array and save</li>
+      <li>Build a "History" screen: list of past sessions with date + overall Readiness % + click-to-reopen</li>
+      <li>Implement "replace active profile" — clears current claims/chat state but does not touch saved history</li>
+      <li><strong>If time allows:</strong> add a file input accepting .pdf/.docx, use a client-side JS library to extract text, populate the paste textarea with extracted text, and let the user review/edit before analyzing</li>
+      <li>If extraction fails, show a friendly message: "Couldn't read this file — please paste your resume text instead" and keep the paste path fully functional</li>
+    </ul>
+    <h3>📂 Files/folders</h3><pre>frontend/history.js
+frontend/storage.js
+frontend/upload.js (stretch)</pre>
+    <h3>🔗 Integrations</h3><ul><li>Browser localStorage API</li><li><em>Stretch:</em> a client-side PDF/DOCX text-extraction JS library</li></ul>
+    <h3>🧪 Testing</h3><ul><li>Complete 2–3 sessions and confirm all appear correctly in history</li><li>Reload the page and confirm history persists</li><li>If upload built: test with a real PDF and a corrupted/unsupported file to confirm fallback works</li></ul>
+    <h3>🐞 Common issues</h3><ul><li>localStorage size limits → store only essential session data, not full raw AI responses</li><li>JSON.parse errors on corrupted storage → wrap all localStorage reads in try/catch with empty-array fallback</li></ul>
+    <h3>✅ End-of-day checklist</h3><ul><li>☐ Sessions persist across reloads</li><li>☐ History screen functional</li><li>☐ Upload stretch feature attempted only if core history is solid</li></ul>
+    <h3>📸 Capture</h3><ul><li>Screenshot of history list with 2+ saved sessions</li></ul>
+    <h3>➡️ Handoff to Day 8</h3><p>All functional features are complete. Day 8 is dedicated purely to visual polish — no new features, only refinement of what already exists.</p>
+  </div>
+
+  <!-- DAY 8 -->
+  <div class="day" id="day8">
+    <h2>Day 8 — UI Polish &amp; Responsiveness</h2>
+    <h3>🎯 Objective</h3><p>Elevate the app from "functional" to "polished" — matching a premium, dark, interview-panel aesthetic across every screen.</p>
+    <h3>📖 What I'll learn</h3><ul><li>Consistent design systems (spacing, color, typography scale)</li><li>Responsive layout debugging</li></ul>
+    <h3>🛠 Features to build</h3><ul><li>No new features — pure refinement of existing screens</li></ul>
+    <h3>📝 Step-by-step plan</h3>
+    <ul>
+      <li>Audit every screen: onboarding, claims review, chat, report, history</li>
+      <li>Apply a single consistent color palette/typography scale across all of them (reuse your established dark-panel, accent-gradient style)</li>
+      <li>Add subtle transitions: message fade-in in chat, score bar fill animation on report load</li>
+      <li>Add a proper typing/thinking indicator during AI response wait</li>
+      <li>Test and fix layout on mobile widths (~375px) and tablet widths (~768px)</li>
+      <li>Add empty states (e.g., "No sessions yet" on history screen) and loading states everywhere an AI call happens</li>
+    </ul>
+    <h3>📂 Files/folders</h3><pre>frontend/styles.css (refine)
+frontend/*.css (component-specific polish)</pre>
+    <h3>🔗 Integrations</h3><ul><li>None new — CSS/UX only</li></ul>
+    <h3>🧪 Testing</h3><ul><li>Test full user journey on both desktop and a mobile-width browser window</li><li>Check color contrast for readability</li><li>Verify no layout breaks with very long resume text or very long AI answers</li></ul>
+    <h3>🐞 Common issues</h3><ul><li>Chat bubbles overflow on mobile → constrain max-width with word-wrap</li><li>Animations feel janky → keep transitions short (150–250ms) and use CSS transforms, not layout-shifting properties</li></ul>
+    <h3>✅ End-of-day checklist</h3><ul><li>☐ Visual consistency across all screens</li><li>☐ Mobile layout verified</li><li>☐ All loading/empty states in place</li></ul>
+    <h3>📸 Capture</h3><ul><li>Before/after screenshots of at least 2 screens</li><li>Mobile-width screenshot of chat screen</li></ul>
+    <h3>➡️ Handoff to Day 9</h3><p>App is feature-complete and visually polished. Day 9 is dedicated to systematic testing and bug fixing before deployment.</p>
+  </div>
+
+  <!-- DAY 9 -->
+  <div class="day" id="day9">
+    <h2>Day 9 — Testing &amp; Debugging</h2>
+    <h3>🎯 Objective</h3><p>Systematically test the entire app and fix all critical bugs before deployment.</p>
+    <h3>📖 What I'll learn</h3><ul><li>Manual test-case design</li><li>Debugging full-stack issues (frontend/backend/API)</li></ul>
+    <h3>🛠 Features to build</h3><ul><li>No new features — bug fixes only</li></ul>
+    <h3>📝 Step-by-step plan</h3>
+    <ul>
+      <li>Write a test checklist covering: paste flow, claim extraction, full 8-question interview, scoring, report generation, history save/reload, profile replacement</li>
+      <li>Run the full journey with 3 different resumes (strong candidate, weak candidate, very short resume)</li>
+      <li>Deliberately test error paths: empty paste, extremely long paste, AI API temporarily unavailable (simulate by using an invalid key briefly)</li>
+      <li>Fix any crashes, broken states, or confusing UX found</li>
+      <li>Add basic input validation messages (e.g., "Please paste at least 100 characters")</li>
+      <li>Re-test after each fix</li>
+    </ul>
+    <h3>📂 Files/folders</h3><pre>TESTING.md (test checklist + results log)</pre>
+    <h3>🔗 Integrations</h3><ul><li>None new</li></ul>
+    <h3>🧪 Testing</h3><ul><li>Full end-to-end run for each of the 3 test resumes</li><li>Error-path testing as above</li><li>Cross-browser check (Chrome + at least one other)</li></ul>
+    <h3>🐞 Common issues</h3><ul><li>Session state gets corrupted mid-interview → add defensive checks before each state transition</li><li>API errors surface as a blank/broken screen → wrap all AI calls in try/catch with a user-friendly error message and retry button</li></ul>
+    <h3>✅ End-of-day checklist</h3><ul><li>☐ All critical bugs fixed</li><li>☐ Error states tested and handled gracefully</li><li>☐ App tested with 3+ real resumes end-to-end</li></ul>
+    <h3>📸 Capture</h3><ul><li>Screenshot of TESTING.md checklist, mostly checked off</li></ul>
+    <h3>➡️ Handoff to Day 10</h3><p>App is stable and bug-free locally. Day 10 is deployment: getting the frontend and backend live and publicly accessible, plus final documentation.</p>
+  </div>
+
+  <!-- DAY 10 -->
+  <div class="day" id="day10">
+    <h2>Day 10 — Deployment &amp; Documentation</h2>
+    <h3>🎯 Objective</h3><p>Ship v1.0 — deploy backend + frontend publicly and finalize documentation for submission.</p>
+    <h3>📖 What I'll learn</h3><ul><li>Deploying a Node/Flask backend to Render or Vercel</li><li>Managing environment variables in production</li><li>Writing clear project documentation</li></ul>
+    <h3>🛠 Features to build</h3><ul><li>No new features — deployment configuration only</li></ul>
+    <h3>📝 Step-by-step plan</h3>
+    <ul>
+      <li>Push final code to GitHub (if not already)</li>
+      <li>Deploy backend to Render (or Vercel serverless functions) — add the AI API key as an environment variable in the hosting dashboard, never in code</li>
+      <li>Deploy frontend (static) to Vercel/Netlify/GitHub Pages, pointing its API calls at the deployed backend URL</li>
+      <li>Update CORS settings on backend to allow the deployed frontend's domain</li>
+      <li>Do a full live smoke test on the deployed URL: paste → interview → report → history reload</li>
+      <li>Write final README.md: project description, setup instructions, live link, screenshots, tech stack, and "future scope" section</li>
+    </ul>
+    <h3>📂 Files/folders</h3><pre>README.md (finalized)
+.env.example (documenting required env vars, no real keys)</pre>
+    <h3>🔗 Integrations</h3><ul><li>Render/Vercel hosting dashboards</li></ul>
+    <h3>🧪 Testing</h3><ul><li>Full live smoke test on public URL from a separate device/browser</li><li>Confirm no console errors referencing missing API keys or CORS failures</li></ul>
+    <h3>🐞 Common issues</h3><ul><li>CORS blocked in production → double check deployed frontend origin is explicitly whitelisted on backend</li><li>Env vars not picked up → confirm they're set in the hosting platform's dashboard, not just local .env</li><li>Cold start delays on free-tier hosting → mention this expected behavior in README</li></ul>
+    <h3>✅ End-of-day checklist</h3><ul><li>☐ Backend live and reachable</li><li>☐ Frontend live and reachable</li><li>☐ Full user journey verified on live URL</li><li>☐ README finalized</li></ul>
+    <h3>📸 Capture</h3><ul><li>Screenshot of live deployed app (URL visible)</li><li>Screenshot of completed README</li></ul>
+    <h3>➡️ Final state</h3><p>v1.0 of "Defend Your Experience" is deployed, publicly accessible, and demonstrates the complete core loop: paste resume → adaptive AI interview → Defense Report — matching the PRD and pitch deck exactly.</p>
+  </div>
+
+  <div class="footer">Defend Your Experience · Implementation Blueprint · Days 2–10 · AB Talks 60-Day Claude AI Challenge</div>
+</div>
+</body>
+</html>
