@@ -106,7 +106,7 @@ Throughout this planning phase, I explored:
 [HTML FILE]()
 
 ## Blueprint_Days2to10.html
-[HTML FILE]()
+[HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day51/Blueprint_Days2to10.html)
 
 ## PRD_Defend_Your_Experience (1).html
 [HTML FILE](https://github.com/sabrinshabbirs07-boop/60-days-claude-challange/blob/main/Day51/PRD_Defend_Your_Experience.html)
