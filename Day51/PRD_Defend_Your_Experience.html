@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PRD — Defend Your Experience</title>
+<style>
+  :root{
+    --bg:#0b0d12; --panel:#12151c; --panel2:#171b24; --border:#252a35;
+    --text:#e7e9ee; --muted:#9aa3b2; --accent:#7c9cff; --accent2:#57e0c8; --warn:#ffb454;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.6}
+  .wrap{max-width:920px;margin:0 auto;padding:48px 24px 100px}
+  h1{font-size:2.2rem;margin-bottom:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);margin-bottom:36px;font-size:.95rem}
+  h2{margin-top:48px;font-size:1.3rem;border-left:3px solid var(--accent);padding-left:12px}
+  h3{color:var(--accent2);font-size:1.05rem;margin-top:24px}
+  p{color:#cfd3dc}
+  ul{padding-left:20px} li{margin-bottom:6px;color:#cfd3dc}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .tag{display:inline-block;background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:2px 10px;font-size:.8rem;color:var(--accent2);margin:2px}
+  table{width:100%;border-collapse:collapse;margin:12px 0}
+  th,td{border:1px solid var(--border);padding:8px 10px;text-align:left;font-size:.92rem}
+  th{background:var(--panel2);color:var(--accent)}
+  .oos{color:var(--warn)}
+  .footer{margin-top:60px;color:var(--muted);font-size:.85rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Defend Your Experience</h1>
+  <div class="sub">Product Requirements Document · v1.0 · AB Talks 60-Day Claude AI Challenge Capstone</div>
+
+  <div class="card">
+    <strong>One-line pitch:</strong> An AI interviewer that reads your resume and interrogates you on it — turning passive resume review into active interview defense practice for campus placements.
+  </div>
+
+  <h2>1. Problem Statement</h2>
+  <p>Most resume tools help students <em>write</em> a better resume. None help students <em>defend</em> what's already on it. In real technical interviews, candidates are frequently caught off guard by follow-up questions like "walk me through how you actually built this" or "what was your individual contribution?" — because they've never been forced to justify their own claims out loud. Students over-embellish resumes with numbers and buzzwords they can't back up, and only discover this gap during a real, high-stakes interview.</p>
+
+  <h2>2. Target Users</h2>
+  <div class="grid">
+    <div class="card"><h3>Primary</h3><ul>
+      <li>B.Tech students preparing for campus placements</li>
+      <li>Fresh graduates applying to entry-level tech roles</li>
+      <li>Early-career software engineers (0–2 yrs) prepping for interviews</li>
+    </ul></div>
+    <div class="card"><h3>Claims defended</h3><ul>
+      <li>Projects & GitHub work</li>
+      <li>Technical skills</li>
+      <li>Internships & certifications</li>
+      <li>Academic achievements</li>
+      <li>Problem-solving experience</li>
+    </ul></div>
+  </div>
+
+  <h2>3. Goals &amp; Success Metrics (Day 10)</h2>
+  <ul>
+    <li>Deployed, publicly accessible web app (frontend + backend live)</li>
+    <li>User can paste a resume and complete a full 5–8 question adaptive chat interview</li>
+    <li>Defense Report generates reliably at session end (score dashboard + claim breakdown + coaching summary)</li>
+    <li>No critical bugs; graceful handling of AI API errors/rate limits</li>
+    <li>Session history persists across page reloads via local storage</li>
+    <li>UI is polished, responsive, and consistent with a premium dark aesthetic</li>
+  </ul>
+
+  <h2>4. Core User Flow (v1.0)</h2>
+  <div class="card">
+    <ol>
+      <li>User pastes resume/project/profile text into the app</li>
+      <li>AI extracts 5–8 meaningful, defensible claims from the content</li>
+      <li>AI interviewer opens the session and presents the first challenge based on a claim</li>
+      <li>User responds conversationally in a chat interface</li>
+      <li>AI silently scores the response (confidence, evidence, technical depth, clarity) and generates the next, deeper follow-up — adaptive to answer quality</li>
+      <li>After 5–8 questions, session ends and the AI generates the Defense Report</li>
+      <li>Report + session are saved to local storage; user can review past sessions or start fresh with a new profile</li>
+    </ol>
+  </div>
+
+  <h2>5. Features — In Scope for v1.0</h2>
+  <table>
+    <tr><th>Feature</th><th>Description</th></tr>
+    <tr><td>Resume/profile text input</td><td>Paste-based input, primary path for v1.0</td></tr>
+    <tr><td>PDF/DOCX upload</td><td>Optional enhancement with text extraction + fallback to manual paste</td></tr>
+    <tr><td>AI claim extraction</td><td>Backend-driven; identifies distinct, challengeable claims from raw text</td></tr>
+    <tr><td>Adaptive chat interview</td><td>Single continuous conversation, 5–8 questions, ~10–15 min, escalating depth</td></tr>
+    <tr><td>Background scoring</td><td>Per-response scoring on confidence, evidence, depth, clarity — invisible during chat</td></tr>
+    <tr><td>Defense Report</td><td>Readiness dashboard + claim-by-claim breakdown + AI coaching summary</td></tr>
+    <tr><td>Local session history</td><td>Browser local storage; revisit past sessions/reports</td></tr>
+    <tr><td>Single active profile</td><td>One resume/profile at a time, replaceable</td></tr>
+    <tr><td>Secure AI backend</td><td>Lightweight API layer keeps AI keys server-side</td></tr>
+  </table>
+
+  <h2>6. Explicitly Out of Scope (v1.0)</h2>
+  <div class="card oos">
+    <ul>
+      <li>User accounts / authentication</li>
+      <li>Cloud sync / database persistence</li>
+      <li>Multiple simultaneous resume profiles</li>
+      <li>Company-specific interview modes</li>
+      <li>Voice-based interviews</li>
+      <li>Unlimited/open-ended session length</li>
+      <li>Multi-round interview simulations</li>
+      <li>Custom-built evaluation/ML engine (AI-generated weighted scoring only)</li>
+    </ul>
+  </div>
+
+  <h2>7. Functional Requirements</h2>
+  <h3>7.1 Input &amp; Claim Extraction</h3>
+  <ul>
+    <li>System accepts pasted plain text (min/max length validated)</li>
+    <li>System sends resume text to AI API to extract a structured list of claims</li>
+    <li>Each claim includes: claim text, category (project/skill/internship/certification/academic/behavioral), and priority for interviewing</li>
+  </ul>
+  <h3>7.2 Adaptive Interview Engine</h3>
+  <ul>
+    <li>AI maintains conversation context across the full session</li>
+    <li>Each new question is generated based on: the current claim under discussion, the user's prior answer, and the overall session progress (question count)</li>
+    <li>Session hard-caps at 8 questions or ends early at 5 if coverage is sufficient</li>
+    <li>AI persona: skeptical-but-fair technical interviewer, not hostile</li>
+  </ul>
+  <h3>7.3 Scoring &amp; Defense Report</h3>
+  <ul>
+    <li>Each answer scored on 4 axes: Confidence, Technical Depth, Communication, Evidence Strength (simple AI-generated weighted scoring, not a custom ML model)</li>
+    <li>Overall Interview Readiness % computed from aggregated axis scores</li>
+    <li>Report includes claim-by-claim analysis: convincing points, weak points, missing evidence, improvement suggestion</li>
+    <li>Report includes AI Coaching Summary: strongest areas, biggest risks, stories to prepare, concepts to revise</li>
+  </ul>
+  <h3>7.4 Persistence</h3>
+  <ul>
+    <li>Sessions and reports stored in browser local storage keyed by session ID/timestamp</li>
+    <li>User can view a list of past sessions and reopen any Defense Report</li>
+    <li>Replacing the active profile does not erase past session history</li>
+  </ul>
+
+  <h2>8. Non-Functional Requirements</h2>
+  <ul>
+    <li><strong>Security:</strong> AI API keys never exposed client-side; all AI calls proxied through backend</li>
+    <li><strong>Reliability:</strong> Graceful fallback messaging on API errors/timeouts/rate limits</li>
+    <li><strong>Performance:</strong> Chat response latency communicated via visible "typing/thinking" indicator</li>
+    <li><strong>Responsiveness:</strong> Usable on both desktop and mobile viewports</li>
+    <li><strong>Accessibility:</strong> Keyboard-navigable chat input, sufficient color contrast on dark theme</li>
+  </ul>
+
+  <h2>9. High-Level Architecture</h2>
+  <div class="card">
+    <span class="tag">Frontend: HTML/CSS/JS SPA</span>
+    <span class="tag">Backend: Node.js/Express or Python/Flask</span>
+    <span class="tag">AI: Claude / OpenAI / Gemini API</span>
+    <span class="tag">Storage: Browser localStorage</span>
+    <span class="tag">Deployment: Vercel / Render</span>
+    <p style="margin-top:10px">Frontend never calls the AI API directly. All prompts (claim extraction, interview turn generation, scoring, report generation) are constructed and sent server-side. Frontend communicates only with the backend's own endpoints.</p>
+  </div>
+
+  <h2>10. Risks &amp; Mitigations</h2>
+  <table>
+    <tr><th>Risk</th><th>Mitigation</th></tr>
+    <tr><td>AI produces generic/repetitive questions</td><td>Strong system prompt with persona + explicit instruction to reference prior answers</td></tr>
+    <tr><td>API rate limits/downtime during demo</td><td>Backend error handling + user-facing retry messaging</td></tr>
+    <tr><td>Scope creep (accounts, voice, multi-profile)</td><td>Explicit out-of-scope list enforced daily against blueprint</td></tr>
+    <tr><td>PDF/DOCX parsing complexity eats build time</td><td>Treated strictly as Day 7 optional enhancement, never blocking</td></tr>
+  </table>
+
+  <div class="footer">Defend Your Experience · PRD v1.0 · Generated for AB Talks 60-Day Claude AI Challenge</div>
+</div>
+</body>
+</html>

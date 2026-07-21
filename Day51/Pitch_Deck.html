@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Defend Your Experience — Pitch Deck</title>
+<style>
+  :root{
+    --bg:#0b0d12; --panel:#12151c; --panel2:#171b24; --border:#252a35;
+    --text:#e7e9ee; --muted:#9aa3b2; --accent:#7c9cff; --accent2:#57e0c8;
+  }
+  *{box-sizing:border-box;scroll-snap-align:start}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+       scroll-snap-type:y mandatory;overflow-y:scroll;height:100vh}
+  .slide{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:60px 80px;
+         border-bottom:1px solid var(--border);position:relative}
+  .tag{color:var(--accent2);letter-spacing:3px;text-transform:uppercase;font-size:.8rem;margin-bottom:14px}
+  h1{font-size:3rem;margin:0 0 10px;background:linear-gradient(90deg,var(--accent),var(--accent2));
+     -webkit-background-clip:text;background-clip:text;color:transparent}
+  h2{font-size:2.2rem;margin:0 0 26px;color:var(--text)}
+  p.lead{font-size:1.25rem;color:#cfd3dc;max-width:760px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:22px 24px}
+  .card h3{margin:0 0 8px;color:var(--accent2);font-size:1.05rem}
+  .card p{margin:0;color:#cfd3dc;font-size:.95rem}
+  ul.big li{font-size:1.1rem;color:#cfd3dc;margin-bottom:12px}
+  .num{position:absolute;top:30px;right:40px;color:var(--muted);font-size:.85rem}
+  .stack{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .pill{background:var(--panel2);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:.85rem;color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="slide">
+  <div class="tag">Defend Your Experience</div>
+  <h1>Your resume got you the interview.<br>Can you defend it?</h1>
+  <p class="lead">An AI interviewer that reads your resume and interrogates you on it — turning passive resume review into active interview defense practice for students and early-career engineers.</p>
+</div>
+
+<div class="slide">
+  <div class="num">01 · Problem</div>
+  <h2>The Problem</h2>
+  <p class="lead">Resume tools help students write better resumes — none help them defend what's already on it.</p>
+  <ul class="big" style="margin-top:20px">
+    <li>Students over-embellish projects and metrics they can't justify out loud</li>
+    <li>Real interviewers probe: "How did you measure that 40%?" "What was <em>your</em> contribution?"</li>
+    <li>The first time this gap surfaces is in a real, high-stakes interview</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <div class="num">02 · Target Users</div>
+  <h2>Who This Is For</h2>
+  <div class="grid">
+    <div class="card"><h3>Primary Users</h3><p>B.Tech students, fresh graduates, and early-career engineers preparing for campus placements and entry-level interviews.</p></div>
+    <div class="card"><h3>What They Defend</h3><p>Projects & GitHub work, technical skills, internships, certifications, academic achievements, problem-solving experience.</p></div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="num">03 · Solution</div>
+  <h2>The Solution</h2>
+  <p class="lead">Paste your resume. An AI extracts your claims and puts you through a realistic, adaptive, chat-style interview — then gives you a full Defense Report on how you performed.</p>
+  <div class="stack">
+    <div class="pill">1. Paste resume</div>
+    <div class="pill">2. AI extracts claims</div>
+    <div class="pill">3. Adaptive chat interview</div>
+    <div class="pill">4. Defense Report</div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="num">04 · Key Features</div>
+  <h2>Key Features</h2>
+  <div class="grid3">
+    <div class="card"><h3>Claim Extraction</h3><p>AI reads your resume/projects and identifies exactly what's worth challenging.</p></div>
+    <div class="card"><h3>Adaptive Interview</h3><p>5–8 question live chat, escalating depth, ~10–15 minutes — like a real panel round.</p></div>
+    <div class="card"><h3>Background Scoring</h3><p>Confidence, technical depth, communication, and evidence strength — scored per answer.</p></div>
+    <div class="card"><h3>Defense Report</h3><p>Readiness dashboard + claim-by-claim breakdown + AI coaching summary.</p></div>
+    <div class="card"><h3>Session History</h3><p>Local, private history of past sessions to track improvement over time.</p></div>
+    <div class="card"><h3>Secure by Design</h3><p>AI API keys stay server-side; resume content never leaves your session insecurely.</p></div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="num">05 · Technical Approach</div>
+  <h2>Technical Approach</h2>
+  <div class="grid">
+    <div class="card"><h3>Frontend</h3><p>Single-page HTML/CSS/JS app — chat interface, claims review, dashboard, and history screens.</p></div>
+    <div class="card"><h3>Backend</h3><p>Lightweight Node.js/Express (or Flask) API layer proxying all AI calls securely.</p></div>
+    <div class="card"><h3>AI Layer</h3><p>Claude/OpenAI/Gemini API for claim extraction, adaptive questioning, scoring, and report synthesis.</p></div>
+    <div class="card"><h3>Storage & Hosting</h3><p>Browser localStorage for session history; deployed on Vercel/Render.</p></div>
+  </div>
+</div>
+
+<div class="slide">
+  <div class="num">06 · Future Scope</div>
+  <h2>Future Scope</h2>
+  <ul class="big">
+    <li>User accounts + cloud sync across devices</li>
+    <li>Multiple resume profiles, job-specific targeting</li>
+    <li>Company-specific interview simulation modes</li>
+    <li>Voice-based interview sessions</li>
+    <li>Multi-round simulations and recruiter/team dashboards</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <div class="num">07 · Vision</div>
+  <h2>Vision</h2>
+  <p class="lead">To become the go-to interview-readiness companion for every student stepping into placement season — not a resume editor, not a quiz app, but a realistic AI interview panel that tells you, honestly, whether you're ready to defend your own story.</p>
+</div>
+
+</body>
+</html>
