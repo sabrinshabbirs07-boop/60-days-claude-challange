@@ -1,163 +1,325 @@
-# API.md — Defend Your Experience (Backend Endpoints, v1.0)
+# 🛡️ Defend Your Experience AI
 
-No authentication exists in v1.0 (per PRD, out of scope). All endpoints are public but only ever called from the deployed frontend origin (enforced via CORS allowlist). No implementation code below — design only, per today's scope.
+## Day 52 — 60 Days of Claude Challenge
 
----
+An AI-powered interview preparation platform that helps candidates confidently explain, defend, and improve their professional experiences.
 
-## POST /api/test *(Day 2 scaffolding only — not part of v1.0 product surface)*
-
-**Purpose:** Confirm frontend → backend → AI round trip works.
-**Request:** `{}` (no body needed, or optional `{ "prompt": "string" }`)
-**Response:** `{ "reply": "string" }`
-**Validation:** None required — internal dev check only.
-**Auth:** None.
-**Errors:** `500` if AI API call fails, with `{ "error": "AI service unavailable" }`.
+The goal of this project is to transform a resume from a static document into an interactive AI coaching experience where users can practice defending their projects, skills, and achievements through adaptive interviews.
 
 ---
 
-## POST /api/extract-claims
+# 📌 Project Overview
 
-**Purpose:** Convert pasted resume/profile text into a structured, capped list of defensible claims.
+During technical interviews, many candidates struggle to clearly explain:
 
-**Request:**
-```json
-{ "resumeText": "string" }
-```
+- Their projects
+- Technical decisions
+- Skills and expertise
+- Real-world impact
+- Problem-solving approach
 
-**Response (200):**
-```json
-{
-  "claims": [
-    { "id": "c1", "text": "string", "category": "project|skill|internship|certification|academic|behavioral", "priority": 1 }
-  ]
-}
-```
-
-**Validation:**
-- `resumeText` required, minimum 100 characters, maximum ~8000 characters (reject or truncate beyond this to control AI cost/latency).
-- Reject empty or whitespace-only input with a 400.
-
-**Auth:** None.
-
-**Error cases:**
-- `400` — `{ "error": "Resume text too short. Please paste at least 100 characters." }`
-- `422` — AI returned non-JSON or malformed output after retry → `{ "error": "Could not analyze this resume. Please try again." }`
-- `500` — AI API unavailable/timeout → `{ "error": "AI service unavailable, please retry." }`
-- `429` — rate limit hit → `{ "error": "Too many requests, please wait a moment." }`
+**Defend Your Experience AI** solves this problem by analyzing resume/profile information, extracting important claims, conducting AI-powered interviews, evaluating answers, and generating a personalized Defense Report.
 
 ---
 
-## POST /api/interview-turn
+# 🎯 Objective
 
-**Purpose:** Given conversation history + claims + progress, return the next adaptive interviewer message (or a closing message if the cap is reached).
+Build an AI mentor that helps users:
 
-**Request:**
-```json
-{
-  "claims": [ { "id": "c1", "text": "string", "category": "string", "priority": 1 } ],
-  "messages": [ { "role": "interviewer|user", "content": "string" } ],
-  "questionCount": 3
-}
-```
-
-**Response (200):**
-```json
-{
-  "message": "string, the interviewer's next message",
-  "claimId": "string, which claim this question targets (null if closing)",
-  "isClosing": false,
-  "questionCount": 4
-}
-```
-
-**Validation:**
-- `claims` must be a non-empty array.
-- `messages` must be an array (can be empty on the very first call).
-- `questionCount` must be an integer 0–8; if ≥ 8, backend forces `isClosing: true` regardless of what the AI returns (hard cap enforced in code, not just prompt).
-
-**Auth:** None.
-
-**Error cases:**
-- `400` — missing/malformed `claims` or `messages` → `{ "error": "Invalid interview state." }`
-- `500`/`429` — same AI-unavailable/rate-limit pattern as above, frontend shows retry button per Day 9 plan.
+✅ Discover their strongest resume claims  
+✅ Practice explaining their experience  
+✅ Identify weak areas in their answers  
+✅ Improve communication and technical storytelling  
+✅ Prepare better for interviews  
 
 ---
 
-## POST /api/score-answer
+# 🚀 Core Workflow
 
-**Purpose:** Silently score one Q&A pair on 4 axes. Called fire-and-forget from the frontend; never blocks the chat.
 
-**Request:**
-```json
-{
-  "claimId": "string",
-  "question": "string",
-  "answer": "string"
-}
-```
+Resume / Profile Input
+|
+↓
+AI Claim Extraction
+|
+↓
+Adaptive AI Interview
+|
+↓
+Answer Evaluation
+|
+↓
+Defense Report Generation
+|
+↓
+Personalized Coaching
 
-**Response (200):**
-```json
-{
-  "scores": { "confidence": 72, "depth": 65, "communication": 80, "evidence": 55 },
-  "reasoning": "string, brief per-axis or combined justification"
-}
-```
-
-**Validation:**
-- All three fields required, non-empty.
-- Backend clamps/validates returned scores to integers 0–100; if AI JSON parsing fails, backend returns neutral fallback scores (`{50,50,50,50}`) rather than an error — this endpoint must never surface a user-facing failure, since it's invisible during the chat.
-
-**Auth:** None.
-
-**Error cases:**
-- `400` — missing fields → `{ "error": "Missing scoring input." }` (frontend should never trigger this if wired correctly)
-- On any AI failure: respond `200` with fallback scores + `"reasoning": "Scoring temporarily unavailable"` rather than a 500 — this endpoint prioritizes never breaking the chat over strict accuracy.
 
 ---
 
-## POST /api/generate-report
+# ✨ Features
 
-**Purpose:** Synthesize the full Defense Report (coaching summary + claim breakdown) from a completed session.
+## 1. AI Resume Claim Extraction
 
-**Request:**
-```json
-{
-  "claims": [ { "id": "c1", "text": "string", "category": "string" } ],
-  "scores": [ { "claimId": "c1", "question": "string", "answer": "string", "scores": {"confidence":72,"depth":65,"communication":80,"evidence":55}, "reasoning": "string" } ]
-}
-```
-(Note: full raw message transcript is *not* sent — only trimmed claim/answer/score summary, per Day 6 blueprint guidance on avoiding timeouts.)
+The system converts resume text into structured and defensible claims.
 
-**Response (200):**
-```json
-{
-  "claimBreakdown": [
-    { "claimId": "c1", "convincingPoints": "string", "weakPoints": "string", "missingEvidence": "string", "suggestedImprovement": "string" }
-  ],
-  "coachingSummary": {
-    "strongestAreas": "string",
-    "biggestRisks": "string",
-    "storiesToPrepare": "string",
-    "conceptsToRevise": "string"
-  }
-}
-```
+Categories supported:
 
-**Validation:**
-- `claims` and `scores` both required, non-empty arrays.
-- Every `scores[].claimId` should map to a `claims[].id` — backend can proceed even if not perfectly aligned (defensive, non-blocking).
+- Project
+- Skill
+- Internship
+- Certification
+- Academic Achievement
+- Behavioral Strength
 
-**Auth:** None.
+Example:
 
-**Error cases:**
-- `400` — empty session data → `{ "error": "No session data to generate a report from." }`
-- `500`/`429` — AI unavailable → `{ "error": "Could not generate report, please retry." }`, frontend shows retry button, never a blank screen (Day 9 requirement).
+
+Input:
+Built an AI chatbot using Python and APIs
+
+Output:
+Claim:
+AI chatbot development project
+
+Category:
+Project
+
 
 ---
 
-## Global Error Conventions
+## 2. Adaptive AI Interview
 
-- All errors return JSON: `{ "error": "human-readable message" }`.
-- Status codes used: `400` (bad input), `422` (AI output unusable), `429` (rate limit), `500` (upstream AI failure).
-- No endpoint ever throws an unhandled exception to the client — every route wraps its AI call in try/catch (Day 9 non-functional requirement, NFR "Reliability").
+The AI interviewer generates questions based on extracted claims.
+
+Features:
+
+- Personalized questions
+- Conversation memory
+- Claim-focused questioning
+- Maximum question limit
+- Closing interview flow
+
+---
+
+## 3. AI Answer Scoring
+
+Each answer is evaluated across four dimensions:
+
+| Metric | Purpose |
+|---|---|
+| Confidence | How confidently the answer is delivered |
+| Depth | Technical understanding |
+| Communication | Clarity of explanation |
+| Evidence | Supporting proof/examples |
+
+Scores are generated between:
+
+
+0 - 100
+
+
+---
+
+## 4. Defense Report Generation
+
+After the interview session, AI generates a detailed coaching report.
+
+Includes:
+
+### Claim Breakdown
+
+- Convincing points
+- Weak points
+- Missing evidence
+- Suggested improvements
+
+
+### Coaching Summary
+
+- Strongest areas
+- Biggest risks
+- Stories to prepare
+- Concepts to revise
+
+---
+
+# 🔌 API Architecture
+
+Backend API documentation:
+
+
+API.md
+
+
+## Available Endpoints
+
+### Test Connection
+
+
+POST /api/test
+
+
+Purpose:
+- Verify frontend → backend → AI communication
+
+
+---
+
+### Extract Claims
+
+
+POST /api/extract-claims
+
+
+Purpose:
+- Convert resume text into structured claims
+
+
+---
+
+### Interview Session
+
+
+POST /api/interview-turn
+
+
+Purpose:
+- Generate adaptive AI interviewer responses
+
+
+---
+
+### Score Answer
+
+
+POST /api/score-answer
+
+
+Purpose:
+- Evaluate user answers silently in the background
+
+
+---
+
+### Generate Report
+
+
+POST /api/generate-report
+
+
+Purpose:
+- Create final Defense Report and coaching insights
+
+---
+
+# 🏗️ System Design Principles
+
+## Reliability
+
+The system follows:
+
+- Input validation
+- AI response validation
+- Error handling
+- Rate limit handling
+- Fallback responses
+
+---
+
+## Security
+
+Version 1.0:
+
+- No authentication
+- Public endpoints
+- CORS allowlist protection
+- Frontend-origin restriction
+
+(Authentication is intentionally out of scope according to PRD.)
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+- React / HTML / CSS / JavaScript
+- Responsive UI
+
+## Backend
+
+- Node.js
+- Express.js
+- REST API Architecture
+
+## AI
+
+- Large Language Model API
+- Structured JSON responses
+- AI evaluation pipeline
+
+## Documentation
+
+- Markdown
+- GitHub
+
+---
+
+# 📂 Project Structure
+
+
+Day52/
+│
+├── README.md
+├── API.md
+├── notes.md
+├── learnings.md
+├── prompts.md
+└── reflection.md
+
+
+---
+
+# 📈 Current Progress
+
+## Completed
+
+✅ Product idea defined  
+✅ User workflow designed  
+✅ Backend API architecture created  
+✅ AI interaction flow planned  
+✅ Error handling strategy documented  
+
+
+## Version
+
+
+v1.0 Design Phase
+
+
+---
+
+# 🔮 Future Improvements
+
+- User authentication
+- Resume file upload
+- Voice interview mode
+- Interview history tracking
+- Performance analytics dashboard
+- Personalized preparation roadmap
+
+---
+
+# 🏆 Challenge Progress
+
+## Day 52/60 — Completed
+
+This day focused on designing an AI-powered interview defense system with:
+
+- Product thinking
+- Backend architecture
+- API planning
+- AI workflow design
+
+**Learning → Building → Documenting → Improving 🚀**
