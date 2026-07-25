@@ -1,98 +1,123 @@
-# Day 53 – Project Setup & Foundation
+# AI Bug Investigator 🐞🤖
 
-## Overview
+An AI-powered debugging assistant that helps developers understand, analyze, and fix software errors using Generative AI.
 
-Day 53 focused on setting up the complete development environment and building the foundational architecture for the **Defend Your Experience** capstone project.
-
-The objective was to establish a stable full-stack development environment, integrate the AI provider, verify end-to-end communication, and prepare the project for feature development.
+The goal of this project is to transform raw error messages into structured debugging insights — including possible causes, explanations, and recommended solutions.
 
 ---
 
-## What I Completed
+## 🚀 Project Overview
 
-- Set up the complete backend using **Node.js** and **Express.js**
-- Installed and configured all required project dependencies
-- Configured environment variables using **dotenv**
-- Integrated the **Groq API** for AI-powered responses
-- Created and verified the backend server
-- Built the initial frontend using **HTML, CSS, and JavaScript**
-- Connected the frontend to the backend using the Fetch API
-- Verified successful end-to-end communication:
-  - Frontend → Backend → Groq API → Frontend
-- Configured Git branching workflow
-- Updated project documentation
-- Successfully pushed all changes to GitHub
+Developers often spend significant time searching through logs, documentation, and forums to understand errors.
+
+AI Bug Investigator aims to simplify this process by providing an intelligent assistant that:
+
+- Analyzes bug/error descriptions
+- Identifies possible root causes
+- Explains errors in simple language
+- Suggests debugging approaches
+- Provides actionable solutions
 
 ---
 
-## Technologies Used
+# 🏗️ Current Progress
+
+## Day 1 — Product Discovery
+
+✅ Defined product vision  
+✅ Identified user problem  
+✅ Created project roadmap  
+
+---
+
+## Day 2 — System Design & Architecture
+
+Completed:
+
+- System architecture design
+- API planning
+- UI wireframes
+- Project structure planning
+- Implementation blueprint
+
+---
+
+## Day 3 — Project Setup & Foundation
+
+Completed:
+
+✅ Node.js + Express backend setup  
+✅ Health check API endpoint  
+✅ Error handling middleware  
+✅ Frontend HTML/CSS/JavaScript skeleton  
+✅ API client connection  
+✅ Frontend ↔ Backend communication verified  
+✅ Git branching workflow implemented  
+✅ Documentation created  
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+- HTML5
+- CSS3
+- JavaScript (Vanilla JS)
+
+## Backend
 
 - Node.js
 - Express.js
-- JavaScript (ES6)
-- HTML5
-- CSS3
+
+## AI Integration
+
 - Groq API
-- dotenv
-- CORS
+
+## Development Tools
+
 - Git & GitHub
 - VS Code
+- npm
 
 ---
 
-## Project Structure
+# 📂 Project StructureAi-Bug-Investigator/
 
-```
-defend-your-experience/
 │
-├── backend/
-│   ├── routes/
-│   ├── server.js
-│   ├── package.json
-│   └── .env
+├── client/
+│ ├── index.html
+│ ├── style.css
+│ └── script.js
 │
-├── frontend/
-│   ├── index.html
-│   ├── styles.css
-│   └── app.js
+├── server/
+│ ├── controllers/
+│ ├── middleware/
+│ ├── routes/
+│ ├── services/
+│ ├── utils/
+│ ├── server.js
+│ └── package.json
 │
-├── SETUP.md
-├── ENVIRONMENT.md
-├── PROJECT-STRUCTURE.md
-├── DAY3-SUMMARY.md
+├── docs/
+│ ├── API.md
+│ ├── ARCHITECTURE.md
+│ ├── PROJECT-STRUCTURE.md
+│ ├── SETUP.md
+│ ├── ENVIRONMENT.md
+│ └── DAY3-SUMMARY.md
+│
+├── PROJECT-LOG.md
 └── README.md
-```
+
 
 ---
-
-## Key Learnings
-
-- Setting up a production-ready Express backend
-- Managing environment variables securely with `.env`
-- Integrating an AI API into a Node.js application
-- Connecting frontend and backend using REST APIs
-- Using Git branches for feature development
-- Maintaining clean project documentation
-
+# 
 ---
 
-## Result
+# ⚙️ Installation & Setup
 
-✅ Backend running successfully
+## Clone Repository
 
-✅ Frontend connected successfully
-
-✅ Groq API integration working
-
-✅ Full-stack foundation completed
-
----
-
-## Next Goal
-
-Implement the **Claim Extraction Engine**, allowing users to paste their resume and receive structured AI-generated claims for interview preparation.
-
----
-
-**Project:** Defend Your Experience  
-**Challenge:** AB Talks AI Challenge – Day 53
+```bash
+git clone https://github.com/sabrinshabbirs07-boop/Ai-Bug-Investigator.git
