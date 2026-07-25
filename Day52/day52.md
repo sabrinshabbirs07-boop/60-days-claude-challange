@@ -1,334 +1,159 @@
-# 🛡️ Defend Your Experience AI
+# 🐞 AI Bug Investigator
 
-## Day 52 - 60 Days of Claude Challenge
+An AI-powered debugging assistant that helps developers understand, diagnose, and fix programming errors across multiple languages using the **Groq API**.
 
-An AI-powered interview preparation platform designed to help candidates confidently explain, defend, and improve their professional experiences.
-
-The project transforms a traditional resume into an interactive AI coaching experience where users can practice explaining their projects, skills, achievements, and technical decisions through adaptive AI interviews.
+Built as part of the **AB Talks 60-Day Claude AI Challenge**.
 
 ---
 
-# 📌 Overview
+## 📌 Overview
 
-Many candidates have strong projects and skills but struggle to communicate their experience effectively during interviews.
+AI Bug Investigator simplifies debugging by analyzing error messages, stack traces, and optional code snippets. Instead of searching through documentation or forums, developers receive AI-generated explanations, debugging steps, suggested fixes, and prevention tips in seconds.
 
-**Defend Your Experience AI** helps solve this problem by:
-
-- Extracting important claims from resumes
-- Conducting personalized AI interviews
-- Evaluating answers based on multiple factors
-- Providing actionable coaching feedback
-
-The goal is to help users become more confident and interview-ready.
+The application supports multiple programming languages through AI-powered analysis without relying on language-specific parsers.
 
 ---
 
-# 🎯 Objectives
+## ✨ Features
 
-The main objectives of this project are:
-
-- Convert resume information into structured claims
-- Simulate realistic technical interviews
-- Identify strengths and weaknesses in answers
-- Improve communication and storytelling skills
-- Generate personalized improvement reports
-
----
-
-# 🚀 Features
-
-## 1. AI Resume Claim Extraction
-
-The system analyzes resume/profile text and extracts important experience claims.
-
-Supported categories:
-
-- Projects
-- Skills
-- Internships
-- Certifications
-- Academic achievements
-- Behavioral strengths
-
-
-Example:
-
-
-Input:
-Built an AI chatbot using Python and APIs
-
-Output:
-
-Claim:
-AI chatbot development project
-
-Category:
-Project
-
+* 🔍 Analyze programming errors using AI
+* 💻 Optional code snippet support
+* 🌐 Multi-language support (JavaScript, Python, Java, C++, Go, and more)
+* 🤖 Automatic language detection
+* 📖 Root cause explanation in simple language
+* 🛠 Step-by-step debugging guidance
+* 💡 AI-generated code fixes
+* ⚠ Severity indicator
+* 📊 Confidence score
+* 📚 Prevention tips
+* 📎 Helpful learning resources
+* 📋 One-click copy for suggested fixes
+* 🔗 Shareable analysis results
+* 💾 Local browser history (localStorage)
+* 🌙 IDE-inspired dark theme
+* 📱 Fully responsive UI
 
 ---
 
-## 2. Adaptive AI Interview
+## 🏗️ Tech Stack
 
-The AI interviewer creates personalized questions based on extracted claims.
+### Frontend
 
-Features:
+* HTML5
+* CSS3
+* Vanilla JavaScript
+* Highlight.js
 
-- Claim-based questions
-- Conversation history tracking
-- Adaptive questioning
-- Interview progress management
-- Closing summary generation
+### Backend
 
----
+* Node.js
+* Express.js
 
-## 3. AI Answer Evaluation
+### AI
 
-User answers are evaluated across four important dimensions:
+* Groq API
+* Llama 3.x
 
-| Evaluation Area | Description |
-|---|---|
-| Confidence | How confidently the answer is explained |
-| Depth | Understanding of concepts and technical details |
-| Communication | Clarity and structure of explanation |
-| Evidence | Supporting examples and proof |
+### Deployment
 
-Scores are generated between:
+* Vercel (Frontend)
+* Render (Backend)
 
+### Other Tools
 
-0 - 100
-
-
----
-
-## 4. Defense Report Generation
-
-After completing the interview, the AI generates a personalized report.
-
-The report includes:
-
-### Claim Breakdown
-
-- Strong points
-- Weak areas
-- Missing evidence
-- Suggested improvements
-
-
-### Coaching Summary
-
-- Strongest areas
-- Biggest risks
-- Stories to prepare
-- Concepts to revise
+* dotenv
+* CORS
+* Git & GitHub
 
 ---
 
-# 🔄 System Workflow
-
-
-Resume / Profile Text
-|
-↓
-AI Claim Extraction
-|
-↓
-Adaptive Interview
-|
-↓
-Answer Scoring
-|
-↓
-Defense Report
-|
-↓
-Personalized Coaching
-
-
----
-
-# 🔌 API Documentation
-
-Backend API design is available in:
-
-
-API.md
-
-
-## Available Endpoints
-
-### Test AI Connection
-
-
-POST /api/test
-
-
-Purpose:
-- Verify frontend → backend → AI communication
-
-
----
-
-### Extract Resume Claims
-
-
-POST /api/extract-claims
-
-
-Purpose:
-- Convert resume text into structured claims
-
-
----
-
-### Generate Interview Questions
-
-
-POST /api/interview-turn
-
-
-Purpose:
-- Create adaptive AI interview conversations
-
-
----
-
-### Score Answers
-
-
-POST /api/score-answer
-
-
-Purpose:
-- Evaluate interview responses silently
-
-
----
-
-### Generate Final Report
-
-
-POST /api/generate-report
-
-
-Purpose:
-- Create complete Defense Report
-
----
-
-# 🏗️ Architecture Principles
-
-## Reliability
-
-The system follows:
-
-- Input validation
-- AI response validation
-- Error handling
-- Rate limiting
-- Fallback responses
-
-
-## Security
-
-Version 1.0 scope:
-
-- No authentication
-- Public API endpoints
-- CORS allowlist protection
-- Frontend origin restriction
-
-Authentication is intentionally out of scope for v1.0.
-
----
-
-# 🛠️ Tech Stack
-
-## Frontend
-
-- React / HTML / CSS / JavaScript
-- Responsive UI
-
-
-## Backend
-
-- Node.js
-- Express.js
-- REST API Architecture
-
-
-## AI Layer
-
-- Large Language Model API
-- Structured JSON responses
-- AI evaluation pipeline
-
-
-## Documentation
-
-- Markdown
-- GitHub
-
----
-
-# 📂 Project Structure
-
-
-Day52/
+## 📂 Project Structure
+
+```text
+Ai-Bug-Investigator/
+│
+├── client/
+│   ├── index.html
+│   ├── style.css
+│   ├── script.js
+│   └── assets/
+│
+├── server/
+│   ├── routes/
+│   ├── services/
+│   ├── middleware/
+│   ├── utils/
+│   ├── package.json
+│   └── index.js
+│
+├── docs/
+│   ├── ARCHITECTURE.md
+│   ├── API.md
+│   ├── SCHEMA.md
+│   ├── UI-WIREFRAMES.md
+│   ├── PROJECT-STRUCTURE.md
+│   └── IMPLEMENTATION-BLUEPRINT.md
 │
 ├── README.md
-├── API.md
-├── Day52.md
-├── notes.md
-├── learnings.md
-├── prompts.md
-└── reflection.md
-
+└── .gitignore
+```
 
 ---
 
-# 📈 Current Progress
+## 🚀 Development Roadmap
 
-## Completed
+### ✅ Day 1
 
-✅ Product idea definition  
-✅ User workflow design  
-✅ Backend API architecture  
-✅ AI interview flow planning  
-✅ Error handling strategy  
-✅ Documentation structure  
+* Product Discovery
+* Sprint Planning
+* PRD
+* Pitch Deck
+* Implementation Blueprint
 
+### ✅ Day 2
 
-## Version
+* Technology Stack
+* System Architecture
+* API Design
+* Data Schema
+* UI Wireframes
+* Project Structure
+* Updated Blueprint
 
+### 🔄 Upcoming
 
-v1.0 Design Phase
-
+* Backend setup
+* Groq API integration
+* AI prompt engineering
+* Frontend implementation
+* Local history
+* Sample error library
+* Share functionality
+* Deployment
+* Testing & optimization
 
 ---
 
-# 🔮 Future Improvements
+## 🎯 Project Goals
 
-Future versions can include:
-
-- User authentication
-- Resume file upload
-- Voice-based mock interviews
-- Interview history dashboard
-- Performance analytics
-- Personalized preparation roadmap
+* Make debugging faster and easier.
+* Explain errors in beginner-friendly language.
+* Reduce time spent searching documentation.
+* Build a polished portfolio-quality AI application.
 
 ---
 
-# 🏆 Challenge Progress
+## 🔮 Future Scope
 
-## Day 52 / 60 Completed
+* User Authentication
+* MongoDB Database
+* Saved Analysis History
+* Team Workspaces
+* IDE Extensions
+* Repository Analysis
+* Screenshot Error Detection
+* AI Conversation Memory
 
-Today’s focus:
+---
 
-- AI Product Design
-- Backend API Planning
-- Interview Workflow Architecture
-- AI Coaching System Design
 
-**Learn → Build → Document → Improve 🚀**
